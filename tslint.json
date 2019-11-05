@@ -1,0 +1,8 @@
+{
+  "extends": "tslint-config-standard",
+  "rules": {
+    "semicolon": [true, "always"],
+    "quotemark": false,
+    "space-before-function-paren": false
+  }
+}
