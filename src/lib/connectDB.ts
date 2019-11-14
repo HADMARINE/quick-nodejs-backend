@@ -1,20 +1,23 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+require('dotenv').config();
 
-const MONGO_URL =
-  process.env.MONGO_URL ||
-  "mongodb://ec2-15-164-162-77.ap-northeast-2.compute.amazonaws.com/dodoli";
-const env = process.env.NODE_ENV || "development";
+const MONGO_URL = process.env.DB_HOST;
+const env = process.env.NODE_ENV || 'development';
 
-const auth = require("../../db.json");
+const auth: any = {
+  user: process.env.DB_USER,
+  pass: process.env.DB_PASS
+};
 
-let mongoURL = MONGO_URL;
-if (env !== "production") mongoURL += `_${env}`;
-if (env === "development") {
-  mongoose.set("debug", true);
+let mongoURL: any = MONGO_URL;
+
+if (env !== 'production') mongoURL += `_${env}`;
+if (env === 'development') {
+  mongoose.set('debug', true);
 }
 
 module.exports = () =>
   mongoose.connect(mongoURL, {
     ...auth,
-    auth: { authdb: "admin" }
+    auth: { authdb: 'admin' }
   });

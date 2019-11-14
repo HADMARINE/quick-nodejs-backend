@@ -3,8 +3,8 @@ const optionsDefault = {
   data: {}
 };
 
-function throwError(message, status, options = optionsDefault) {
-  const error = new Error(message);
+function throwError(message: string, status: number, options = optionsDefault) {
+  const error: any = new Error(message);
   error.expose = true;
   if (status) error.status = status;
   error.data = options.data || {};
@@ -15,4 +15,4 @@ function throwError(message, status, options = optionsDefault) {
   throw error;
 }
 
-module.exports = throwError;
+export default throwError;
