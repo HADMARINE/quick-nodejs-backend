@@ -11,7 +11,7 @@ const routes = getRoutes();
 
 app.use(
   cors({
-    origin: process.env.NODE_ENV === 'development' ? '*' : 'surfspace.me'
+    origin: process.env.NODE_ENV === 'development' ? '*' : 'YOUR_DOMAIN.com'
   })
 );
 app.use(bodyParser.json({ extended: true }));
