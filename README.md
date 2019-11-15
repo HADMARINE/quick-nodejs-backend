@@ -37,3 +37,7 @@ You must define some factors to execute server.<br/><br/>
 <code>DB_PASS</code> : mongodb password<br/><br/>
 <b>Not Required Factors</b><br/><br/>
 <code>PORT</code> : Port that server app will run
+
+### app.ts
+You should change your domain on Production build.<br/>
+To change your domain, Open /src/app.ts and modify your domain on line <b>14</b>.
