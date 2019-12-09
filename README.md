@@ -1,9 +1,9 @@
-# TS-BACKEND
-Backend initial codes for developing backend by typescript<br/><br/>
+# Typescript-Node-Express-Mongodb-backend
+Backend boilerplate codes for developing backend by typescript<br/><br/>
 <i>Default database package is currently <b>Mongoose</b><br/>
 You must modify your code on your own to execute without mongoose.<br/><br/>
 
-Please contribute your code you modified, will add some branches. Thank you! :)
+Please contribute your modified code at our organization, then we will add some repositories. Thank you! :)
 </i>
 
 # How to use
@@ -11,14 +11,14 @@ Please contribute your code you modified, will add some branches. Thank you! :)
 place your file in routes like :
 <code>/routes/YOUR_ROUTE/index.ts</code><br/>
 and, export like : <code>module.exports = router;</code><br/>
-Then automated code will route your files kindly :)
+Then automated code will route your files :)
 
 ## Error Handling (throwError.ts)
 First, import throwError module.<br/>
 <code>import throwError from 'YOUR_DIR_HERE/lib/throwError.ts'</code><br/><br/>
 
 And, throw your error like : <br/>
-<code> throwError("ERROR_MESSAGE_HERE",ERRORCODE, OPTIONS)</code><br/><br/>
+<code> throwError("ERROR_MESSAGE_HERE", ERRORCODE, OPTIONS)</code><br/><br/>
 
 <b>Description : </b><br/>
 ERRORCODE is number type, it will return HTTP Status code.<br/>
