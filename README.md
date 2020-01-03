@@ -49,13 +49,13 @@ logError : true
 ## .env(dotenv)
 
 You must define some factors to execute server.<br/><br/>
-<b>Required Factors</b><br/><br/>
+### Required Factors
 <code>DB_HOST</code> : mongodb host (You must not enter db name)<br/>
 <code>DB_NAME</code> : mongodb database name<br/>
 <code>DB_USER</code> : mongodb user<br/>
 <code>DB_PASS</code> : mongodb password<br/><br/>
 
-<b>Not Required Factors</b><br/><br/>
+### Not Required Factors
 <code>PORT</code> : Port that server app will run
 
 ## app.ts
