@@ -18,16 +18,22 @@ First, import throwError module.<br/>
 <code>import throwError from 'YOUR_DIR_HERE/lib/throwError.ts'</code><br/><br/>
 
 And, throw your error like : <br/>
-<code> throwError("ERROR_MESSAGE_HERE", ERRORCODE, OPTIONS)</code><br/><br/>
+<code> throwError("ERROR_MESSAGE", HTTP_ERROR_CODE_NUMBER, ERROR_REASON_STRING, OPTIONS)</code><br/><br/>
 
 <b>Description : </b><br/>
-ERRORCODE is number type, it will return HTTP Status code.<br/>
+ERROR_MESSAGE is string type, it will explain why the error has occured.<br/>
+HTTP_ERROR_CODE_NUMBER is number type, it will return HTTP Status code.<br/>
+ERROR_REASON_STRING is string type, you may use this data for managing exceptions.<br/>
 OPTIONS is Object type. You can give factors below. It is not a required factor.<br/>
 <code>
 { 
   logError : true 
 } //Will print log on console.
 </code>
+<br/>
+<b>Example</b><br/>
+<code>throwError("Login failed",400,"LOGIN_FAIL");</code><br/>
+<code>throwError("Page not found",404,"PAGE_NOT_FOUND");</code>
 
 ## .env(dotenv)
 You must define some factors to execute server.<br/><br/>
