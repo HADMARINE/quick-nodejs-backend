@@ -9,9 +9,10 @@ const auth: any = {
   pass: process.env.DB_PASS
 };
 
-let mongoURL: any = MONGO_URL;
+const mongoURL: any = MONGO_URL;
+let dbName: any = process.env.DB_NAME;
 
-if (env !== 'production') mongoURL += `_${env}`;
+if (env !== 'production') dbName += `_${env}`;
 if (env === 'development') {
   mongoose.set('debug', true);
 }
@@ -19,5 +20,7 @@ if (env === 'development') {
 module.exports = () =>
   mongoose.connect(mongoURL, {
     ...auth,
-    auth: { authdb: 'admin' }
+    dbName,
+    useNewUrlParser: true,
+    useUnifiedTopology: true
   });
