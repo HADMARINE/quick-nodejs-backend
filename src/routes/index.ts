@@ -6,7 +6,7 @@ import throwError from '../lib/throwError';
 
 router.use(bodyParser.json());
 
-router.get('/', (req: any, res: any) => {
+router.get('/', (req, res) => {
   const date: Date = new Date();
   res.send(date);
 });
