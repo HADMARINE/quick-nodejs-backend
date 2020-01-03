@@ -3,11 +3,20 @@ const optionsDefault = {
   data: {}
 };
 
-function throwError(message: string, status: number, options = optionsDefault) {
+function throwError(
+  message: string,
+  status: number,
+  errorCode: string,
+  options = optionsDefault
+) {
   const error: any = new Error(message);
   error.expose = true;
-  if (status) error.status = status;
+
+  error.status = status;
+  error.errorCode = errorCode;
+
   error.data = options.data || {};
+
   if (options.logError) {
     console.error(error.stack);
   }
