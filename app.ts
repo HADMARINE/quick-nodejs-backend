@@ -6,6 +6,7 @@ const app = express();
 
 import throwError from './src/lib/throwError';
 import getRoutes from './src/lib/getRoutes';
+import { PageNotFound } from './src/error/index';
 
 const routes = getRoutes();
 
@@ -20,9 +21,9 @@ routes.forEach((data: any) => {
   app.use(data.path || '/', data.router);
 });
 
-app.use(() => {
-  throwError('Page Not found.', 404);
 // 404
+app.use(req => {
+  PageNotFound(req.url);
 });
 // Error 처리 핸들러
 
