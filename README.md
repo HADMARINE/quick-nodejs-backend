@@ -53,7 +53,7 @@ You must define some factors to execute server.<br/><br/>
 <code>DB_HOST</code> : mongodb host (You must not enter db name)<br/>
 <code>DB_NAME</code> : mongodb database name<br/>
 <code>DB_USER</code> : mongodb user<br/>
-<code>DB_PASS</code> : mongodb password<br/><ㅠㄱ/>
+<code>DB_PASS</code> : mongodb password<br/><br/>
 
 <b>Not Required Factors</b><br/><br/>
 <code>PORT</code> : Port that server app will run
