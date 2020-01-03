@@ -14,6 +14,11 @@ and, export like : <code>module.exports = router;</code><br/>
 Then automated code will route your files :)
 
 ## Error Handling (throwError.ts)
+We made some boilerplate errors on <code>./src/error/index.ts</code>. <br/>
+We suggest to use this method because if you create your own error every time,<br/> **integrity of error datas would be broken** and can cause side-effects.<br/>
+So, if you can, declare error on <code>./src/error/index.ts</code> and use.
+### How to create error
+<br/>
 First, import throwError module.<br/>
 <code>import throwError from 'YOUR_DIR_HERE/lib/throwError.ts'</code><br/><br/>
 
