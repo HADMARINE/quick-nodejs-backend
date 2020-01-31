@@ -12,10 +12,23 @@ const routes = getRoutes();
 
 app.use(
   cors({
-    origin: process.env.NODE_ENV === 'development' ? '*' : 'YOUR_DOMAIN.com'
+    origin:
+      process.env.NODE_ENV === 'development'
+        ? '*'
+        : process.env.REQUEST_URI || '*'
   })
 );
+
 app.use(bodyParser.json({ extended: true }));
+
+if (!process.env.REQUEST_URI) {
+  console.error(
+    'Error: process.env.REQUEST_URI IS NOT DEFINED. ANY ORIGIN REQUEST WOULD BE ALLOWED IF NOT DEFINED.'
+  );
+  console.error(
+    'See instructions : https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend/blob/master/README.md'
+  );
+}
 
 routes.forEach((data: any) => {
   app.use(data.path || '/', data.router);
