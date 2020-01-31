@@ -26,7 +26,7 @@ try {
 } catch (e) {
   console.error('Set your .env file, or it will occur error.');
   console.error(
-    'See instructions : https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend/blob/master/README.md'
+    'See instructions : https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend#envdotenv'
   );
   throw e;
 }
@@ -36,7 +36,7 @@ if (!process.env.REQUEST_URI) {
     'Error: process.env.REQUEST_URI IS NOT DEFINED. ANY ORIGIN REQUEST WOULD BE ALLOWED IF NOT DEFINED.'
   );
   console.error(
-    'See instructions : https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend/blob/master/README.md'
+    'See instructions : https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend#envdotenv'
   );
 }
 
