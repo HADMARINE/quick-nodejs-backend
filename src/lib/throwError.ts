@@ -1,5 +1,5 @@
 const optionsDefault = {
-  logError: false,
+  log: false,
   data: {}
 };
 
@@ -17,7 +17,7 @@ function throwError(
 
   error.data = options.data || {};
 
-  if (options.logError) {
+  if (options.log) {
     console.error(error.stack);
   }
 
