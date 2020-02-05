@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 const bodyParser = require('body-parser');
 
 const app = express();
@@ -10,6 +11,7 @@ import Error from './src/error/index';
 
 const routes = getRoutes();
 
+app.use(helmet());
 app.use(
   cors({
     origin:
