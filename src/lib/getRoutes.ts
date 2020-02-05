@@ -30,6 +30,7 @@ function getPathRoutes(routePath = '/'): any {
   }
   return datas;
 }
+
 function getRoutes() {
   return getPathRoutes();
 }
