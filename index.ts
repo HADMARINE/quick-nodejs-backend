@@ -17,6 +17,13 @@ function listen(port: number = PORT) {
   server.listen(port);
   let isError: boolean = false;
   server.once('error', (err: any) => {
+    if (process.env.PORT_STRICT === 'true') {
+      throw chalk.black.bgRed('ERROR:') +
+        chalk.red(` Port ${port} is already in use.\n`) +
+        chalk.yellow(
+          'Set PORT_STRICT to false on your .env if you want to execute anyway.'
+        );
+    }
     if (err.code === 'EADDRINUSE') {
       console.log(
         chalk.yellow(
