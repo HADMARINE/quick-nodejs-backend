@@ -1,8 +1,8 @@
 /** @format */
 
 import chalk from 'chalk';
-
-const env = process.env;
+import fs from 'fs';
+require('dotenv').config();
 
 const instructions =
   chalk.bgCyan.black('\nSee instructions:') +
@@ -12,16 +12,16 @@ const instructions =
 
 export default function checkInitializeProjectSettings() {
   try {
-    require('../../.env');
+    fs.accessSync('.env', fs.constants.F_OK);
   } catch (e) {
     const error =
       chalk.black.bgRed('Error:') +
       chalk.red(' Set your .env file.') +
       instructions;
-    throw error;
+    throw error + e;
   }
 
-  if (!env.REQUEST_URI) {
+  if (!process.env.REQUEST_URI) {
     console.error(
       chalk.black.bgYellow('Warning:') +
         chalk.yellow(
@@ -31,7 +31,12 @@ export default function checkInitializeProjectSettings() {
     );
   }
 
-  if (!env.DB_HOST || !env.DB_NAME || !env.DB_USER || !env.DB_PASS) {
+  if (
+    !process.env.DB_HOST ||
+    !process.env.DB_NAME ||
+    !process.env.DB_USER ||
+    !process.env.DB_PASS
+  ) {
     const error =
       chalk.black.bgRed('Error:') +
       chalk.red(' MONGO_DB Data is not provided properly at .env') +
