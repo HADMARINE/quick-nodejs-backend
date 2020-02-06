@@ -1,13 +1,20 @@
 <!-- @format -->
 
 # Typescript-Node-Express-Mongodb-backend
-
+### Description
 Backend boilerplate codes for developing backend by typescript<br/><br/>
-<i>Default database package is currently [<b>Mongoose</b>](https://www.npmjs.com/package/mongoose)<br/>
-You must modify your code on your own to execute without mongoose.<br/><br/>
 
+### Purpose and Orientation of this Template
+I was always annoyed when I create every Node.js project because of the configurations. At first, I copy and pasted my projects to save time, but it was not a good solution because of the variety of configurations of each project, it returned a lot of errors every time. While I was thinking about it, I decided to make a boilerplate of the Node.js project. 
+That's why I created this code not only to save time but also to allow to concentrate on your logics and codes, not annoying configurations.
+
+### Informations
+Default database package is currently [<b>Mongoose</b>](https://www.npmjs.com/package/mongoose)<br/>
+You must modify your code on your own to execute without mongoose.
+
+### Suggestion
 Please contribute your modified code at our organization, then we will add some repositories. Thank you! :)
-</i>
+
 
 # How to use
 
@@ -24,7 +31,7 @@ Then automated code will route your files :)
 
 Execute <code>yarn dev</code> on your command line.<br/>
 If the port (default port is 4000) is already in use, it will try to listen on another port automatically. <br/>
-If you don't want this function, set PORT_STRICT on your .env to true.
+If you don't want this function, set <code>PORT_STRICT</code> on your <code>.env</code> to true.
 
 ## Error Handling (throwError.ts)
 
@@ -34,7 +41,7 @@ So, if you can, declare error on <code>./src/error/index.ts</code> and use.
 
 ### How to create error
 
-First, import throwError module.
+First, import <code>throwError</code> module.
 
 ```typescript
 import throwError from 'YOUR_DIR_HERE/lib/throwError.ts';
@@ -151,7 +158,7 @@ app.use(req => {
 
 ## app.ts
 
-#### From [THIS](https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend/commit/02a7255290b81c49f3770f6fbaae4703069c963c) version, cors settings will be automated. Set your .env file properly.
+#### From [THIS](https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend/commit/02a7255290b81c49f3770f6fbaae4703069c963c) version of commit, cors origin uri settings will be automated. Set your .env file properly.
 
 ~~You should change your domain on Production build.<br/>
 To change your domain, Open /src/app.ts and modify your domain on line <b>14</b>.~~
