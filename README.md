@@ -1,6 +1,8 @@
 <!-- @format -->
 
 # Typescript-Node-Express-Mongodb-backend
+## Readme for other languages
+### [한국어 리드미](https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend/blob/master/README_ko.md)
 ### Description
 Backend boilerplate codes for developing backend by typescript
 
