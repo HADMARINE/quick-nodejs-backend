@@ -2,7 +2,7 @@
 
 # Typescript-Node-Express-Mongodb-backend
 ### Description
-Backend boilerplate codes for developing backend by typescript<br/><br/>
+Backend boilerplate codes for developing backend by typescript
 
 ### Purpose and Orientation of this Template
 I was always annoyed when I create every Node.js project because of the configurations. At first, I copy and pasted my projects to save time, but it was not a good solution because of the variety of configurations of each project, it returned a lot of errors every time. While I was thinking about it, I decided to make a boilerplate of the Node.js project. 
