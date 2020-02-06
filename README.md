@@ -150,11 +150,11 @@ app.use(req => {
 <code>DB_USER</code> : mongodb user<br/>
 <code>DB_PASS</code> : mongodb password<br/>
 <code>REQUEST_URI</code> : URI that your client will access. If you don't set your domain, cors origin uri will set to <b>\*</b> (wildcard) and cannot protect your api. If you want to set your origin uri to a wildcard, set to <b>\*</b> or if will occur warning log.
-<code>PORT_STRICT</code> : Set to <b>true</b> if you don't want to use auto port-detection and use only your own port.
 
 ### Not Required Factors
 
-<code>PORT</code> : Port that server app will run
+<code>PORT</code> : Port that server app will run<br/>
+<code>PORT_STRICT</code> : Set to <b>true</b> if you don't want to use auto port-detection and use only your own port.
 
 ## app.ts
 
