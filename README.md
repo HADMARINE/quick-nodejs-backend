@@ -1,3 +1,5 @@
+<!-- @format -->
+
 # Typescript-Node-Express-Mongodb-backend
 
 Backend boilerplate codes for developing backend by typescript<br/><br/>
@@ -9,12 +11,20 @@ Please contribute your modified code at our organization, then we will add some 
 
 # How to use
 
-## Router
+## Server execution
 
-place your file in routes like :
+### 1. Routing
+
+Place your file in routes like :
 <code>/routes/YOUR_ROUTE/index.ts</code><br/>
 and, export like : <code>module.exports = router;</code><br/>
 Then automated code will route your files :)
+
+### 2. Commanding
+
+Execute <code>yarn dev</code> on your command line.<br/>
+If the port (default port is 4000) is already in use, it will try to listen on another port automatically. <br/>
+If you don't want this function, set PORT_STRICT on your .env to true.
 
 ## Error Handling (throwError.ts)
 
@@ -35,12 +45,7 @@ import throwError from 'YOUR_DIR_HERE/lib/throwError.ts';
 And, throw your error like :
 
 ```typescript
-throwError(
-  ERROR_MESSAGE,
-  HTTP_ERROR_CODE_NUMBER,
-  ERROR_REASON_STRING,
-  OPTIONS
-);
+throwError(ERROR_MESSAGE, HTTP_ERROR_CODE_NUMBER, ERROR_REASON_STRING, OPTIONS);
 ```
 
 <br/>
@@ -138,6 +143,7 @@ app.use(req => {
 <code>DB_USER</code> : mongodb user<br/>
 <code>DB_PASS</code> : mongodb password<br/>
 <code>REQUEST_URI</code> : URI that your client will access. If you don't set your domain, cors origin uri will set to <b>\*</b> (wildcard) and cannot protect your api. If you want to set your origin uri to a wildcard, set to <b>\*</b> or if will occur warning log.
+<code>PORT_STRICT</code> : Set to <b>true</b> if you don't want to use auto port-detection and use only your own port.
 
 ### Not Required Factors
 
