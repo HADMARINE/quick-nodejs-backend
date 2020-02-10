@@ -17,8 +17,8 @@ app.use(
     origin:
       process.env.NODE_ENV === 'development'
         ? '*'
-        : process.env.REQUEST_URI || '*'
-  })
+        : process.env.REQUEST_URI || '*',
+  }),
 );
 
 app.use(bodyParser.json({ extended: true }));
@@ -41,6 +41,7 @@ app.use((error: any, req: any, res: any, next: any) => {
     error.message && error.expose
       ? error.message
       : 'An error has occurred. Please Try Again.';
+  const errorCode = error.errorCode;
   const data = error.data || {};
   if (!error.expose || process.env.NODE_ENV === 'development') {
     console.error(error);
@@ -49,7 +50,8 @@ app.use((error: any, req: any, res: any, next: any) => {
   res.status(status).json({
     status,
     message,
-    ...data
+    errorCode,
+    ...data,
   });
 });
 
