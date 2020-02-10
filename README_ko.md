@@ -1,18 +1,21 @@
-<!-- @format -->
-
 # Typescript-Node-Express-Mongodb-backend
+
 ### 설명
+
 타입스크립트로 백엔드를 제작하기 위한 보일러플레이트 코드
 
 ### 만든 계기와 템플릿의 지향점
+
 저는 항상 Node.js 프로젝트를 생성할때마다 여러 설정과 세팅을 해주어야 하는것에 대해 굉장히 불만이 많았습니다. 그래서 저는 처음에, 기존 프로젝트를 복사해서 새로운 프로젝트에 맞게 바꾸어 사용했는데, 프로젝트마다 설정과 디펜던시등 너무나 다양한 설정들 때문에 항상 많은 오류를 뿜어 좋은 방법은 아니었습니다. 그러던 중, 저는 Node.js 백엔드 코드의 보일러 플레이트를 제작하기로 마음먹었습니다.
 이 보일러플레이트 코드는 여러분이 Node.js 초기 설정을 하는 시간을 아낄 뿐만 아니라, 귀찮고 짜증나는 초기 설정이 아닌 여러분만의 로직이나, 알고리즘, 코드들을 제작하는 데 시간을 더 투자할 수 있게 도와주기 위해서 생성되었습니다. <b>즐코딩!</b>
 
 ### 정보 (기술 스택)
+
 기본적으로 설정되어있는 ODM (오브젝트 데이터 맵핑) 패키지는 [<b>Mongoose</b>](https://www.npmjs.com/package/mongoose) 입니다.<br/>
 Mongoose 를 사용하지 않고 프로젝트를 실행하려면 별도로 코드를 수정하셔야 합니다.
 
 ### 제안
+
 여러분이 수정한 코드를 저희 Organization에 기여해주시면 리포지토리를 생성해 드리겠습니다. 감사합니다! :)
 
 # 사용법
@@ -118,7 +121,7 @@ export default {
       errorMessage += ` Request Directory : ${directory}`;
     }
     throwError(errorMessage, 404, 'PAGE_NOT_FOUND');
-  }
+  },
   // NewError(){...},
   // NewError(){...},
 };
@@ -152,6 +155,7 @@ app.use(req => {
 <code>REQUEST_URI</code> : 클라이언트가 접속할 URI 주소입니다. 만약 도메인 설정을 하지 않을 경우 cors origin uri가 <b>\*</b> (와일드카드) 로 설정되어 외부에서 들어오는 모든 요청을 받아 당신의 api를 보호할 수 없습니다. 만약 와일드카드로 도메인을 설정하고 싶으면 <b>\*</b> 로 도메인을 설정하여 경고 메세지가 발생하지 않도록 하세요.
 
 ### 선택 입력 항목
+
 <code>PORT</code> : 서버가 올라갈 포트 입니다.<br/>
 <code>PORT_STRICT</code> : 만약 자동 포트 감지를 사용하지 않고 당신이 설정한 포트만 사용하고 싶으면 이 값을 <b>true</b> 로 설정하세요.
 
@@ -160,4 +164,4 @@ app.use(req => {
 #### [해당](https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend/commit/02a7255290b81c49f3770f6fbaae4703069c963c) 커밋 버전부터는, cors origin uri 가 자동으로 설정되게 됩니다. .env 파일을 정확하게 설정하세요.
 
 ~~상용 빌드에서는 당신의 도메인으로 설정해야 합니다.<br/>
-도메인을 변경하고 싶으시면, /src/app.ts 을 열어  <b>14</b>번째 줄의 도메인 정보를 변경하세요.~~
+도메인을 변경하고 싶으시면, /src/app.ts 을 열어 <b>14</b>번째 줄의 도메인 정보를 변경하세요.~~
