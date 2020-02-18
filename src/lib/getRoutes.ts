@@ -14,7 +14,7 @@ function getPathRoutes(routePath = '/'): any {
       datas.push(...getPathRoutes(`${routePath.replace(/\/$/, '')}/${f}`));
       continue;
     }
-    if (!file.match(/\.ts$/)) {
+    if (!file.match(/(.ts|.js)$/)) {
       continue;
     }
     const router = require(file);
@@ -25,7 +25,7 @@ function getPathRoutes(routePath = '/'): any {
 
     datas.push({
       path: routePath,
-      router
+      router,
     });
   }
   return datas;
