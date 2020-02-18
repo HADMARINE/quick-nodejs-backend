@@ -7,9 +7,9 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
-import getRoutes from './src/lib/getRoutes';
-import Error from './src/error/index';
-import checkInitializeProjectSettings from './src/lib/checkInitializeProjectSettings';
+import getRoutes from './lib/getRoutes';
+import Error from './error/index';
+import checkInitializeProjectSettings from './lib/checkInitializeProjectSettings';
 
 app.use(helmet());
 app.use(
