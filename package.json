@@ -1,5 +1,5 @@
 {
-  "name": "ts-backend-template",
+  "name": "typescript-node-express-mongodb-backend",
   "version": "1.0.0",
   "main": "index.ts",
   "author": "none",
