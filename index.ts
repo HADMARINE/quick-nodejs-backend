@@ -16,7 +16,7 @@ const PORT = parseInt(process.env.PORT || '4000', 10);
 function listen(port: number = PORT): void {
   if (port <= 0 || port >= 65536) {
     throw new Error(
-      chalk.red(`PORT Range is Invalid. Recieved port : ${port}`),
+      chalk.red(`PORT Range is Invalid. Recieved port : ${port}`)
     );
   }
   server.listen(port);
@@ -28,15 +28,15 @@ function listen(port: number = PORT): void {
         chalk.blackBright.bgRed('ERROR:') +
           chalk.red(` Port ${port} is already in use.\n`) +
           chalk.yellow(
-            'Set PORT_STRICT to false on your .env if you want to execute anyway.',
-          ),
+            'Set PORT_STRICT to false on your .env if you want to execute anyway.'
+          )
       );
     }
     if (err.code === 'EADDRINUSE') {
       console.log(
         chalk.yellow(
-          `Port ${port} is currently in use. Retrying with port ${port + 1}`,
-        ),
+          `Port ${port} is currently in use. Retrying with port ${port + 1}`
+        )
       );
       const newPort = port === 65535 ? 20000 : port + 1;
       listen(newPort);
@@ -47,7 +47,7 @@ function listen(port: number = PORT): void {
     if (!isError) {
       console.log(
         chalk.blackBright.bgGreen(`App started on port`) +
-          chalk.green.bold(` ${port}`),
+          chalk.green.bold(` ${port}`)
       );
     }
   });

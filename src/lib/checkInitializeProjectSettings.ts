@@ -8,7 +8,7 @@ require('dotenv').config();
 const instructions =
   chalk.bgCyan.black('\nSee instructions:') +
   chalk.cyan(
-    ' https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend#envdotenv',
+    ' https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend#envdotenv'
   );
 
 export default function checkInitializeProjectSettings(): void {
@@ -26,9 +26,9 @@ export default function checkInitializeProjectSettings(): void {
     console.error(
       chalk.black.bgYellow('Warning:') +
         chalk.yellow(
-          ' process.env.REQUEST_URI IS NOT DEFINED. ANY ORIGIN REQUEST WOULD BE ALLOWED IF NOT DEFINED.',
+          ' process.env.REQUEST_URI IS NOT DEFINED. ANY ORIGIN REQUEST WOULD BE ALLOWED IF NOT DEFINED.'
         ) +
-        instructions,
+        instructions
     );
   }
 
@@ -41,7 +41,7 @@ export default function checkInitializeProjectSettings(): void {
     throw new Error(
       chalk.blackBright.bgRed('Error:') +
         chalk.red(' MONGO_DB Data is not provided properly at .env') +
-        instructions,
+        instructions
     );
   }
 }
