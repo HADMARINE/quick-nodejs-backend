@@ -3,12 +3,7 @@ module.exports = {
     browser: true,
     node: true,
   },
-  extends: [
-    'plugin:@typescript-eslint/recommended',
-    // 'prettier/@typescript-eslint',
-    'plugin:jest/recommended',
-    'plugin:react/recommended',
-  ],
+  extends: ['plugin:@typescript-eslint/recommended', 'plugin:jest/recommended'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     sourceType: 'module',
