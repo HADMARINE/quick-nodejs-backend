@@ -3,3 +3,7 @@ node_modules
 
 .env
 yarn-error.log
+
+.idea
+
+package-lock.json
