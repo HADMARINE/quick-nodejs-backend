@@ -2,13 +2,14 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-const bodyParser = require('body-parser');
 
 const app = express();
 
 import getRoutes, { GetRoutesProps } from './lib/getRoutes';
 import Error from './error/index';
 import checkInitializeProjectSettings from './lib/checkInitializeProjectSettings';
+
+checkInitializeProjectSettings();
 
 app.use(helmet());
 app.use(
@@ -20,9 +21,8 @@ app.use(
   }),
 );
 
-app.use(bodyParser.json({ extended: true }));
-
-checkInitializeProjectSettings();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 getRoutes().forEach((data: GetRoutesProps) => {
   app.use(data.path || '/', data.router);

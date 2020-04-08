@@ -16,7 +16,6 @@
     "@types/helmet": "^0.0.45",
     "@types/mongoose": "^5.5.31",
     "@types/node": "^12.12.5",
-    "body-parser": "^1.19.0",
     "chalk": "^3.0.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
