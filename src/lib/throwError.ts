@@ -1,14 +1,14 @@
 const optionsDefault = {
   log: false,
-  data: {}
+  data: {},
 };
 
 function throwError(
   message: string,
   status: number,
   errorCode: string,
-  options = optionsDefault
-) {
+  options = optionsDefault,
+): void {
   const error: any = new Error(message);
   error.expose = true;
 
