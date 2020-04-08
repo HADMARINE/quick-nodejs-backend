@@ -1,11 +1,12 @@
 import throwError from '../lib/throwError';
 
 export default {
-  PageNotFound(directory: string = '') {
-    let errorMessage = 'Page Not found.';
+  PageNotFound(directory = ''): void {
+    const errorMessage = 'Page Not found.';
+    const data: any = {};
     if (directory) {
-      errorMessage += ` Request Directory : ${directory}`;
+      data.directory = directory;
     }
-    throwError(errorMessage, 404, 'PAGE_NOT_FOUND');
-  }
+    throwError(errorMessage, 404, 'PAGE_NOT_FOUND', { data });
+  },
 };
