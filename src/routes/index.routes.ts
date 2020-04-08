@@ -1,11 +1,11 @@
 /** @format */
 
-import express from 'express';
-const router = express.Router();
+import { Router } from 'express';
+const router = Router();
 
 router.get('/', (req, res) => {
   const date: Date = new Date();
   res.send(date);
 });
 
-module.exports = router;
+export default router;

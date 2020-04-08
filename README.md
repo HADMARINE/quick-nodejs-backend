@@ -1,22 +1,28 @@
 <!-- @format -->
 
 # Typescript-Node-Express-Mongodb-backend
+
 ## Readme for other languages
+
 ### [한국어 리드미](https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend/blob/master/README_ko.md)
+
 ### Description
+
 Backend boilerplate codes for developing backend by typescript
 
 ### Purpose and Orientation of this Template
-I was always annoyed when I create every Node.js project because of the configurations. At first, I copy and pasted my projects to save time, but it was not a good solution because of the variety of configurations of each project, it returned a lot of errors every time. While I was thinking about it, I decided to make a boilerplate of the Node.js project. 
+
+I was always annoyed when I create every Node.js project because of the configurations. At first, I copy and pasted my projects to save time, but it was not a good solution because of the variety of configurations of each project, it returned a lot of errors every time. While I was thinking about it, I decided to make a boilerplate of the Node.js project.
 That's why I created this code not only to save time but also to allow to concentrate on your logics and codes, not annoying configurations.
 
 ### Informations
+
 Default database package is currently [<b>Mongoose</b>](https://www.npmjs.com/package/mongoose)<br/>
 You must modify your code on your own to execute without mongoose.
 
 ### Suggestion
-Please contribute your modified code at our organization, then we will add some repositories. Thank you! :)
 
+Please contribute your modified code at our organization, then we will add some repositories. Thank you! :)
 
 # How to use
 
@@ -25,9 +31,11 @@ Please contribute your modified code at our organization, then we will add some 
 ### 1. Routing
 
 Place your file in routes like :
-<code>/routes/YOUR_ROUTE/index.ts</code><br/>
-and, export like : <code>module.exports = router;</code><br/>
+<code>/routes/YOUR_ROUTE/index.routes.ts</code><br/>
+and, export like : <code>export default router;</code><br/>
 Then automated code will route your files :)
+
+<b>Warning! if the filename is not like \*.routes.ts or \*.routes.js, it will exclude from router!</b>
 
 ### 2. Commanding
 
@@ -120,7 +128,7 @@ export default {
       errorMessage += ` Request Directory : ${directory}`;
     }
     throwError(errorMessage, 404, 'PAGE_NOT_FOUND');
-  }
+  },
   // NewError(){...},
   // NewError(){...},
 };
