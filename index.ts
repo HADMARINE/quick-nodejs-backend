@@ -62,6 +62,7 @@ function listen(port: number = PORT): void {
   });
 }
 
+// tslint:disable-next-line: no-floating-promises
 connectDB().then(() => {
   listen();
 });
