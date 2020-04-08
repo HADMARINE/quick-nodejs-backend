@@ -5,7 +5,7 @@ module.exports = {
   semi: true,
   singleQuote: true,
   quoteProps: 'as-needed',
-  trailingComma: 'needed',
+  trailingComma: 'all',
   bracketSpacing: true,
-  arrowParens: 'always'
+  arrowParens: 'always',
 };
