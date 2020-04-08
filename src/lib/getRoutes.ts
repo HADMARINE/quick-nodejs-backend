@@ -17,8 +17,7 @@ function getPathRoutes(routePath = '/'): Record<string, any>[] {
     if (!file.match(/(.ts|.js)$/)) {
       continue;
     }
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const router: NodeRequire = require(file);
+    const router: NodeRequire = require(file).default;
 
     if (Object.getPrototypeOf(router) !== Router) {
       continue;
