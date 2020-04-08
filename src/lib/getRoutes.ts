@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { Router } from 'express';
 
-function getPathRoutes(routePath = '/'): any {
+function getPathRoutes(routePath = '/'): Record<string, any>[] {
   const routesPath = path.resolve(__dirname, '../routes', `.${routePath}`);
   const dir = fs.readdirSync(routesPath);
   const datas = [];
@@ -17,7 +17,8 @@ function getPathRoutes(routePath = '/'): any {
     if (!file.match(/(.ts|.js)$/)) {
       continue;
     }
-    const router = require(file);
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const router: NodeRequire = require(file);
 
     if (Object.getPrototypeOf(router) !== Router) {
       continue;
@@ -31,8 +32,14 @@ function getPathRoutes(routePath = '/'): any {
   return datas;
 }
 
-function getRoutes() {
+function getRoutes(): Record<string, any> {
   return getPathRoutes();
 }
 
+interface GetRoutesProps {
+  path: string;
+  router: NodeRequire;
+}
+
+export type { GetRoutesProps };
 export default getRoutes;

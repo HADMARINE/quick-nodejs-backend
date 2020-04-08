@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
-import getRoutes from './lib/getRoutes';
+import getRoutes, { GetRoutesProps } from './lib/getRoutes';
 import Error from './error/index';
 import checkInitializeProjectSettings from './lib/checkInitializeProjectSettings';
 
@@ -25,7 +25,7 @@ app.use(bodyParser.json({ extended: true }));
 
 checkInitializeProjectSettings();
 
-getRoutes().forEach((data: any) => {
+getRoutes().forEach((data: GetRoutesProps) => {
   app.use(data.path || '/', data.router);
 });
 
