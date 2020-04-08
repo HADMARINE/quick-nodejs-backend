@@ -1,14 +1,19 @@
+interface Options {
+  log?: boolean;
+  data?: object;
+}
+
 const optionsDefault = {
   log: false,
-  data: {}
+  data: {},
 };
 
 function throwError(
   message: string,
   status: number,
   errorCode: string,
-  options = optionsDefault
-) {
+  options: Options = optionsDefault,
+): void {
   const error: any = new Error(message);
   error.expose = true;
 

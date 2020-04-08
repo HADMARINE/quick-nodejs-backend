@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { Router } from 'express';
 
-function getPathRoutes(routePath = '/'): any {
+function getPathRoutes(routePath = '/'): Record<string, any>[] {
   const routesPath = path.resolve(__dirname, '../routes', `.${routePath}`);
   const dir = fs.readdirSync(routesPath);
   const datas = [];
@@ -11,13 +11,17 @@ function getPathRoutes(routePath = '/'): any {
     const file: any = path.join(routesPath, f);
     const stat = fs.statSync(file);
     if (stat.isDirectory()) {
-      datas.push(...getPathRoutes(`${routePath.replace(/\/$/, '')}/${f}`));
+      datas.push(
+        ...getPathRoutes(
+          `${routePath.replace(/\/$/, '').replace(/.routes/g, '')}/${f}`,
+        ),
+      );
       continue;
     }
-    if (!file.match(/(.ts|.js)$/)) {
+    if (!file.match(/(.routes.ts|.routes.js)$/)) {
       continue;
     }
-    const router = require(file);
+    const router: NodeRequire = require(file).default;
 
     if (Object.getPrototypeOf(router) !== Router) {
       continue;
@@ -31,8 +35,14 @@ function getPathRoutes(routePath = '/'): any {
   return datas;
 }
 
-function getRoutes() {
+function getRoutes(): Record<string, any> {
   return getPathRoutes();
 }
 
+interface GetRoutesProps {
+  path: string;
+  router: NodeRequire;
+}
+
+export type { GetRoutesProps };
 export default getRoutes;

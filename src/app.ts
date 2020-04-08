@@ -1,15 +1,15 @@
 /** @format */
-
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-const bodyParser = require('body-parser');
 
 const app = express();
 
-import getRoutes from './lib/getRoutes';
+import getRoutes, { GetRoutesProps } from './lib/getRoutes';
 import Error from './error/index';
 import checkInitializeProjectSettings from './lib/checkInitializeProjectSettings';
+
+checkInitializeProjectSettings();
 
 app.use(helmet());
 app.use(
@@ -17,15 +17,14 @@ app.use(
     origin:
       process.env.NODE_ENV === 'development'
         ? '*'
-        : process.env.REQUEST_URI || '*'
-  })
+        : process.env.REQUEST_URI || '*',
+  }),
 );
 
-app.use(bodyParser.json({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-checkInitializeProjectSettings();
-
-getRoutes().forEach((data: any) => {
+getRoutes().forEach((data: GetRoutesProps) => {
   app.use(data.path || '/', data.router);
 });
 
@@ -35,6 +34,7 @@ app.use((req) => {
 });
 
 // Error handler
+// eslint-disable-next-line no-unused-vars
 app.use((error: any, req: any, res: any, next: any) => {
   const status = error.status || 500;
   const message =
@@ -51,7 +51,7 @@ app.use((error: any, req: any, res: any, next: any) => {
     status,
     message,
     errorCode,
-    ...data
+    ...data,
   });
 });
 

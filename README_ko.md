@@ -25,9 +25,11 @@ Mongoose 를 사용하지 않고 프로젝트를 실행하려면 별도로 코�
 ### 1. 라우팅
 
 여러분의 파일을 다음과 같이 생성하고 작성하세요:
-<code>/routes/YOUR_ROUTE/index.ts</code><br/>
-그리고 다음과 같이 export 하세요 : <code>module.exports = router;</code><br/>
+<code>/routes/YOUR_ROUTE/index.routes.ts</code><br/>
+그리고 다음과 같이 export 하세요 : <code>export default router;</code><br/>
 이제 자동화된 코드가 당신의 파일들을 자동으로 라우팅 해줄 것입니다 :)
+
+<b>주의! \*.routes.ts 나 \*.routes.js 가 아닐 경우 라우팅에서 제외됩니다!</b>
 
 ### 2. 명령
 

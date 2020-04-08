@@ -3,6 +3,7 @@
   "rules": {
     "semicolon": [true, "always"],
     "quotemark": false,
-    "space-before-function-paren": false
+    "space-before-function-paren": false,
+    "trailing-comma": true
   }
 }
