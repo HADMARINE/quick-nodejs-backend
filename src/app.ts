@@ -34,7 +34,7 @@ app.use((req) => {
 });
 
 // Error handler
-app.use((error: any, req: any, res: any) => {
+app.use((error: any, req: any, res: any, next: any) => {
   const status = error.status || 500;
   const message =
     error.message && error.expose
