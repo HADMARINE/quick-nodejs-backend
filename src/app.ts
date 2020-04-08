@@ -1,5 +1,4 @@
 /** @format */
-
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -17,8 +16,8 @@ app.use(
     origin:
       process.env.NODE_ENV === 'development'
         ? '*'
-        : process.env.REQUEST_URI || '*'
-  })
+        : process.env.REQUEST_URI || '*',
+  }),
 );
 
 app.use(bodyParser.json({ extended: true }));
@@ -35,7 +34,7 @@ app.use((req) => {
 });
 
 // Error handler
-app.use((error: any, req: any, res: any, next: any) => {
+app.use((error: any, req: any, res: any) => {
   const status = error.status || 500;
   const message =
     error.message && error.expose
@@ -51,7 +50,7 @@ app.use((error: any, req: any, res: any, next: any) => {
     status,
     message,
     errorCode,
-    ...data
+    ...data,
   });
 });
 
