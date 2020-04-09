@@ -3,7 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 
 import getRoutes from './lib/getRoutes';
-import Error from '@error/index';
+import Error from '@error';
 import checkInitializeProjectSettings from './lib/checkInitializeProjectSettings';
 
 const app = express();
