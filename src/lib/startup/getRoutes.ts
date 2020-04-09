@@ -13,7 +13,7 @@ type GetRoutes = GetRoutesProps[];
 function getPathRoutes(routePath = '/'): GetRoutes {
   const routesPath: string = path.resolve(
     __dirname,
-    '../routes',
+    '../../routes',
     `.${routePath}`,
   );
   const dir: string[] = fs.readdirSync(routesPath);
