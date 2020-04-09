@@ -1,4 +1,3 @@
-/** @format */
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -23,6 +22,8 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(express.static('public'));
 
 getRoutes().forEach((data: GetRoutesProps) => {
   app.use(data.path || '/', data.router);
