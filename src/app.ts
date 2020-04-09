@@ -7,7 +7,7 @@ import checkInitializeProjectSettings from '@lib/startup/checkInitializeProjectS
 import error from '@error';
 import { defaultMessage, defaultCode } from '@lib/httpCode';
 
-interface Error {
+interface MiddlewareError {
   status?: number;
   message?: string;
   code?: string;
@@ -46,24 +46,26 @@ app.use((req) => {
 });
 
 // Error handler
-app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
-  const status = error.status || 500;
-  const message =
-    error.message && error.expose ? error.message : defaultMessage(status);
-  const code = error.code || defaultCode(status);
-  const data = error.data || {};
+app.use(
+  (error: MiddlewareError, req: Request, res: Response, next: NextFunction) => {
+    const status = error.status || 500;
+    const message =
+      error.message && error.expose ? error.message : defaultMessage(status);
+    const code = error.code || defaultCode(status);
+    const data = error.data || {};
 
-  if (!error.expose || process.env.NODE_ENV === 'development') {
-    console.error(error);
-  }
+    if (!error.expose || process.env.NODE_ENV === 'development') {
+      console.error(error);
+    }
 
-  res.status(status).json({
-    status,
-    message,
-    code,
-    ...data,
-  });
-  next();
-});
+    res.status(status).json({
+      status,
+      message,
+      code,
+      ...data,
+    });
+    next();
+  },
+);
 
 export default app;
