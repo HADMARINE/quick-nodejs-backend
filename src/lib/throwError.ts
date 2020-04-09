@@ -1,3 +1,5 @@
+import { defaultMessage, defaultCode } from '@lib/httpCode';
+
 interface Options {
   log?: boolean;
   data?: object;
@@ -10,15 +12,15 @@ const optionsDefault = {
 };
 
 function throwError(
-  message: string,
-  status: number,
-  code: string,
+  message: string | null,
+  status: number = 500,
+  code: string | null,
   options: Options = optionsDefault,
 ): void {
-  const error: any = new Error(message);
+  const error: any = new Error(message || defaultMessage(status));
   error.expose = options.expose || true;
   error.status = status;
-  error.code = code;
+  error.code = code || defaultCode(status);
 
   error.data = options.data || {};
 
