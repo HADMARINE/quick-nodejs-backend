@@ -77,7 +77,7 @@ module.exports = {
       },
     ],
     'no-debugger': 'error',
-    'no-empty': 'error',
+    'no-empty': 'off',
     'no-eval': 'error',
     'no-fallthrough': 'off',
     'no-invalid-this': 'off',
