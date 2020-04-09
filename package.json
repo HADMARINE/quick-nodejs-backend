@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "nodemon",
     "build": "tsc",
-    "lint": "tslint -p"
+    "lint": "tslint -p",
+    "test": "jest"
   },
   "dependencies": {
     "@types/body-parser": "^1.17.1",
@@ -29,10 +30,13 @@
     "typescript": "^3.8.3"
   },
   "devDependencies": {
+    "@types/jest": "^25.2.1",
     "@typescript-eslint/eslint-plugin": "^2.24.0",
     "@typescript-eslint/parser": "^2.24.0",
     "eslint-plugin-babel": "^5.3.0",
     "eslint-plugin-jest": "^23.8.2",
+    "jest": "^25.3.0",
+    "ts-jest": "^25.3.1",
     "tslint": "^6.0.0-beta0",
     "tslint-config-standard": "^9.0.0"
   }
