@@ -2,9 +2,9 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 
-import getRoutes from './lib/startup/getRoutes';
-import Error from '@src/error/index';
-import checkInitializeProjectSettings from './lib/startup/checkInitializeProjectSettings';
+import getRoutes from '@lib/startup/getRoutes';
+import Error from '@error';
+import checkInitializeProjectSettings from '@lib/startup/checkInitializeProjectSettings';
 
 const app = express();
 
