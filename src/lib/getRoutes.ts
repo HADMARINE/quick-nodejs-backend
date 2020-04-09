@@ -11,11 +11,7 @@ function getPathRoutes(routePath = '/'): Record<string, any>[] {
     const file: any = path.join(routesPath, f);
     const stat = fs.statSync(file);
     if (stat.isDirectory()) {
-      datas.push(
-        ...getPathRoutes(
-          `${routePath.replace(/\/$/, '').replace(/.routes/g, '')}/${f}`,
-        ),
-      );
+      datas.push(...getPathRoutes(`${routePath.replace(/\/$/, '')}/${f}`));
       continue;
     }
     if (!file.match(/(.routes.ts|.routes.js)$/)) {
@@ -26,9 +22,11 @@ function getPathRoutes(routePath = '/'): Record<string, any>[] {
     if (Object.getPrototypeOf(router) !== Router) {
       continue;
     }
+    let filename = f.replace(/(.routes.ts|.routes.js)$/, '');
+    filename = filename === 'index' ? '' : `/${filename}`;
 
     datas.push({
-      path: routePath,
+      path: `${routePath}${filename}`,
       router,
     });
   }
