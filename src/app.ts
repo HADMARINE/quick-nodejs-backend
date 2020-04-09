@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 
-import getRoutes, { GetRoutesProps } from './lib/getRoutes';
+import getRoutes from './lib/getRoutes';
 import Error from './error/index';
 import checkInitializeProjectSettings from './lib/checkInitializeProjectSettings';
 
@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static('public'));
 
-getRoutes().forEach((data: GetRoutesProps) => {
+getRoutes().forEach((data) => {
   app.use(data.path || '/', data.router);
 });
 
