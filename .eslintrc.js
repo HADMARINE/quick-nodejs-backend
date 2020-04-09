@@ -3,7 +3,17 @@ module.exports = {
     browser: true,
     node: true,
   },
-  extends: ['plugin:@typescript-eslint/recommended', 'plugin:jest/recommended'],
+  extends: [
+    'plugin:@typescript-eslint/recommended',
+    'plugin:jest/recommended',
+    'plugin:import/errors',
+    'plugin:import/warnings',
+  ],
+  settings: {
+    'import/resolver': {
+      'babel-module': {},
+    },
+  },
   parser: '@typescript-eslint/parser',
   parserOptions: {
     sourceType: 'module',

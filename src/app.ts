@@ -1,16 +1,16 @@
-/** @format */
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 
-const app = express();
-
-import getRoutes, { GetRoutesProps } from './lib/getRoutes';
-import Error from './error/index';
+import getRoutes from './lib/getRoutes';
+import Error from '@src/error/index';
 import checkInitializeProjectSettings from './lib/checkInitializeProjectSettings';
+
+const app = express();
 
 checkInitializeProjectSettings();
 
+// Security settings
 app.use(helmet());
 app.use(
   cors({
@@ -21,10 +21,13 @@ app.use(
   }),
 );
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Parser
+app.use(express.json({ limit: '25mb' }));
+app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
-getRoutes().forEach((data: GetRoutesProps) => {
+app.use(express.static('public'));
+
+getRoutes().forEach((data) => {
   app.use(data.path || '/', data.router);
 });
 
@@ -34,14 +37,13 @@ app.use((req) => {
 });
 
 // Error handler
-// eslint-disable-next-line no-unused-vars
-app.use((error: any, req: any, res: any, next: any) => {
+app.use((error: any, req: Request, res: Response, next: NextFunction) => {
   const status = error.status || 500;
   const message =
     error.message && error.expose
       ? error.message
-      : 'An error has occurred. Please Try Again.';
-  const errorCode = error.errorCode;
+      : 'Unknown Error has occured.';
+  const code = error.code || 'UNKNOWN_ERROR';
   const data = error.data || {};
   if (!error.expose || process.env.NODE_ENV === 'development') {
     console.error(error);
@@ -50,9 +52,10 @@ app.use((error: any, req: any, res: any, next: any) => {
   res.status(status).json({
     status,
     message,
-    errorCode,
+    code,
     ...data,
   });
+  next();
 });
 
 export default app;

@@ -1,10 +1,18 @@
 import mongoose from 'mongoose';
-require('dotenv').config();
+
+interface Auth {
+  user: string;
+  pass: string;
+}
 
 const MONGO_URL = 'mongodb://' + process.env.DB_HOST;
 const env = process.env.NODE_ENV || 'development';
 
-const auth: any = {
+if (!process.env.DB_USER || !process.env.DB_PASS) {
+  throw new Error('DB AUTH INFO NOT PROVIDED');
+}
+
+const auth: Auth = {
   user: process.env.DB_USER,
   pass: process.env.DB_PASS,
 };
@@ -17,7 +25,7 @@ if (env === 'development') {
   mongoose.set('debug', true);
 }
 
-module.exports = () =>
+export default (): Promise<typeof mongoose> =>
   mongoose.connect(mongoURL, {
     ...auth,
     dbName,
