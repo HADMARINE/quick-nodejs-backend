@@ -1,8 +1,8 @@
 import { Router } from 'express';
 const router = Router();
 
-import Control from './hello.controller';
-
-router.get('/', Control.returnWorld);
+router.all('/', (req, res) => {
+  res.status(200).send('OK');
+});
 
 export default router;
