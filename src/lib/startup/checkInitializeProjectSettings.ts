@@ -1,5 +1,3 @@
-/** @format */
-
 import chalk from 'chalk';
 import fs from 'fs';
 
@@ -17,7 +15,7 @@ export default function checkInitializeProjectSettings(): void {
   } catch (e) {
     const error =
       chalk.black.bgRed('Error:') +
-      chalk.red(' Set your .env file.') +
+      chalk.red(' Environment var file (.env) not detected.') +
       instructions;
     console.error(error);
     throw new Error(e);

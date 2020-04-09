@@ -1,11 +1,10 @@
 /* eslint-disable no-console */
-/** @format */
 
 import http from 'http';
 import { Router } from 'express';
 import chalk from 'chalk';
-import app from './src/app';
-import connectDB from './src/lib/connectDB';
+import app from '@src/app';
+import connectDB from '@lib/startup/connectDB';
 
 const router = Router();
 const server = http.createServer(app);

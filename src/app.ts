@@ -1,16 +1,25 @@
-/** @format */
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 
-const app = express();
+import getRoutes from '@lib/startup/getRoutes';
+import checkInitializeProjectSettings from '@lib/startup/checkInitializeProjectSettings';
+import error from '@error';
+import { defaultMessage, defaultCode } from '@lib/httpCode';
 
-import getRoutes, { GetRoutesProps } from './lib/getRoutes';
-import Error from './error/index';
-import checkInitializeProjectSettings from './lib/checkInitializeProjectSettings';
+interface MiddlewareError {
+  status?: number;
+  message?: string;
+  code?: string;
+  data?: Record<string, any>;
+  expose?: boolean;
+}
+
+const app = express();
 
 checkInitializeProjectSettings();
 
+// Security settings
 app.use(helmet());
 app.use(
   cors({
@@ -21,38 +30,43 @@ app.use(
   }),
 );
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Parser
+app.use(express.json({ limit: '25mb' }));
+app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
-getRoutes().forEach((data: GetRoutesProps) => {
+// Public files
+app.use(express.static('public'));
+
+getRoutes().forEach((data) => {
   app.use(data.path || '/', data.router);
 });
 
 // 404
 app.use((req) => {
-  Error.PageNotFound(req.url);
+  error.PageNotFound(req.url);
 });
 
 // Error handler
-// eslint-disable-next-line no-unused-vars
-app.use((error: any, req: any, res: any, next: any) => {
-  const status = error.status || 500;
-  const message =
-    error.message && error.expose
-      ? error.message
-      : 'An error has occurred. Please Try Again.';
-  const errorCode = error.errorCode;
-  const data = error.data || {};
-  if (!error.expose || process.env.NODE_ENV === 'development') {
-    console.error(error);
-  }
+app.use(
+  (error: MiddlewareError, req: Request, res: Response, next: NextFunction) => {
+    const status = error.status || 500;
+    const message =
+      error.message && error.expose ? error.message : defaultMessage(status);
+    const code = error.code || defaultCode(status);
+    const data = error.data || {};
 
-  res.status(status).json({
-    status,
-    message,
-    errorCode,
-    ...data,
-  });
-});
+    if (!error.expose || process.env.NODE_ENV === 'development') {
+      console.error(error);
+    }
+
+    res.status(status).json({
+      status,
+      message,
+      code,
+      ...data,
+    });
+    next();
+  },
+);
 
 export default app;
