@@ -19,22 +19,26 @@ const optionsDefault = {
 export default class Controller {
   /**
    * @description Stricts response rule
-   * @param {HTTPRequestCode} status 에러 코드
-   * @returns {string} 에러 문자
+   * @param {Response} res response method
+   * @param {number} status HTTP Status code
+   * @param {Record<string, any>} data Response data
+   * @param {ResponseOptions} Options Response options
+   * @returns {void} Nothing
    */
   public Response(
     res: Response,
     status: number,
-    data?: any,
+    data?: Record<string, any>,
     options: ResponseOptions = optionsDefault,
-  ) {
+  ): void {
     res
       .status(status)
       .json({
+        status,
+        code: options.code || defaultCode(status),
+        message: options.message || defaultMessage(status),
         result: options.result,
         data,
-        message: options.message || defaultMessage(status),
-        code: options.code || defaultCode(status),
         ...options.additionalData,
       })
       .end();
