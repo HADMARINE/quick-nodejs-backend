@@ -34,6 +34,7 @@ app.use(
 app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
+// Public files
 app.use(express.static('public'));
 
 getRoutes().forEach((data) => {
