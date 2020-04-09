@@ -41,7 +41,7 @@ app.use((error: any, req: any, res: any, next: any) => {
     error.message && error.expose
       ? error.message
       : 'An error has occurred. Please Try Again.';
-  const errorCode = error.errorCode;
+  const code = error.code;
   const data = error.data || {};
   if (!error.expose || process.env.NODE_ENV === 'development') {
     console.error(error);
@@ -50,7 +50,7 @@ app.use((error: any, req: any, res: any, next: any) => {
   res.status(status).json({
     status,
     message,
-    errorCode,
+    code,
     ...data,
   });
 });

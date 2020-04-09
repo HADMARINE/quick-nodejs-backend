@@ -11,14 +11,13 @@ const optionsDefault = {
 function throwError(
   message: string,
   status: number,
-  errorCode: string,
+  code: string,
   options: Options = optionsDefault,
 ): void {
   const error: any = new Error(message);
   error.expose = true;
-
   error.status = status;
-  error.errorCode = errorCode;
+  error.code = code;
 
   error.data = options.data || {};
 
