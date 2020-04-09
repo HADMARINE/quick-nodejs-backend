@@ -1,9 +1,9 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 
 import getRoutes from './lib/getRoutes';
-import Error from './error/index';
+import Error from '@error/index';
 import checkInitializeProjectSettings from './lib/checkInitializeProjectSettings';
 
 const app = express();
@@ -22,8 +22,8 @@ app.use(
 );
 
 // Parser
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '25mb' }));
+app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
 app.use(express.static('public'));
 
@@ -37,7 +37,7 @@ app.use((req) => {
 });
 
 // Error handler
-app.use((error: any, req: any, res: any, next: any) => {
+app.use((error: any, req: Request, res: Response, next: NextFunction) => {
   const status = error.status || 500;
   const message =
     error.message && error.expose
