@@ -1,6 +1,7 @@
 interface Options {
   log?: boolean;
   data?: object;
+  expose?: boolean;
 }
 
 const optionsDefault = {
@@ -15,7 +16,7 @@ function throwError(
   options: Options = optionsDefault,
 ): void {
   const error: any = new Error(message);
-  error.expose = true;
+  error.expose = options.expose || true;
   error.status = status;
   error.code = code;
 
