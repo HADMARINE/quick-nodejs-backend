@@ -4,8 +4,8 @@
 import http from 'http';
 import { Router } from 'express';
 import chalk from 'chalk';
-import app from './src/app';
-import connectDB from './src/lib/connectDB';
+import app from './app';
+import connectDB from './lib/connectDB';
 
 const router = Router();
 const server = http.createServer(app);
