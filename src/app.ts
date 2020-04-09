@@ -12,6 +12,7 @@ interface Error {
   message?: string;
   code?: string;
   data?: Record<string, any>;
+  expose?: boolean;
 }
 
 const app = express();
@@ -45,7 +46,7 @@ app.use((req) => {
 });
 
 // Error handler
-app.use((error: any, req: Request, res: Response, next: NextFunction) => {
+app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
   const status = error.status || 500;
   const message =
     error.message && error.expose ? error.message : defaultMessage(status);
