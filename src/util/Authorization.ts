@@ -1,21 +1,22 @@
 import jwt from 'jsonwebtoken';
 import error from '@error';
-import verifyParamNotNull from './verifyParamNotNull';
 import Password from '@util/Password';
+import Assets from '@util/Assets';
 import { Schema } from 'mongoose';
 
-async function verifyUser(headers: any, id: string = '') {
+function verifyUser(headers: any, id: string = '') {
   const token = headers['x-access-token'];
-  verifyParamNotNull([token]);
-  const userValue = await verifyToken(token, id);
+  Assets.checkNull([token]);
+  const userValue = verifyToken(token, id);
   return userValue;
 }
 
-async function verifyToken(token: string) {
+function verifyToken(token: string): string | object | boolean {
   try {
     return jwt.verify(token, process.env.TOKEN_KEY || 'tokenkey');
   } catch (err) {
-    return error.authorization.tokeninvalid();
+    error.authorization.tokeninvalid();
+    return false;
   }
 }
 
