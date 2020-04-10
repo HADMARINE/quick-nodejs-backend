@@ -7,14 +7,14 @@ export interface SessionInterface {
   user: Schema.Types.ObjectId;
 }
 
-export interface SessionDocument extends Document, SessionInterface {
-  registerToken(token: string): Promise<void>;
-}
-
 const SessionSchema: Schema = new Schema({
   token: { type: String, required: true },
   user: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
 });
+
+export interface SessionDocument extends Document, SessionInterface {
+  registerToken(token: string): Promise<void>;
+}
 
 SessionSchema.methods.registerToken = async function (
   token: string,
