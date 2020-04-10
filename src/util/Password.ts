@@ -37,13 +37,17 @@ function create(password: string, customKey: string = ''): CreateResult {
  * @param {string} enckey Salt of Hashing
  * @returns {boolean} Return if password is correct
  */
-async function verify(
+function verify(
   encryptedPassword: string,
   password: string,
   enckey: string,
-): Promise<boolean> {
-  const key: string = (
-    await pbkdf2(password, enckey, 100000, 64, 'sha512')
+): boolean {
+  const key: string = pbkdf2Sync(
+    password,
+    enckey,
+    100000,
+    64,
+    'sha512',
   ).toString('base64');
   if (key === encryptedPassword) {
     return true;
