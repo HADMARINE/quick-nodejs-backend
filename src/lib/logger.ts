@@ -11,7 +11,7 @@ export default function logger(
   );
 }
 
-export function debugLogger(message: string, printStack: boolean = true): void {
+export function debugLogger(message: any, printStack: boolean = true): void {
   if (process.env.NODE_ENV === 'production') return;
   const stack: string = new Error().stack || '_____UNDEFINED_____';
   logger(`${message}${printStack ? chalk.gray(stack.slice(7)) : ''}`);

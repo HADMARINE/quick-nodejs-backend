@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import fs from 'fs';
+import logger from '@lib/logger';
 
 require('dotenv').config();
 
@@ -17,17 +18,18 @@ export default function checkInitializeProjectSettings(): void {
       chalk.black.bgRed('Error:') +
       chalk.red(' Environment var file (.env) not detected.') +
       instructions;
-    console.error(error);
+    logger(error, true);
     throw new Error(e);
   }
 
   if (!process.env.REQUEST_URI) {
-    console.error(
+    logger(
       chalk.black.bgYellow('Warning:') +
         chalk.yellow(
           ' process.env.REQUEST_URI IS NOT DEFINED. ANY ORIGIN REQUEST WOULD BE ALLOWED IF NOT DEFINED.',
         ) +
         instructions,
+      true,
     );
   }
 
@@ -37,10 +39,11 @@ export default function checkInitializeProjectSettings(): void {
     !process.env.DB_USER ||
     !process.env.DB_PASS
   ) {
-    console.error(
+    logger(
       chalk.black.bgRed('Error:') +
         chalk.red(' MONGO_DB Data is not provided properly at .env') +
         instructions,
+      true,
     );
     throw new Error('DATABASE INFO NOT PROVIDED');
   }

@@ -6,6 +6,7 @@ import getRoutes from '@lib/startup/getRoutes';
 import checkInitializeProjectSettings from '@lib/startup/checkInitializeProjectSettings';
 import error from '@error';
 import { defaultMessage, defaultCode } from '@lib/httpCode';
+import { debugLogger } from '@lib/logger';
 
 interface MiddlewareError {
   status?: number;
@@ -55,8 +56,8 @@ app.use(
     const code = error.code || defaultCode(status);
     const data = error.data || {};
 
-    if (!error.expose || process.env.NODE_ENV === 'development') {
-      console.error(error);
+    if (!error.expose) {
+      debugLogger(error, false);
     }
 
     res.status(status).json({

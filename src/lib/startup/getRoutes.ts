@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { Router } from 'express';
 import chalk from 'chalk';
+import logger from '@lib/logger';
 
 interface GetRoutesProps {
   path: string;
@@ -32,8 +33,9 @@ function getPathRoutes(routePath = '/'): GetRoutes {
     const router: NodeRequire = require(file).default;
 
     if (!router) {
-      console.error(
+      logger(
         chalk.yellow(`File "${f}" has no default export. Ignoring...`),
+        true,
       );
       continue;
     }

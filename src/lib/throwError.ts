@@ -1,4 +1,5 @@
 import { defaultMessage, defaultCode } from '@lib/httpCode';
+import logger from '@lib/logger';
 
 interface Options {
   log?: boolean;
@@ -25,7 +26,7 @@ function throwError(
   error.data = options.data || {};
 
   if (options.log) {
-    console.error(error.stack);
+    logger(error.stack, true);
   }
 
   throw error;
