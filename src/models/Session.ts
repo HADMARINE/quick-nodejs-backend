@@ -19,7 +19,7 @@ export interface SessionDocument extends Document, SessionInterface {
 SessionSchema.methods.registerToken = async function (
   token: string,
 ): Promise<void> {
-  await Authorization.token.verify(token);
+  Authorization.token.verify(token);
   try {
     await SessionModel.create({ token });
   } catch (e) {
