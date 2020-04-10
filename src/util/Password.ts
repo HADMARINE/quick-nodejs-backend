@@ -1,27 +1,30 @@
 import util from 'util';
-import crypto from 'crypto';
+import crypto, { pbkdf2Sync, randomBytes } from 'crypto';
 import error from '@error';
 
-const randomBytes: Function = util.promisify(crypto.randomBytes);
-const pbkdf2: Function = util.promisify(crypto.pbkdf2);
+interface CreateResult {
+  password: string;
+  enckey: string;
+}
 
-async function create(
-  password: string,
-  customKey: string = '',
-): Promise<Record<string, any> | void> {
+function create(password: string, customKey: string = ''): CreateResult {
   const buf: string = customKey
     ? customKey
-    : (await randomBytes(64)).toString('base64');
-  const key: string = (
-    await pbkdf2(password, buf, 100000, 64, 'sha512')
-  ).toString('base64');
+    : randomBytes(64).toString('base64');
+  const key: string = pbkdf2Sync(password, buf, 100000, 64, 'sha512').toString(
+    'base64',
+  );
 
   if (process.env.EXAMINE_PASSWORD) {
-    const testKey: string = (
-      await pbkdf2(password, buf, 100000, 64, 'sha512')
+    const testKey: string = pbkdf2Sync(
+      password,
+      buf,
+      100000,
+      64,
+      'sha512',
     ).toString('base64');
     if (testKey !== key) {
-      return error.password.encryption();
+      error.password.encryption();
     }
   }
 
