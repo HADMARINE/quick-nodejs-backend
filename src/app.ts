@@ -44,7 +44,7 @@ getRoutes().forEach((data) => {
 
 // 404
 app.use((req) => {
-  error.PageNotFound(req.url);
+  error.access.pagenotfound(req.url);
 });
 
 // Error handler
