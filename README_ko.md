@@ -20,6 +20,10 @@ Mongoose 를 사용하지 않고 프로젝트를 실행하려면 별도로 코�
 
 # 사용법
 
+## 클론
+
+<code>git clone --depth 1 --single-branch https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend "본인의 프로젝트 이름"</code>
+
 ## 서버 실행법
 
 ### 1. 라우팅

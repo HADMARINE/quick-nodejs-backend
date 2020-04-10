@@ -26,6 +26,9 @@ Please contribute your modified code at our organization, then we will add some 
 
 # How to use
 
+## Cloning
+  <code>git clone --depth 1 --single-branch https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend "Your project name"</code>
+
 ## Server execution
 
 ### 1. Routing
