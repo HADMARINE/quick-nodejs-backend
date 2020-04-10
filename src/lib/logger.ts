@@ -7,7 +7,7 @@ export default function logger(
 ): void {
   const logger: Function = isError ? console.error : console.log;
   logger(
-    `${chalk.gray(`[${moment().format('YYYY-MM-DD HH:mm:ss')}] : `)}${message}`,
+    `${chalk.gray(`[${moment().format('YYYY-MM-DD HH:mm:ss')}]: `)}${message}`,
   );
 }
 
