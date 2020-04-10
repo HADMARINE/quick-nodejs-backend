@@ -16,7 +16,7 @@ function checkJong(value: string): boolean {
 function checkNull(param: Array<any>): void {
   param.forEach((data) => {
     if (!data) {
-      return error.data.parameternull();
+      error.data.parameternull();
     }
   });
 }
