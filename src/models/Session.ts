@@ -23,7 +23,7 @@ SessionSchema.methods.registerToken = async function (
   try {
     await SessionModel.create({ token });
   } catch (e) {
-    error.db.create('Session');
+    throw error.db.create('Session');
   }
 };
 

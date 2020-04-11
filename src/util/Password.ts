@@ -24,7 +24,7 @@ function create(password: string, customKey: string = ''): CreateResult {
       'sha512',
     ).toString('base64');
     if (testKey !== key) {
-      error.password.encryption();
+      throw error.password.encryption();
     }
   }
 

@@ -1,28 +1,32 @@
-import throwError from '../lib/throwError';
+import returnError from '../lib/returnError';
 
 export default {
   access: {
-    pagenotfound(directory = ''): void {
+    pagenotfound(directory = '') {
       const data: any = {};
       if (directory) {
         data.directory = directory;
       }
-      throwError('Page Not Found', 404, 'PAGE_NOT_FOUND', { data });
+      return returnError('Page Not Found', 404, 'PAGE_NOT_FOUND', { data });
     },
   },
   password: {
-    encryption(): void {
-      throwError('Password Encryption failed', 500, 'PASSWORD_ENCRYTION_FAIL');
+    encryption() {
+      return returnError(
+        'Password Encryption failed',
+        500,
+        'PASSWORD_ENCRYTION_FAIL',
+      );
     },
   },
   authorization: {
-    tokeninvalid(): void {
-      throwError('Token Invalid', 403, 'TOKEN_INVALID');
+    tokeninvalid() {
+      return returnError('Token Invalid', 403, 'TOKEN_INVALID');
     },
   },
   data: {
-    parameternull(col: any = ''): void {
-      throwError(
+    parameternull(col: any = '') {
+      return returnError(
         `Necessary parameter${col ? ` ${col}` : ``} is not provided.`,
         400,
         'PARAMETER_NOT_PROVIDED',
@@ -30,13 +34,20 @@ export default {
     },
   },
   db: {
-    create(collection: string | null = null): void {
-      throwError(
+    create(collection: string | null = null) {
+      return returnError(
         `Failed to save data${
           collection ? ` of ${collection}` : ``
         } to Database.`,
         500,
         'DATABASE_SAVE_FAIL',
+      );
+    },
+    exists(collection: string | null = null) {
+      return returnError(
+        `${collection ? `${collection} ` : ``}Data Already exists.`,
+        409,
+        `UNIQUE_DATA_CONFLICT`,
       );
     },
   },

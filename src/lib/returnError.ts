@@ -1,5 +1,5 @@
 import { defaultMessage, defaultCode } from '@lib/httpCode';
-import logger from '@lib/logger';
+import logger, { debugLogger } from '@lib/logger';
 
 interface Options {
   log?: boolean;
@@ -12,12 +12,12 @@ const optionsDefault = {
   data: {},
 };
 
-function throwError(
+function returnError(
   message: string | null,
   status: number = 500,
   code: string | null,
   options: Options = optionsDefault,
-): void {
+): Error {
   const error: any = new Error(message || defaultMessage(status));
   error.expose = options.expose || true;
   error.status = status;
@@ -26,10 +26,10 @@ function throwError(
   error.data = options.data || {};
 
   if (options.log) {
-    logger(error.stack, true);
+    debugLogger(error.stack, true);
   }
 
-  throw error;
+  return error;
 }
 
-export default throwError;
+export default returnError;

@@ -15,33 +15,44 @@ function verifyToken(token: string): string | object | boolean {
   try {
     return jwt.verify(token, process.env.TOKEN_KEY || 'tokenkey');
   } catch (err) {
-    error.authorization.tokeninvalid();
-    return false;
+    throw error.authorization.tokeninvalid();
   }
 }
 
 async function detachUser(userid: string) {}
 
-interface CreateUserTokenPayload {
+interface CreateTokenPayload {
   userid: string;
   _id: Schema.Types.ObjectId;
+  jwtid: string;
+  type: 'access' | 'refresh' | string;
 }
 
 function createToken(
-  payload: CreateUserTokenPayload,
-  expireHours: number = 0.5,
+  payload: CreateTokenPayload,
+  tokenType: 'access' | 'refresh' | string,
+  customExpireTime: string | number | null = null,
 ): string {
-  const jwtSettings: object = {
-    expiresIn: Math.floor(expireHours * 3600),
+  function expireTime(): string | number {
+    if (customExpireTime) return customExpireTime;
+    if (tokenType === 'access') return '10min';
+    else if (tokenType === 'refresh') return '1d';
+    else return '1h';
+  }
+
+  const jwtSettings: jwt.SignOptions = {
+    expiresIn: expireTime(),
     issuer:
       process.env.NODE_ENV === 'development'
         ? '*'
         : process.env.REQUEST_URI || '*',
   };
 
-  const _payload: CreateUserTokenPayload = {
+  const _payload: CreateTokenPayload = {
     userid: payload.userid,
     _id: payload._id,
+    jwtid: `${Date.now()}_${payload._id}`,
+    type: tokenType,
   };
 
   const result = jwt.sign(
@@ -56,7 +67,9 @@ function createToken(
 export default {
   token: {
     verify: verifyToken,
-    create: createToken,
+    create: {
+      manual: createToken,
+    },
   },
   user: {
     verify: verifyUser,

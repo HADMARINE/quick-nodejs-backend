@@ -5,4 +5,8 @@ export default new (class Hello extends Controller {
   public returnWorld(req: Request, res: Response) {
     super.Response(res, 200, { message: 'World' });
   }
+
+  public returnError = super.Wrapper((req, res) => {
+    super.Response(res, 201, {}, { additionalData: { marktwo: 'net' } });
+  });
 })();

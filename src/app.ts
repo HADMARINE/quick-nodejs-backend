@@ -44,7 +44,7 @@ getRoutes().forEach((data) => {
 
 // 404
 app.use((req) => {
-  error.access.pagenotfound(req.url);
+  throw error.access.pagenotfound(req.url);
 });
 
 // Error handler
@@ -60,13 +60,16 @@ app.use(
       debugLogger(error, false);
     }
 
-    res.status(status).json({
-      status,
-      message,
-      code,
-      ...data,
-    });
-    next();
+    res
+      .status(status)
+      .json({
+        status,
+        message,
+        code,
+        result: false,
+        ...data,
+      })
+      .end();
   },
 );
 

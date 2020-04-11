@@ -14,7 +14,7 @@ router.all('/', (req, res) => {
   );
 });
 
-router.all('/time', (req, res) => {
+router.get('/info/time', (req, res) => {
   res.send(moment().format('YYYY-MM-DD_HH:mm:ss'));
 });
 

@@ -1,6 +1,7 @@
-import { Response } from 'express';
+import { Response, Request, NextFunction, RequestHandler } from 'express';
 
 import { defaultMessage, defaultCode } from '@lib/httpCode';
+import error from '@error';
 
 interface ResponseOptions {
   result?: boolean;
@@ -18,12 +19,25 @@ const optionsDefault = {
 
 export default class Controller {
   /**
+   * @description To resolve Error, Reduce try-catch
+   * @param {RequestHandler} requestHandler Request handler
+   * @returns {RequestHandler} Returns request handler
+   */
+  public Wrapper(requestHandler: RequestHandler): RequestHandler {
+    return (req: Request, res: Response, next: NextFunction) => {
+      Promise.resolve(requestHandler(req, res, next)).catch((e) => {
+        next(e);
+      });
+    };
+  }
+
+  /**
    * @description Stricts response rule
    * @param {Response} res response method
    * @param {number} status HTTP Status code
    * @param {Record<string, any>} data Response data
    * @param {ResponseOptions} Options Response options
-   * @returns {void} Nothing
+   * @returns {void}
    */
   public Response(
     res: Response,
@@ -31,6 +45,7 @@ export default class Controller {
     data?: Record<string, any>,
     options: ResponseOptions = optionsDefault,
   ): void {
+    options = Object.assign({}, optionsDefault, options);
     res
       .status(status)
       .json({
@@ -43,4 +58,6 @@ export default class Controller {
       })
       .end();
   }
+
+  public error = error;
 }
