@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { Router } from 'express';
 import chalk from 'chalk';
-import logger from '@lib/logger';
+import logger, { debugLogger } from '@lib/logger';
 
 interface GetRoutesProps {
   path: string;
@@ -20,6 +20,28 @@ function getPathRoutes(routePath = '/'): GetRoutes {
   const dir: string[] = fs.readdirSync(routesPath);
   const datas: GetRoutes = [];
 
+  function detectRouterType(file: string): NodeRequire {
+    let resultFile;
+
+    if (file.match(/(.controller.ts|.controller.js)$/)) {
+      resultFile = require(file).default.router;
+    } else if (file.match(/(.routes.ts|.routes.js)$/)) {
+      resultFile = require(file).default;
+      debugLogger(
+        chalk.bgYellow.black(' Warning ') +
+          chalk.yellow(` File "${file}" was routed by .routes.ts`),
+        false,
+      );
+      debugLogger(
+        chalk.yellow(
+          'This type of routing will be deprecated soon, Please convert to .controller.ts routings!',
+        ),
+        false,
+      );
+    }
+    return resultFile;
+  }
+
   for (const f of dir) {
     const file: any = path.join(routesPath, f);
     const stat: fs.Stats = fs.statSync(file);
@@ -27,14 +49,16 @@ function getPathRoutes(routePath = '/'): GetRoutes {
       datas.push(...getPathRoutes(`${routePath.replace(/\/$/, '')}/${f}`));
       continue;
     }
-    if (!file.match(/(.routes.ts|.routes.js)$/)) {
+    if (!file.match(/(.controller.ts|.controller.js|.routes.ts|.routes.js)$/)) {
       continue;
     }
-    const router: NodeRequire = require(file).default;
+
+    const router: NodeRequire = detectRouterType(file);
 
     if (!router) {
       logger(
-        chalk.yellow(`File "${f}" has no default export. Ignoring...`),
+        chalk.bgYellow.black.bold(' WARNING ') +
+          chalk.yellow(`File "${file}" has no default export. Ignoring...`),
         true,
       );
       continue;
@@ -43,7 +67,10 @@ function getPathRoutes(routePath = '/'): GetRoutes {
     if (Object.getPrototypeOf(router) !== Router) {
       continue;
     }
-    let filename: string = f.replace(/(.routes.ts|.routes.js)$/, '');
+    let filename: string = f.replace(
+      /(.controller.ts|.controller.js|.routes.ts|.routes.js)$/,
+      '',
+    );
     filename = filename === 'index' ? '' : `/${filename}`;
 
     datas.push({
