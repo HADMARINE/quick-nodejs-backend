@@ -20,7 +20,7 @@ SessionSchema.methods.registerToken = async function (
   token: string,
   _id: Schema.Types.ObjectId,
 ): Promise<void> {
-  Authorization.token.verify(token);
+  await Authorization.token.verify.manual(token);
   try {
     await SessionModel.create({ token, user: _id });
   } catch (e) {
