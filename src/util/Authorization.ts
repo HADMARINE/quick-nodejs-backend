@@ -3,9 +3,12 @@ import { pbkdf2Sync, randomBytes } from 'crypto';
 import { Schema } from 'mongoose';
 
 import Session from '@models/Session';
+import User from '@models/User';
 
 import error from '@error';
 import Assets from '@util/Assets';
+import { debugLogger } from '@lib/logger';
+import { NextFunction, Response, Request } from 'express';
 
 // function verifyUser(headers: any, id: string = '') {
 //   const token = headers['x-access-token'];
@@ -17,14 +20,47 @@ import Assets from '@util/Assets';
 /**
  * @description Verifies token
  * @param {string} token JWT token
- * @returns {string | object } Return token payload value
+ * @param {string} type Token type
+ * @returns {Promise<Record<string, any>>} Return token payload value
  */
-function verifyToken(token: string): string | object {
+async function verifyToken(
+  token: string,
+  type: string | null = null,
+): Promise<Record<string, any>> {
+  let tokenValue;
   try {
-    return jwt.verify(token, process.env.TOKEN_KEY || 'tokenkey');
+    tokenValue = jwt.verify(token, process.env.TOKEN_KEY || 'tokenkey');
   } catch (err) {
     throw error.authorization.tokeninvalid();
   }
+
+  if (type === 'refresh') {
+    const session = await Session.findOne({ token }).exec();
+    if (!session) throw error.authorization.tokeninvalid();
+  }
+  if (typeof tokenValue === 'string') {
+    throw error.authorization.tokeninvalid();
+  }
+
+  return tokenValue;
+}
+
+/**
+ * @description Verifies access token
+ * @param {string} token JWT token
+ * @returns {Promise<Record<string,any>>} Return token payload value
+ */
+async function verifyAccessToken(token: string): Promise<Record<string, any>> {
+  return verifyToken(token, 'access');
+}
+
+/**
+ * @description Verifies refresh token
+ * @param {string} token JWT token
+ * @returns {Promise<Record<string, any>>} Return token payload value
+ */
+async function verifyRefreshToken(token: string): Promise<Record<string, any>> {
+  return verifyToken(token, 'refresh');
 }
 
 async function detachUser(userid: string) {}
@@ -39,6 +75,7 @@ interface TokenPayload {
   _id: Schema.Types.ObjectId;
   jwtid: string;
   type: string;
+  authority: string;
 }
 
 /**
@@ -67,12 +104,15 @@ async function createToken(
           ? '*'
           : process.env.REQUEST_URI || '*',
     };
+    const user = await User.findById(payload._id).exec();
+    if (!user) throw error.db.notfound();
 
     const _payload: TokenPayload = {
       userid: payload.userid,
       _id: payload._id,
       jwtid: `${Date.now()}_${payload._id}`,
       type: tokenType,
+      authority: user.authority || 'normal',
     };
 
     const result = jwt.sign(
@@ -172,9 +212,41 @@ function verifyPassword(
   return false;
 }
 
+async function adminAuthority(req: Request, res: Response, next: NextFunction) {
+  try {
+    const tokenPayload = req.headers['x-access-token'];
+    if (typeof tokenPayload !== 'string') {
+      throw error.data.parameterInvalid();
+    }
+    const tokenValue = await verifyToken(tokenPayload);
+    if (tokenValue.authority !== 'admin') {
+      throw error.authorization.access.lackofauthority();
+    }
+    next();
+  } catch (e) {
+    next(e);
+  }
+}
+
+async function userAuthority(req: Request, res: Response, next: NextFunction) {
+  try {
+    const tokenPayload = req.headers['x-access-token'];
+    if (typeof tokenPayload !== 'string') {
+      throw error.data.parameterInvalid();
+    }
+    await verifyToken(tokenPayload);
+    next();
+  } catch (e) {
+    next(e);
+  }
+}
 export default {
   token: {
-    verify: verifyToken,
+    verify: {
+      manual: verifyToken,
+      access: verifyAccessToken,
+      refresh: verifyRefreshToken,
+    },
     create: {
       manual: createToken,
       initial: createTokenInitial,
@@ -182,6 +254,10 @@ export default {
   },
   user: {
     // verify: verifyUser,
+  },
+  authority: {
+    admin: adminAuthority,
+    user: userAuthority,
   },
   password: {
     create: createPassword,
