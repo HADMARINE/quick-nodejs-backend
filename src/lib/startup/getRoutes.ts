@@ -19,6 +19,7 @@ function getPathRoutes(routePath = '/'): GetRoutes {
   );
   const dir: string[] = fs.readdirSync(routesPath);
   const datas: GetRoutes = [];
+  const invalidlyRoutedList: string[] = [];
 
   function detectRouterType(file: string): NodeRequire {
     let resultFile;
@@ -27,23 +28,7 @@ function getPathRoutes(routePath = '/'): GetRoutes {
       resultFile = require(file).default.router;
     } else if (file.match(/(.routes.ts|.routes.js)$/)) {
       resultFile = require(file).default;
-      debugLogger(
-        chalk.bgYellow.black(' Warning ') +
-          chalk.yellow(` File "${file}" was routed by .routes.ts`),
-        false,
-      );
-      debugLogger(
-        chalk.yellow(
-          'This type of routing could return unsafe response data, It is recommended to change it to Controller routings.',
-        ),
-        false,
-      );
-      debugLogger(
-        chalk.yellow(
-          'Read Description : https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend',
-        ),
-        false,
-      );
+      invalidlyRoutedList.push(file);
     }
     return resultFile;
   }
@@ -63,8 +48,8 @@ function getPathRoutes(routePath = '/'): GetRoutes {
 
     if (!router) {
       logger(
-        chalk.bgYellow.black.bold(' WARNING ') +
-          chalk.yellow(`File "${file}" has no default export. Ignoring...`),
+        chalk.bgYellow.black(' WARNING ') +
+          chalk.yellow(` File "${file}" has no default export. Ignoring...`),
         true,
       );
       continue;
@@ -82,6 +67,26 @@ function getPathRoutes(routePath = '/'): GetRoutes {
     datas.push({
       path: `${routePath}${filename}`,
       router,
+    });
+  }
+  if (invalidlyRoutedList.length > 0) {
+    debugLogger(
+      chalk.bgYellow.black(' WARNING ') +
+        chalk.yellow(
+          ` Some files was routed by Routes routing. This type of routing could return unsafe response data, It is recommended to change it to Controller routings.`,
+        ),
+      false,
+    );
+
+    debugLogger(
+      chalk.yellow(
+        'Read Description : https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend',
+      ),
+      false,
+    );
+    debugLogger(chalk.bgYellow.black(' Invalidly Routed lists below '), false);
+    invalidlyRoutedList.forEach((data, index) => {
+      debugLogger(chalk.yellow(` ${index + 1}: ${data}`), false);
     });
   }
   return datas;
