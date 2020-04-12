@@ -5,7 +5,7 @@ import mongoose, {
   HookNextFunction,
   models,
 } from 'mongoose';
-import Password from '@util/Password';
+import Authorization from '@util/Authorization';
 import logger, { debugLogger } from '@lib/logger';
 import error from '@error';
 
@@ -22,7 +22,7 @@ const UserSchema = new Schema<UserDocument>({
     required: true,
     set(value: string) {
       const doc = this as UserDocument;
-      const result = Password.create(value);
+      const result = Authorization.password.create(value);
       doc.enckey = result.enckey;
       return result.password;
     },
