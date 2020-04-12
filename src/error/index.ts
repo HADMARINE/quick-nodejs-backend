@@ -23,21 +23,30 @@ export default {
     },
   },
   authorization: {
-    tokeninvalid() {
-      return returnError('Token Invalid', 403, 'TOKEN_INVALID');
-    },
-    passwordinvalid() {
-      return returnError('Password Invalid', 403, 'PASSWORD_INVALID');
+    tokeninvalid: () => returnError('Token Invalid', 403, 'TOKEN_INVALID'),
+    fail: () => returnError('Login Failed', 403, 'LOGIN_FAIL'),
+    access: {
+      lackofauthority: () =>
+        returnError(
+          'Authority is not enough to access',
+          403,
+          'LACK_OF_AUTHORITY',
+        ),
     },
   },
   data: {
-    parameternull(col: any = '') {
-      return returnError(
+    parameternull: (col: any = '') =>
+      returnError(
         `Necessary parameter${col ? ` ${col}` : ``} is not provided.`,
         400,
         'PARAMETER_NOT_PROVIDED',
-      );
-    },
+      ),
+    parameterInvalid: (col: any = '') =>
+      returnError(
+        `Parameter${col ? ` ${col}` : ``} is invalid.`,
+        400,
+        'PARAMETER_INVALID',
+      ),
   },
   db: {
     create(collection: string | null = null) {
