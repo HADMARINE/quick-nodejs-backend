@@ -25,8 +25,8 @@ function returnError(
 
   error.data = options.data || {};
 
-  if (options.log) {
-    debugLogger(error.stack, true);
+  if (options.log || process.env.NODE_ENV === 'development') {
+    debugLogger(error, true);
   }
 
   return error;
