@@ -34,7 +34,13 @@ function getPathRoutes(routePath = '/'): GetRoutes {
       );
       debugLogger(
         chalk.yellow(
-          'This type of routing will be deprecated soon, Please convert to .controller.ts routings!',
+          'This type of routing could return unsafe response data, It is recommended to change it to Controller routings.',
+        ),
+        false,
+      );
+      debugLogger(
+        chalk.yellow(
+          'Read Description : https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend',
         ),
         false,
       );
