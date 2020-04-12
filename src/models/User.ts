@@ -13,6 +13,7 @@ export interface UserInterface {
   userid: string;
   password: string;
   enckey: string;
+  authority: string;
 }
 
 const UserSchema = new Schema<UserDocument>({
@@ -28,13 +29,17 @@ const UserSchema = new Schema<UserDocument>({
     },
   },
   enckey: { type: String },
+  authority: { type: String, default: 'normal' },
 });
 
 export interface UserDocument extends Document, UserInterface {
-  // Add Methods here
+  checkUserExists(userid: string): Promise<boolean>;
 }
 
-// UserSchema.methods.~~
+UserSchema.methods.checkUserExists = async function (userid) {
+  if (await models['User'].findOne({ userid }).exec()) return true;
+  return false;
+};
 
 UserSchema.pre('save', function (next: HookNextFunction) {
   const doc = this as UserDocument;
