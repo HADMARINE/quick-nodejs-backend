@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken';
-import util from 'util';
-import crypto, { pbkdf2Sync, randomBytes } from 'crypto';
+import { pbkdf2Sync, randomBytes } from 'crypto';
 import { Schema } from 'mongoose';
+
+import Session from '@models/Session';
 
 import error from '@error';
 import Assets from '@util/Assets';
@@ -13,7 +14,12 @@ import Assets from '@util/Assets';
 //   return userValue;
 // }
 
-function verifyToken(token: string): string | object | boolean {
+/**
+ * @description Verifies token
+ * @param {string} token JWT token
+ * @returns {string | object } Return token payload value
+ */
+function verifyToken(token: string): string | object {
   try {
     return jwt.verify(token, process.env.TOKEN_KEY || 'tokenkey');
   } catch (err) {
@@ -26,50 +32,94 @@ async function detachUser(userid: string) {}
 interface CreateTokenPayload {
   userid: string;
   _id: Schema.Types.ObjectId;
-  jwtid: string;
-  type: 'access' | 'refresh' | string;
 }
 
-function createToken(
+interface TokenPayload {
+  userid: string;
+  _id: Schema.Types.ObjectId;
+  jwtid: string;
+  type: string;
+}
+
+/**
+ * @description Creates token
+ * @param {CreateTokenPayload} payload Token payload {userid, _id, jwtid, type}
+ * @param {"access" | "refresh" | string} tokenType Token type (access, refresh, any(string))
+ * @param {string | number | null} customExpireTime can define custom expire time
+ * @returns {Promise<string>} Return new token
+ */
+async function createToken(
   payload: CreateTokenPayload,
   tokenType: 'access' | 'refresh' | string,
   customExpireTime: string | number | null = null,
-): string {
+): Promise<string> {
   function expireTime(): string | number {
     if (customExpireTime) return customExpireTime;
     if (tokenType === 'access') return '10min';
     else if (tokenType === 'refresh') return '1d';
     else return '1h';
   }
+  try {
+    const jwtSettings: jwt.SignOptions = {
+      expiresIn: expireTime(),
+      issuer:
+        process.env.NODE_ENV === 'development'
+          ? '*'
+          : process.env.REQUEST_URI || '*',
+    };
 
-  const jwtSettings: jwt.SignOptions = {
-    expiresIn: expireTime(),
-    issuer:
-      process.env.NODE_ENV === 'development'
-        ? '*'
-        : process.env.REQUEST_URI || '*',
-  };
+    const _payload: TokenPayload = {
+      userid: payload.userid,
+      _id: payload._id,
+      jwtid: `${Date.now()}_${payload._id}`,
+      type: tokenType,
+    };
 
-  const _payload: CreateTokenPayload = {
-    userid: payload.userid,
-    _id: payload._id,
-    jwtid: `${Date.now()}_${payload._id}`,
-    type: tokenType,
-  };
+    const result = jwt.sign(
+      _payload,
+      process.env.TOKEN_KEY || 'token_key',
+      jwtSettings,
+    );
 
-  const result = jwt.sign(
-    _payload,
-    process.env.TOKEN_KEY || 'token_key',
-    jwtSettings,
-  );
+    if (tokenType === 'refresh') {
+      await new Session().registerToken(result, payload._id);
+    }
 
-  return result;
+    return result;
+  } catch (e) {
+    throw e;
+  }
+}
+
+interface InitialTokenCreateResult {
+  accessToken: string;
+  refreshToken: string;
+}
+
+/**
+ * @description Creates Access, Refresh Token
+ * @param {CreateTokenPayload} payload Token payload
+ * @returns {Promise<InitialTokenCreateResult>} Returns refresh, access token Object
+ */
+async function createTokenInitial(
+  payload: CreateTokenPayload,
+): Promise<InitialTokenCreateResult> {
+  const accessToken = await createToken(payload, 'access');
+  const refreshToken = await createToken(payload, 'refresh');
+  return { accessToken, refreshToken };
 }
 
 interface PasswordCreateResult {
   password: string;
   enckey: string;
 }
+
+/**
+ * @description Creates Password
+ * @param {string} password Plain password
+ * @param {string} customKey Custom salt key
+ * @returns {PasswordCreateResult} Returns password, enckey
+ */
 function createPassword(
   password: string,
   customKey: string = '',
@@ -127,6 +177,7 @@ export default {
     verify: verifyToken,
     create: {
       manual: createToken,
+      initial: createTokenInitial,
     },
   },
   user: {

@@ -7,6 +7,6 @@ export default new (class Hello extends Controller {
   }
 
   public returnError = super.Wrapper((req, res) => {
-    super.Response(res, 201, {}, { additionalData: { marktwo: 'net' } });
+    throw this.error.db.create();
   });
 })();

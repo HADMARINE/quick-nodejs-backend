@@ -13,15 +13,16 @@ const SessionSchema: Schema = new Schema({
 });
 
 export interface SessionDocument extends Document, SessionInterface {
-  registerToken(token: string): Promise<void>;
+  registerToken(token: string, _id: Schema.Types.ObjectId): Promise<void>;
 }
 
 SessionSchema.methods.registerToken = async function (
   token: string,
+  _id: Schema.Types.ObjectId,
 ): Promise<void> {
   Authorization.token.verify(token);
   try {
-    await SessionModel.create({ token });
+    await SessionModel.create({ token, user: _id });
   } catch (e) {
     throw error.db.create('Session');
   }
