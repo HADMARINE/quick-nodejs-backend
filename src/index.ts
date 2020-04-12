@@ -56,7 +56,7 @@ function listen(port: number = PORT): void {
   server.once('listening', () => {
     if (!isError) {
       logger(
-        chalk.black.bgGreen(`App started on port`) +
+        chalk.black.bgGreen(` App started on port `) +
           chalk.green.bold(` ${port}`),
       );
     }
