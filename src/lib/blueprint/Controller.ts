@@ -1,4 +1,10 @@
-import { Response, Request, NextFunction, RequestHandler } from 'express';
+import {
+  Response,
+  Request,
+  NextFunction,
+  RequestHandler,
+  Router,
+} from 'express';
 
 import { defaultMessage, defaultCode } from '@lib/httpCode';
 import error from '@error';
@@ -62,4 +68,5 @@ export default class Controller {
 
   public error = error;
   public assets = assets;
+  public router: Router = Router();
 }
