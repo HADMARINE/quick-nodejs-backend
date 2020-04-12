@@ -32,10 +32,25 @@ function apiRateLimiter(
   });
 }
 
+function sleep(ms: number): Promise<number> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function delayExact(startTime: number, totalDelay: number = 250) {
+  let currentDate = null;
+  totalDelay += getRandomNumber(10, totalDelay);
+  do {
+    await sleep(100);
+    currentDate = Date.now();
+  } while (currentDate - startTime < totalDelay);
+}
+
 export default {
   getObjectKeyByValue,
   getRandomNumber,
   checkJong,
   checkNull,
   apiRateLimiter,
+  sleep,
+  delayExact,
 };
