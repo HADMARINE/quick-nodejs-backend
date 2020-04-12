@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { Router } from 'express';
 import chalk from 'chalk';
+import logger, { debugLogger } from '@lib/logger';
 
 interface GetRoutesProps {
   path: string;
@@ -18,6 +19,19 @@ function getPathRoutes(routePath = '/'): GetRoutes {
   );
   const dir: string[] = fs.readdirSync(routesPath);
   const datas: GetRoutes = [];
+  const invalidlyRoutedList: string[] = [];
+
+  function detectRouterType(file: string): NodeRequire {
+    let resultFile;
+
+    if (file.match(/(.controller.ts|.controller.js)$/)) {
+      resultFile = require(file).default.router;
+    } else if (file.match(/(.routes.ts|.routes.js)$/)) {
+      resultFile = require(file).default;
+      invalidlyRoutedList.push(file);
+    }
+    return resultFile;
+  }
 
   for (const f of dir) {
     const file: any = path.join(routesPath, f);
@@ -26,14 +40,17 @@ function getPathRoutes(routePath = '/'): GetRoutes {
       datas.push(...getPathRoutes(`${routePath.replace(/\/$/, '')}/${f}`));
       continue;
     }
-    if (!file.match(/(.routes.ts|.routes.js)$/)) {
+    if (!file.match(/(.controller.ts|.controller.js|.routes.ts|.routes.js)$/)) {
       continue;
     }
-    const router: NodeRequire = require(file).default;
+
+    const router: NodeRequire = detectRouterType(file);
 
     if (!router) {
-      console.error(
-        chalk.yellow(`File "${f}" has no default export. Ignoring...`),
+      logger(
+        chalk.bgYellow.black(' WARNING ') +
+          chalk.yellow(` File "${file}" has no default export. Ignoring...`),
+        true,
       );
       continue;
     }
@@ -41,12 +58,35 @@ function getPathRoutes(routePath = '/'): GetRoutes {
     if (Object.getPrototypeOf(router) !== Router) {
       continue;
     }
-    let filename: string = f.replace(/(.routes.ts|.routes.js)$/, '');
+    let filename: string = f.replace(
+      /(.controller.ts|.controller.js|.routes.ts|.routes.js)$/,
+      '',
+    );
     filename = filename === 'index' ? '' : `/${filename}`;
 
     datas.push({
       path: `${routePath}${filename}`,
       router,
+    });
+  }
+  if (invalidlyRoutedList.length > 0) {
+    debugLogger(
+      chalk.bgYellow.black(' WARNING ') +
+        chalk.yellow(
+          ` Some files was routed by Routes routing. This type of routing could return unsafe response data, It is recommended to change it to Controller routings.`,
+        ),
+      false,
+    );
+
+    debugLogger(
+      chalk.yellow(
+        'Read Description : https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend',
+      ),
+      false,
+    );
+    debugLogger(chalk.bgYellow.black(' Invalidly Routed lists below '), false);
+    invalidlyRoutedList.forEach((data, index) => {
+      debugLogger(chalk.yellow(` ${index + 1}: ${data}`), false);
     });
   }
   return datas;

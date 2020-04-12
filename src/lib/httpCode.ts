@@ -23,7 +23,7 @@ export const codeData: Record<number, string> = {
   503: 'Service Unavailable',
 };
 
-export function defaultMessage(httpCode: number) {
+export function defaultMessage(httpCode: number): string {
   let message = `500 ${codeData[500]}`;
   try {
     message = `${httpCode} ${codeData[httpCode]}`;
@@ -31,7 +31,7 @@ export function defaultMessage(httpCode: number) {
   return message;
 }
 
-export function defaultCode(httpCode: number) {
+export function defaultCode(httpCode: number): string {
   let code = codeData[500];
   try {
     code = codeData[httpCode];

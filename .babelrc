@@ -13,6 +13,7 @@
           "@util": "./src/util"
         }
       }
-    ]
+    ],
+    "@babel/plugin-proposal-class-properties"
   ]
 }
