@@ -4,7 +4,6 @@ import logger, { debugLogger } from '@lib/logger';
 interface Options {
   log?: boolean;
   data?: object;
-  expose?: boolean;
 }
 
 const optionsDefault = {
@@ -19,7 +18,6 @@ function returnError(
   options: Options = optionsDefault,
 ): Error {
   const error: any = new Error(message || defaultMessage(status));
-  error.expose = options.expose || true;
   error.status = status;
   error.code = code || defaultCode(status);
 
