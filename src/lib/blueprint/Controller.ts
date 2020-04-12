@@ -9,6 +9,7 @@ import {
 import { defaultMessage, defaultCode } from '@lib/httpCode';
 import error from '@error';
 import assets from '@util/Assets';
+import authorization from '@util/Authorization';
 
 interface ResponseOptions {
   result?: boolean;
@@ -69,4 +70,5 @@ export default class Controller {
   protected error = error;
   protected assets = assets;
   protected router: Router = Router();
+  protected authorization = authorization;
 }
