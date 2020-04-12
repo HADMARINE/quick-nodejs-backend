@@ -3,7 +3,13 @@ import User from '@models/User';
 import Authorization from '@util/Authorization';
 
 export default new (class extends Controller {
-  public signInUser = this.Wrapper(async (req, res) => {
+  constructor() {
+    super();
+    this.router.post('/', this.signInUser);
+    this.router.post('/resign', this.resignAccessToken);
+  }
+
+  private signInUser = this.Wrapper(async (req, res) => {
     const { userid, password } = req.body;
     const user = await User.findOne({ userid }).exec();
     if (!user) throw this.error.db.notfound();
@@ -17,5 +23,5 @@ export default new (class extends Controller {
     this.Response(res, 200, { token }, { message: 'Login successful' });
   });
 
-  public resignAccessToken = this.Wrapper(async (req, res) => {});
+  private resignAccessToken = this.Wrapper(async (req, res) => {});
 })();

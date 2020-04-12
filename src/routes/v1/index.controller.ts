@@ -2,7 +2,12 @@ import { Request, Response } from 'express';
 import Controller from '@lib/blueprint/Controller';
 
 export default new (class extends Controller {
-  public getIndex = super.Wrapper((req, res) => {
+  constructor() {
+    super();
+    this.router.all('/', this.getIndex);
+  }
+
+  private getIndex = super.Wrapper((req, res) => {
     super.Response(
       res,
       200,
