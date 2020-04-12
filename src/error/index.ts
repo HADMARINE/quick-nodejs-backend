@@ -23,6 +23,9 @@ export default {
     tokeninvalid() {
       return returnError('Token Invalid', 403, 'TOKEN_INVALID');
     },
+    passwordinvalid() {
+      return returnError('Password Invalid', 403, 'PASSWORD_INVALID');
+    },
   },
   data: {
     parameternull(col: any = '') {
@@ -49,6 +52,9 @@ export default {
         409,
         `UNIQUE_DATA_CONFLICT`,
       );
+    },
+    notfound() {
+      return returnError(`Data not found.`, 404, `DATA_NOT_FOUND`);
     },
   },
 };
