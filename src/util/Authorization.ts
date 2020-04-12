@@ -1,15 +1,17 @@
 import jwt from 'jsonwebtoken';
-import error from '@error';
-import Password from '@util/Password';
-import Assets from '@util/Assets';
+import util from 'util';
+import crypto, { pbkdf2Sync, randomBytes } from 'crypto';
 import { Schema } from 'mongoose';
 
-function verifyUser(headers: any, id: string = '') {
-  const token = headers['x-access-token'];
-  Assets.checkNull([token]);
-  const userValue = verifyToken(token, id);
-  return userValue;
-}
+import error from '@error';
+import Assets from '@util/Assets';
+
+// function verifyUser(headers: any, id: string = '') {
+//   const token = headers['x-access-token'];
+//   Assets.checkNull([token]);
+//   const userValue = verifyToken(token, id);
+//   return userValue;
+// }
 
 function verifyToken(token: string): string | object | boolean {
   try {
@@ -64,6 +66,62 @@ function createToken(
   return result;
 }
 
+interface PasswordCreateResult {
+  password: string;
+  enckey: string;
+}
+function createPassword(
+  password: string,
+  customKey: string = '',
+): PasswordCreateResult {
+  const buf: string = customKey
+    ? customKey
+    : randomBytes(64).toString('base64');
+  const key: string = pbkdf2Sync(password, buf, 100000, 64, 'sha512').toString(
+    'base64',
+  );
+
+  if (process.env.EXAMINE_PASSWORD) {
+    const testKey: string = pbkdf2Sync(
+      password,
+      buf,
+      100000,
+      64,
+      'sha512',
+    ).toString('base64');
+    if (testKey !== key) {
+      throw error.password.encryption();
+    }
+  }
+
+  return { password: key, enckey: buf };
+}
+
+/**
+ * @description Verifies Password
+ * @param {string} password Plain password
+ * @param {string} encryptedPassword Password that been hashed
+ * @param {string} enckey Salt of Hashing
+ * @returns {boolean} Return if password is correct
+ */
+function verifyPassword(
+  password: string,
+  encryptedPassword: string,
+  enckey: string,
+): boolean {
+  const key: string = pbkdf2Sync(
+    password,
+    enckey,
+    100000,
+    64,
+    'sha512',
+  ).toString('base64');
+  if (key === encryptedPassword) {
+    return true;
+  }
+  return false;
+}
+
 export default {
   token: {
     verify: verifyToken,
@@ -72,6 +130,10 @@ export default {
     },
   },
   user: {
-    verify: verifyUser,
+    // verify: verifyUser,
+  },
+  password: {
+    create: createPassword,
+    verify: verifyPassword,
   },
 };
