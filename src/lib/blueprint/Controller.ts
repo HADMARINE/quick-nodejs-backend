@@ -46,7 +46,7 @@ export default class Controller {
    * @param {ResponseOptions} Options Response options
    * @returns {void}
    */
-  public Response(
+  protected Response(
     res: Response,
     status: number,
     data?: Record<string, any>,
@@ -66,7 +66,7 @@ export default class Controller {
       .end();
   }
 
-  public error = error;
-  public assets = assets;
-  public router: Router = Router();
+  protected error = error;
+  protected assets = assets;
+  protected router: Router = Router();
 }
