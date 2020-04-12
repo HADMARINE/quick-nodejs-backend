@@ -2,6 +2,7 @@ import { Response, Request, NextFunction, RequestHandler } from 'express';
 
 import { defaultMessage, defaultCode } from '@lib/httpCode';
 import error from '@error';
+import assets from '@util/Assets';
 
 interface ResponseOptions {
   result?: boolean;
@@ -19,7 +20,7 @@ const optionsDefault = {
 
 export default class Controller {
   /**
-   * @description To resolve Error, Reduce try-catch
+   * @description To resolve Error and to reduce try-catch
    * @param {RequestHandler} requestHandler Request handler
    * @returns {RequestHandler} Returns request handler
    */
@@ -43,7 +44,7 @@ export default class Controller {
     res: Response,
     status: number,
     data?: Record<string, any>,
-    options: ResponseOptions = optionsDefault,
+    options: ResponseOptions = {},
   ): void {
     options = Object.assign({}, optionsDefault, options);
     res
@@ -60,4 +61,5 @@ export default class Controller {
   }
 
   public error = error;
+  public assets = assets;
 }
