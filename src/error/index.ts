@@ -1,6 +1,9 @@
 import returnError from '../lib/returnError';
 
 export default {
+  test() {
+    return returnError(null, 418, null);
+  },
   access: {
     pagenotfound(directory = '') {
       const data: any = {};
