@@ -5,9 +5,8 @@ import logger from '@lib/logger';
 
 export default function (): void {
   cron.schedule('*/10 * * * *', async () => {
-    logger.debug(
+    logger.info(
       `Removed ${await Authorization.token.remove.expired()} of expired tokens.`,
-      false,
     );
   });
 }
