@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import { defaultMessage, defaultCode } from '@lib/httpCode';
-import { debugLogger } from '@lib/logger';
 
 interface MiddlewareError {
   status?: number;

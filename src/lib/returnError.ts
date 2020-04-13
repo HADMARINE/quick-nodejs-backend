@@ -1,5 +1,5 @@
 import { defaultMessage, defaultCode } from '@lib/httpCode';
-import logger, { debugLogger } from '@lib/logger';
+import logger from '@lib/logger';
 
 interface Options {
   log?: boolean;
@@ -24,7 +24,7 @@ function returnError(
   error.data = options.data || {};
 
   if (options.log || process.env.NODE_ENV === 'development') {
-    debugLogger(error, true);
+    logger.debug(error, true);
   }
 
   return error;

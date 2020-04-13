@@ -6,9 +6,8 @@ import Session from '@models/Session';
 import User from '@models/User';
 
 import error from '@error';
-import Assets from '@util/Assets';
-import { debugLogger } from '@lib/logger';
 import { NextFunction, Response, Request } from 'express';
+import logger from '@lib/logger';
 
 // function verifyUser(headers: any, id: string = '') {
 //   const token = headers['x-access-token'];
@@ -87,7 +86,7 @@ async function removeExpiredToken(): Promise<number> {
     });
     return result.length || 0;
   } catch {
-    debugLogger('Token auto removal failed');
+    logger.debug('Token auto removal failed');
   }
   return 0;
 }

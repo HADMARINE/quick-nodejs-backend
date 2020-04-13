@@ -1,6 +1,5 @@
 import Controller from '@lib/blueprint/Controller';
 import User from '@models/User';
-import { debugLogger } from '@lib/logger';
 
 export default new (class extends Controller {
   constructor() {

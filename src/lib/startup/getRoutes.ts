@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { Router } from 'express';
 import chalk from 'chalk';
-import logger, { debugLogger } from '@lib/logger';
+import logger from '@lib/logger';
 
 interface GetRoutesProps {
   path: string;
@@ -47,11 +47,7 @@ function getPathRoutes(routePath = '/'): GetRoutes {
     const router: NodeRequire = detectRouterType(file);
 
     if (!router) {
-      logger(
-        chalk.bgYellow.black(' WARNING ') +
-          chalk.yellow(` File "${file}" has no default export. Ignoring...`),
-        true,
-      );
+      logger.warn(`File "${file}" has no default export. Ignoring...`);
       continue;
     }
 
@@ -70,23 +66,18 @@ function getPathRoutes(routePath = '/'): GetRoutes {
     });
   }
   if (invalidlyRoutedList.length > 0) {
-    debugLogger(
-      chalk.bgYellow.black(' WARNING ') +
-        chalk.yellow(
-          ` Some files was routed by Routes routing. This type of routing could return unsafe response data, It is recommended to change it to Controller routings.`,
-        ),
+    logger.debug(`Some files was routed by Routes routing.`, false);
+    logger.debug(
+      `This may return unsafe response data, It is recommended to change it to Controller routings.`,
       false,
     );
-
-    debugLogger(
-      chalk.yellow(
-        'Read Description : https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend',
-      ),
+    logger.debug(
+      'Read Description : https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend',
       false,
     );
-    debugLogger(chalk.bgYellow.black(' Invalidly Routed lists below '), false);
+    logger.debug('Invalidly Routed lists below ', false);
     invalidlyRoutedList.forEach((data, index) => {
-      debugLogger(chalk.yellow(` ${index + 1}: ${data}`), false);
+      logger.debug(`${index + 1}: ${data}`, false);
     });
   }
   return datas;

@@ -1,12 +1,4 @@
-import mongoose, {
-  model,
-  Schema,
-  Document,
-  HookNextFunction,
-  models,
-} from 'mongoose';
-import Authorization from '@util/Authorization';
-import logger, { debugLogger } from '@lib/logger';
+import { model, Schema, Document, HookNextFunction, models } from 'mongoose';
 import error from '@error';
 
 export interface UserInterface {
