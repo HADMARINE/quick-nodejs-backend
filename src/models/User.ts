@@ -18,17 +18,8 @@ export interface UserInterface {
 
 const UserSchema = new Schema<UserDocument>({
   userid: { type: String, required: true, lowercase: true },
-  password: {
-    type: String,
-    required: true,
-    set(value: string) {
-      const doc = this as UserDocument;
-      const result = Authorization.password.create(value);
-      doc.enckey = result.enckey;
-      return result.password;
-    },
-  },
-  enckey: { type: String },
+  password: { type: String, required: true },
+  enckey: { type: String, required: true },
   authority: { type: String, default: 'normal' },
 });
 
