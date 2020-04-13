@@ -23,13 +23,17 @@ function getPathRoutes(routePath = '/'): GetRoutes {
 
   function detectRouterType(file: string): NodeRequire {
     let resultFile;
-
-    if (file.match(/(.controller.ts|.controller.js)$/)) {
-      resultFile = require(file).default.router;
-    } else if (file.match(/(.routes.ts|.routes.js)$/)) {
-      resultFile = require(file).default;
-      invalidlyRoutedList.push(file);
+    try {
+      if (file.match(/(.controller.ts|.controller.js)$/)) {
+        resultFile = require(file).default.router;
+      } else if (file.match(/(.routes.ts|.routes.js)$/)) {
+        resultFile = require(file).default;
+        invalidlyRoutedList.push(file);
+      }
+    } catch {
+      resultFile = null;
     }
+
     return resultFile;
   }
 
