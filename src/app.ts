@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -11,6 +11,7 @@ import checkInitializeProjectSettings from '@lib/startup/checkInitializeProjectS
 import error from '@error';
 import errorHandler from '@lib/middlewares/errorHandler';
 import Assets from '@util/Assets';
+import cron from '@lib/middlewares/cron';
 
 const app = express();
 
@@ -70,5 +71,7 @@ app.use((req) => {
 
 // Error handler
 app.use(errorHandler);
+
+cron();
 
 export default app;

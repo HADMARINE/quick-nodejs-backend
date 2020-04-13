@@ -12,41 +12,31 @@ const PORT = parseInt(process.env.PORT || '4000', 10);
 
 function listen(port: number = PORT): void {
   if (port <= 0 || port >= 65536) {
-    logger(chalk.red(`PORT Range is Invalid. Recieved port : ${port}`), true);
+    logger.error(`PORT Range is Invalid. Recieved port : ${port}`);
 
     if (process.env.PORT_STRICT === 'true') {
-      logger(
-        chalk.black.bgRed('ERROR:') +
-          chalk.yellow(
-            ' Set PORT_STRICT to false on your .env if you want to execute anyway.',
-          ),
-        true,
+      logger.error(
+        ' Set PORT_STRICT to false on your .env if you want to execute anyway.',
       );
       throw new Error('PORT STRICT');
     }
     port = 20000;
-    logger(chalk.bgYellow(`Retrying with Port ${port}`));
+    logger.info(`Retrying with Port ${port}`);
   }
   server.listen(port);
 
   let isError = false;
   server.once('error', (err: any) => {
     if (process.env.PORT_STRICT === 'true') {
-      logger(
-        chalk.black.bgRed('ERROR:') +
-          chalk.red(` Port ${port} is already in use.\n`) +
-          chalk.yellow(
-            'Set PORT_STRICT to false on your .env if you want to execute anyway.',
-          ),
-        true,
+      logger.error(` Port ${port} is already in use.`);
+      logger.info(
+        'Set PORT_STRICT to false on your .env if you want to execute anyway.',
       );
       throw new Error('PORT STRICT');
     }
     if (err.code === 'EADDRINUSE') {
-      logger(
-        chalk.yellow(
-          `Port ${port} is currently in use. Retrying with port ${port + 1}`,
-        ),
+      logger.info(
+        `Port ${port} is currently in use. Retrying with port ${port + 1}`,
       );
       const newPort = port === 65535 ? 20000 : port + 1;
       listen(newPort);
@@ -55,7 +45,7 @@ function listen(port: number = PORT): void {
   });
   server.once('listening', () => {
     if (!isError) {
-      logger(
+      logger.success(
         chalk.black.bgGreen(` App started on port `) +
           chalk.green.bold(` ${port}`),
       );

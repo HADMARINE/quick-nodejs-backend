@@ -6,9 +6,8 @@ import Session from '@models/Session';
 import User from '@models/User';
 
 import error from '@error';
-import Assets from '@util/Assets';
-import { debugLogger } from '@lib/logger';
 import { NextFunction, Response, Request } from 'express';
+import logger from '@lib/logger';
 
 // function verifyUser(headers: any, id: string = '') {
 //   const token = headers['x-access-token'];
@@ -25,20 +24,32 @@ import { NextFunction, Response, Request } from 'express';
  */
 async function verifyToken(
   token: string,
-  type: string | null = null,
+  type: string | null = 'access',
+  initial: boolean = false,
 ): Promise<Record<string, any>> {
-  let tokenValue;
+  let tokenValue: any;
   try {
     tokenValue = jwt.verify(token, process.env.TOKEN_KEY || 'tokenkey');
   } catch (err) {
     throw error.authorization.tokeninvalid();
   }
 
-  if (type === 'refresh') {
-    const session = await Session.findOne({ token }).exec();
+  if (type === 'refresh' && !initial) {
+    const session = await Session.findOne({ jwtid: tokenValue.jwtid }).exec();
     if (!session) throw error.authorization.tokeninvalid();
   }
   if (typeof tokenValue === 'string') {
+    throw error.authorization.tokeninvalid();
+  }
+  let tokenType;
+  try {
+    // @ts-ignore
+    tokenType = tokenValue.type;
+  } catch {
+    throw error.authorization.tokeninvalid();
+  }
+
+  if (tokenType !== type) {
     throw error.authorization.tokeninvalid();
   }
 
@@ -64,6 +75,21 @@ async function verifyRefreshToken(token: string): Promise<Record<string, any>> {
 }
 
 async function detachUser(userid: string) {}
+
+async function removeExpiredToken(): Promise<number> {
+  try {
+    const result = await Session.find({
+      expire: { $lt: Math.floor(Date.now() / 1000) },
+    }).exec();
+    result.forEach(async (data) => {
+      await Session.findByIdAndDelete(data._id).exec();
+    });
+    return result.length || 0;
+  } catch {
+    logger.debug('Token auto removal failed');
+  }
+  return 0;
+}
 
 interface CreateTokenPayload {
   userid: string;
@@ -122,7 +148,7 @@ async function createToken(
     );
 
     if (tokenType === 'refresh') {
-      await new Session().registerToken(result, payload._id);
+      await new Session().registerToken(result);
     }
 
     return result;
@@ -220,8 +246,9 @@ async function adminAuthority(req: Request, res: Response, next: NextFunction) {
     }
     const tokenValue = await verifyToken(tokenPayload);
     if (tokenValue.authority !== 'admin') {
-      throw error.authorization.access.lackofauthority();
+      throw error.authorization.access.lackOfAuthority();
     }
+    req.body.userData = await verifyToken(tokenPayload);
     next();
   } catch (e) {
     next(e);
@@ -234,7 +261,7 @@ async function userAuthority(req: Request, res: Response, next: NextFunction) {
     if (typeof tokenPayload !== 'string') {
       throw error.data.parameterInvalid();
     }
-    await verifyToken(tokenPayload);
+    req.body.userData = await verifyToken(tokenPayload);
     next();
   } catch (e) {
     next(e);
@@ -250,6 +277,9 @@ export default {
     create: {
       manual: createToken,
       initial: createTokenInitial,
+    },
+    remove: {
+      expired: removeExpiredToken,
     },
   },
   user: {
