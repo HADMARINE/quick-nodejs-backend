@@ -25,7 +25,8 @@ import { NextFunction, Response, Request } from 'express';
  */
 async function verifyToken(
   token: string,
-  type: string | null = null,
+  type: string | null = 'access',
+  initial: boolean = false,
 ): Promise<Record<string, any>> {
   let tokenValue;
   try {
@@ -34,11 +35,22 @@ async function verifyToken(
     throw error.authorization.tokeninvalid();
   }
 
-  if (type === 'refresh') {
+  if (type === 'refresh' && !initial) {
     const session = await Session.findOne({ token }).exec();
     if (!session) throw error.authorization.tokeninvalid();
   }
   if (typeof tokenValue === 'string') {
+    throw error.authorization.tokeninvalid();
+  }
+  let tokenType;
+  try {
+    // @ts-ignore
+    tokenType = tokenValue.type;
+  } catch {
+    throw error.authorization.tokeninvalid();
+  }
+
+  if (tokenType !== type) {
     throw error.authorization.tokeninvalid();
   }
 
@@ -220,8 +232,9 @@ async function adminAuthority(req: Request, res: Response, next: NextFunction) {
     }
     const tokenValue = await verifyToken(tokenPayload);
     if (tokenValue.authority !== 'admin') {
-      throw error.authorization.access.lackofauthority();
+      throw error.authorization.access.lackOfAuthority();
     }
+    req.body.userData = await verifyToken(tokenPayload);
     next();
   } catch (e) {
     next(e);
@@ -234,7 +247,7 @@ async function userAuthority(req: Request, res: Response, next: NextFunction) {
     if (typeof tokenPayload !== 'string') {
       throw error.data.parameterInvalid();
     }
-    await verifyToken(tokenPayload);
+    req.body.userData = await verifyToken(tokenPayload);
     next();
   } catch (e) {
     next(e);
