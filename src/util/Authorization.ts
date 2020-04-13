@@ -28,7 +28,7 @@ async function verifyToken(
   type: string | null = 'access',
   initial: boolean = false,
 ): Promise<Record<string, any>> {
-  let tokenValue;
+  let tokenValue: any;
   try {
     tokenValue = jwt.verify(token, process.env.TOKEN_KEY || 'tokenkey');
   } catch (err) {
@@ -36,7 +36,7 @@ async function verifyToken(
   }
 
   if (type === 'refresh' && !initial) {
-    const session = await Session.findOne({ token }).exec();
+    const session = await Session.findOne({ jwtid: tokenValue.jwtid }).exec();
     if (!session) throw error.authorization.tokeninvalid();
   }
   if (typeof tokenValue === 'string') {
@@ -76,6 +76,21 @@ async function verifyRefreshToken(token: string): Promise<Record<string, any>> {
 }
 
 async function detachUser(userid: string) {}
+
+async function removeExpiredToken(): Promise<number> {
+  try {
+    const result = await Session.find({
+      expire: { $lt: Math.floor(Date.now() / 1000) },
+    }).exec();
+    result.forEach(async (data) => {
+      await Session.findByIdAndDelete(data._id).exec();
+    });
+    return result.length || 0;
+  } catch {
+    debugLogger('Token auto removal failed');
+  }
+  return 0;
+}
 
 interface CreateTokenPayload {
   userid: string;
@@ -134,7 +149,7 @@ async function createToken(
     );
 
     if (tokenType === 'refresh') {
-      await new Session().registerToken(result, payload._id);
+      await new Session().registerToken(result);
     }
 
     return result;
@@ -263,6 +278,9 @@ export default {
     create: {
       manual: createToken,
       initial: createTokenInitial,
+    },
+    remove: {
+      expired: removeExpiredToken,
     },
   },
   user: {
