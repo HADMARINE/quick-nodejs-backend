@@ -8,20 +8,20 @@ export default new (class extends Controller {
     this.router.get(
       '/',
       this.assets.apiRateLimiter(1, 10),
-      this.authorization.authority.user,
+      this.auth.authority.user,
       this.getUser,
     );
     this.router.post('/', this.assets.apiRateLimiter(5, 5), this.createUser);
     this.router.patch(
       '/',
       this.assets.apiRateLimiter(1, 10),
-      this.authorization.authority.user,
+      this.auth.authority.user,
       this.updateUser,
     );
     this.router.delete(
       '/',
       this.assets.apiRateLimiter(1, 10),
-      this.authorization.authority.user,
+      this.auth.authority.user,
       this.deleteUser,
     );
   }
@@ -29,7 +29,7 @@ export default new (class extends Controller {
   private createUser = this.Wrapper(async (req, res) => {
     const { userid, password } = req.body;
     this.assets.checkNull(userid, password);
-    const hashResult = this.authorization.password.create(password);
+    const hashResult = this.auth.password.create(password);
     const user = await User.create([
       {
         userid,
@@ -42,9 +42,7 @@ export default new (class extends Controller {
   private updateUser = this.Wrapper(async (req, res) => {
     const { password } = req.body;
 
-    const hashResult = password
-      ? this.authorization.password.create(password)
-      : null;
+    const hashResult = password ? this.auth.password.create(password) : null;
     const user = await User.findByIdAndUpdate(
       req.body.userData._id,
       {

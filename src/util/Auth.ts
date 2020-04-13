@@ -31,26 +31,26 @@ async function verifyToken(
   try {
     tokenValue = jwt.verify(token, process.env.TOKEN_KEY || 'tokenkey');
   } catch (err) {
-    throw error.authorization.tokeninvalid();
+    throw error.auth.tokeninvalid();
   }
 
   if (type === 'refresh' && !initial) {
     const session = await Session.findOne({ jwtid: tokenValue.jwtid }).exec();
-    if (!session) throw error.authorization.tokeninvalid();
+    if (!session) throw error.auth.tokeninvalid();
   }
   if (typeof tokenValue === 'string') {
-    throw error.authorization.tokeninvalid();
+    throw error.auth.tokeninvalid();
   }
   let tokenType;
   try {
     // @ts-ignore
     tokenType = tokenValue.type;
   } catch {
-    throw error.authorization.tokeninvalid();
+    throw error.auth.tokeninvalid();
   }
 
   if (tokenType !== type) {
-    throw error.authorization.tokeninvalid();
+    throw error.auth.tokeninvalid();
   }
 
   return tokenValue;
@@ -246,7 +246,7 @@ async function adminAuthority(req: Request, res: Response, next: NextFunction) {
     }
     const tokenValue = await verifyToken(tokenPayload);
     if (tokenValue.authority !== 'admin') {
-      throw error.authorization.access.lackOfAuthority();
+      throw error.auth.access.lackOfAuthority();
     }
     req.body.userData = await verifyToken(tokenPayload);
     next();

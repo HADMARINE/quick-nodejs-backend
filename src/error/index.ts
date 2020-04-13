@@ -22,7 +22,7 @@ export default {
       );
     },
   },
-  authorization: {
+  auth: {
     tokeninvalid: () => returnError('Token Invalid', 403, 'TOKEN_INVALID'),
     fail: () => returnError('Login Failed', 403, 'LOGIN_FAIL'),
     access: {
