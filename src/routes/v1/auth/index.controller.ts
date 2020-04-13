@@ -6,7 +6,11 @@ export default new (class extends Controller {
   constructor() {
     super();
     this.router.post('/', this.assets.apiRateLimiter(1, 5), this.signInUser);
-    this.router.post('/resign', this.resignAccessToken);
+    this.router.post(
+      '/resign',
+      this.assets.apiRateLimiter(1, 10),
+      this.resignAccessToken,
+    );
     this.router.get(
       '/test/admin',
       this.assets.apiRateLimiter(1, 20),
