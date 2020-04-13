@@ -31,4 +31,5 @@ export default (): Promise<typeof mongoose> =>
     dbName,
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    useFindAndModify: false,
   });
