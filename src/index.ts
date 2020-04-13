@@ -5,6 +5,10 @@ import app from '@src/app';
 import connectDB from '@lib/startup/connectDB';
 import logger from '@lib/logger';
 
+logger.info(
+  'Created project TSNODE-backend-template by HADMARINE(https://github.com/hadmarine)',
+);
+
 const router = Router();
 const server = http.createServer(app);
 
