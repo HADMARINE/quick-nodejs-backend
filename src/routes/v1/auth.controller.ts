@@ -43,6 +43,7 @@ export default new (class extends Controller {
       },
       'access',
     );
+
     this.Response(
       res,
       200,
