@@ -74,7 +74,21 @@ async function verifyRefreshToken(token: string): Promise<Record<string, any>> {
   return verifyToken(token, 'refresh');
 }
 
-async function detachUser(userid: string) {}
+async function detachUser(userid: string): Promise<void> {
+  try {
+    await Session.deleteMany({ userid }).exec();
+  } catch {
+    throw error.db.error();
+  }
+}
+
+async function detachAllToken(): Promise<void> {
+  try {
+    await Session.deleteMany({}).exec();
+  } catch {
+    throw error.db.error();
+  }
+}
 
 async function removeExpiredToken(): Promise<number> {
   try {
@@ -280,6 +294,10 @@ export default {
     },
     remove: {
       expired: removeExpiredToken,
+    },
+    detach: {
+      all: detachAllToken,
+      user: detachUser,
     },
   },
   user: {
