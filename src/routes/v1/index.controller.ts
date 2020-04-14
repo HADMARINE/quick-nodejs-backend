@@ -7,8 +7,10 @@ export default new (class extends Controller {
     this.router.all('/', this.getIndex);
   }
 
-  private getIndex = super.Wrapper((req, res) => {
-    super.Response(
+  private getIndex = this.Wrapper(async (req, res) => {
+    const startTime = Date.now();
+    await this.assets.delayExact(startTime, 250);
+    this.Response(
       res,
       200,
       { status: 'alive', mode: process.env.NODE_ENV || 'development' },
