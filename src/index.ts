@@ -2,6 +2,7 @@ import http from 'http';
 import { Router } from 'express';
 import chalk from 'chalk';
 import app from '@src/app';
+import io from '@src/io';
 import connectDB from '@lib/startup/connectDB';
 import logger from '@lib/logger';
 
@@ -11,6 +12,8 @@ logger.info(
 
 const router = Router();
 const server = http.createServer(app);
+
+// io(server); // Enable when using socket.io
 
 const PORT = parseInt(process.env.PORT || '4000', 10);
 
