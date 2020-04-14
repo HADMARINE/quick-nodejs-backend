@@ -1,7 +1,6 @@
 import cron from 'node-cron';
 import Auth from '@util/Auth';
 import logger from '@lib/logger';
-'@lib/logger';
 
 export default function (): void {
   cron.schedule('*/10 * * * *', async () => {
