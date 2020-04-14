@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { defaultMessage, defaultCode } from '@lib/httpCode';
+import { IpDeniedError } from 'express-ipfilter';
 
 interface MiddlewareError {
   status?: number;
@@ -18,6 +19,19 @@ export default (
   const message = error.message || defaultMessage(status);
   const code = error.code || defaultCode(status);
   const data = error.data || {};
+
+  if (error instanceof IpDeniedError) {
+    res
+      .status(400)
+      .json({
+        status: 400,
+        message: 'Your ip is banned!',
+        code: 'IP_BAN',
+        result: false,
+      })
+      .end();
+    return;
+  }
 
   res
     .status(status)
