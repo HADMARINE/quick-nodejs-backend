@@ -81,9 +81,9 @@ async function removeExpiredToken(): Promise<number> {
     const result = await Session.find({
       expire: { $lt: Math.floor(Date.now() / 1000) },
     }).exec();
-    result.forEach(async (data) => {
-      await Session.findByIdAndDelete(data._id).exec();
-    });
+
+    await Session.deleteMany({ _id: { $in: result } }).exec();
+
     return result.length || 0;
   } catch {
     logger.debug('Token auto removal failed');
