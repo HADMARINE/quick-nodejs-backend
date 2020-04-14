@@ -1,5 +1,6 @@
 import error from '@error';
 import rateLimiter from 'express-rate-limit';
+import { RequestHandler, NextFunction, Response, Request } from 'express';
 
 function getObjectKeyByValue(object: any, value: string): string | undefined {
   return Object.keys(object).find((key) => object[key] === value);
@@ -45,6 +46,14 @@ async function delayExact(startTime: number, totalDelay: number = 250) {
   } while (currentDate - startTime < totalDelay);
 }
 
+function wrapper(requestHandler: any): RequestHandler {
+  return (req: Request, res: Response, next: NextFunction) => {
+    Promise.resolve(requestHandler(req, res, next)).catch((e) => {
+      next(e);
+    });
+  };
+}
+
 export default {
   getObjectKeyByValue,
   getRandomNumber,
@@ -53,4 +62,5 @@ export default {
   apiRateLimiter,
   sleep,
   delayExact,
+  wrapper,
 };
