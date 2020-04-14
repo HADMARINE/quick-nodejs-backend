@@ -31,7 +31,7 @@ export default new (class extends Controller {
   private deleteTokenByUser = this.Wrapper(async (req, res) => {
     const { userid } = req.params;
     await this.auth.token.detach.user(userid);
-    this.Response(res, 200, {}, { message: `Detached Token ` });
+    this.Response(res, 200, {}, { message: `Detached user's Token` });
   });
 
   private deleteTokenAll = this.Wrapper(async (req, res) => {
