@@ -1,4 +1,4 @@
-import mongoose, { model, Schema, Document, Model } from 'mongoose';
+import { model, Schema, Document, Model } from 'mongoose';
 import Auth from '@util/Auth';
 import error from '@error';
 import jwt from 'jsonwebtoken';
@@ -29,7 +29,7 @@ SessionSchema.methods.registerToken = async function (
     if (!tokenValue._id || !tokenValue.exp || !tokenValue.jwtid) {
       throw error.auth.tokeninvalid();
     }
-    await SessionModel.create({
+    await Session.create({
       jwtid: tokenValue.jwtid,
       user: tokenValue._id,
       expire: tokenValue.exp,
@@ -39,6 +39,6 @@ SessionSchema.methods.registerToken = async function (
   }
 };
 
-const SessionModel = model<SessionDocument>('Session', SessionSchema);
+const Session = model<SessionDocument>('Session', SessionSchema);
 
-export default SessionModel;
+export default Session;
