@@ -39,6 +39,16 @@ export default class Controller {
     };
   }
 
+  public Delayer(delay: number) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      return Promise.resolve(this.assets.delayExact(Date.now(), delay)).then(
+        () => {
+          next();
+        },
+      );
+    };
+  }
+
   /**
    * @description Stricts response rule
    * @param {Response} res response method
