@@ -68,5 +68,11 @@ export default {
     notfound() {
       return returnError(`Data not found.`, 404, `DATA_NOT_FOUND`);
     },
+    error: () =>
+      returnError(
+        `Failed to resolve database process`,
+        500,
+        `DATABASE_PROCESS_FAIL`,
+      ),
   },
 };
