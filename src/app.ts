@@ -12,6 +12,7 @@ import error from '@error';
 import errorHandler from '@lib/middlewares/errorHandler';
 import Assets from '@util/Assets';
 import cron from '@lib/middlewares/cron';
+import ipfilter from '@lib/middlewares/ipfilter';
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use(
 );
 app.use(helmet());
 app.use(Assets.apiRateLimiter());
+app.use(Assets.wrapper(ipfilter));
 
 // Morgan Logger
 app.use(
