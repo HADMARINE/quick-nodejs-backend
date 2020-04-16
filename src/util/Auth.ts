@@ -172,8 +172,8 @@ async function createToken(
 }
 
 interface InitialTokenCreateResult {
-  accessToken: string;
-  refreshToken: string;
+  access: string;
+  refresh: string;
 }
 
 /**
@@ -184,9 +184,9 @@ interface InitialTokenCreateResult {
 async function createTokenInitial(
   payload: CreateTokenPayload,
 ): Promise<InitialTokenCreateResult> {
-  const accessToken = await createToken(payload, 'access');
-  const refreshToken = await createToken(payload, 'refresh');
-  return { accessToken, refreshToken };
+  const access = await createToken(payload, 'access');
+  const refresh = await createToken(payload, 'refresh');
+  return { access, refresh };
 }
 
 interface PasswordCreateResult {
