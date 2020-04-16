@@ -1,6 +1,7 @@
 import error from '@error';
 import rateLimiter from 'express-rate-limit';
 import { RequestHandler, NextFunction, Response, Request } from 'express';
+import logger from '@lib/logger';
 
 function getObjectKeyByValue(object: any, value: string): string | undefined {
   return Object.keys(object).find((key) => object[key] === value);
@@ -23,10 +24,7 @@ function checkNull(...param: Array<any>): void {
   });
 }
 
-function apiRateLimiter(
-  standardTimeRate: number = 15,
-  limitRate: number = 100,
-) {
+function apiRateLimiter(standardTimeRate: number = 5, limitRate: number = 100) {
   return rateLimiter({
     windowMs: standardTimeRate * 60 * 1000,
     max: limitRate,
@@ -39,7 +37,7 @@ function sleep(ms: number): Promise<number> {
 
 async function delayExact(startTime: number, totalDelay: number = 250) {
   let currentDate = null;
-  totalDelay += getRandomNumber(10, totalDelay);
+  totalDelay += getRandomNumber(startTime / 10, totalDelay);
   do {
     await sleep(100);
     currentDate = Date.now();
@@ -54,6 +52,17 @@ function wrapper(requestHandler: any): RequestHandler {
   };
 }
 
+function returnArray(data: any) {
+  if (typeof data === 'string') {
+    try {
+      data = JSON.parse(data);
+    } catch {
+      data = JSON.parse(`[${data}]`);
+    }
+  }
+  return data;
+}
+
 export default {
   getObjectKeyByValue,
   getRandomNumber,
@@ -63,4 +72,5 @@ export default {
   sleep,
   delayExact,
   wrapper,
+  returnArray,
 };
