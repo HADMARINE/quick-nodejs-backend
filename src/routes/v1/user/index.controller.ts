@@ -43,34 +43,28 @@ export default new (class extends Controller {
     const { password } = req.body;
 
     const hashResult = password ? this.auth.password.create(password) : null;
-    const user = await User.findByIdAndUpdate(
-      req.body.userData._id,
-      {
-        $set: { ...hashResult },
-      },
-      { select: 'userid authority' },
-    ).exec();
-    this.Response(
-      res,
-      200,
-      { user },
-      { message: 'User data update successful' },
-    );
+    const user = await User.findByIdAndUpdate(req.body.userData._id, {
+      $set: { ...hashResult },
+    })
+      .select('userid authority')
+      .exec();
+    if (!user) throw this.error.db.notfound();
+    this.Response(res, 200, user, { message: 'User data update successful' });
   });
 
   private getUser = this.Wrapper(async (req, res) => {
     const { userData } = req.body;
     const user = await User.findById(userData._id, 'userid authority').exec();
     if (!user) throw this.error.db.notfound();
-    this.Response(res, 200, { user }, { message: 'Data found' });
+    this.Response(res, 200, user, { message: 'Data found' });
   });
 
   private deleteUser = this.Wrapper(async (req, res) => {
     const { userData } = req.body;
-    const user = await User.findByIdAndDelete(userData._id, {
-      select: 'userid authority',
-    }).exec();
+    const user = await User.findByIdAndDelete(userData._id, {})
+      .select('userid authority')
+      .exec();
     if (!user) throw this.error.db.notfound();
-    this.Response(res, 200, { user }, { message: 'User removal successful' });
+    this.Response(res, 200, user, { message: 'User removal successful' });
   });
 })();
