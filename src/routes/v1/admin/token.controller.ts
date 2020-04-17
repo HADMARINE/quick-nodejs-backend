@@ -4,18 +4,13 @@ import Session from '@models/Session';
 export default new (class extends Controller {
   constructor() {
     super();
+    this.router.get('/', this.auth.authority.admin, this.getToken);
     this.router.delete('/', this.auth.authority.admin, this.deleteToken);
-    this.router.delete(
-      '/user/:userid',
-      this.auth.authority.admin,
-      this.deleteTokenByUser,
-    );
-    this.router.delete('/all', this.auth.authority.admin, this.deleteTokenAll);
   }
 
-  private deleteToken = this.Wrapper(async (req, res) => {
+  private getToken = this.Wrapper(async (req, res) => {
     let query = {};
-    const { user, time } = req.body.query;
+    const { user, time, jwtid, skip, limit } = req.query;
     if (time) {
       query = Object.assign({}, query, {
         expire: { $lt: time.end, $gt: time.start },
@@ -24,18 +19,45 @@ export default new (class extends Controller {
     if (user) {
       query = Object.assign({}, query, { user: { $in: user } });
     }
-    await Session.find(query).exec();
-    this.Response(res, 200, {}, { message: 'Disabled token session matches.' });
+    if (jwtid) {
+      query = Object.assign({}, query, { jwtid });
+    }
+    const session = await Session.find(query)
+      .skip(parseInt(skip || 0, 10))
+      .limit(parseInt(limit || 10, 10))
+      .exec();
+    if (!session.length) throw this.error.db.notfound();
+    this.Response(res, 200, session, {
+      message: 'Found sessions',
+    });
   });
 
-  private deleteTokenByUser = this.Wrapper(async (req, res) => {
-    const { userid } = req.params;
-    await this.auth.token.detach.user(userid);
-    this.Response(res, 200, {}, { message: `Detached user's Token` });
-  });
-
-  private deleteTokenAll = this.Wrapper(async (req, res) => {
-    await this.auth.token.detach.all();
-    this.Response(res, 200, {}, { message: 'Disabled all token sessions.' });
+  private deleteToken = this.Wrapper(async (req, res) => {
+    let query = {};
+    const { user, time, jwtid, unsafe } = req.query;
+    if (time) {
+      query = Object.assign({}, query, {
+        expire: { $lt: time.end, $gt: time.start },
+      });
+    }
+    if (user) {
+      query = Object.assign({}, query, { user: { $in: user } });
+    }
+    if (jwtid) {
+      query = Object.assign({}, query, { jwtid });
+    }
+    if (unsafe !== 'true' && JSON.stringify(query) === '{}') {
+      throw this.error.action.unsafe();
+    }
+    const session = await Session.deleteMany(query).exec();
+    if (!session.deletedCount) throw this.error.db.notfound();
+    this.Response(
+      res,
+      200,
+      { amount: session.deletedCount },
+      {
+        message: `Disabled ${session.deletedCount} token session matches.`,
+      },
+    );
   });
 })();
