@@ -44,10 +44,15 @@ export default new (class extends Controller {
     }).exec();
     if (!user.n) throw this.error.db.notfound();
     if (userid.length > user.n) {
-      this.Response(res, 200, undefined, {
-        message: 'Update successful, but could not found some datas.',
-        code: 'PARTLY_SUCCESS',
-      });
+      this.Response(
+        res,
+        200,
+        { successAmount: user.n },
+        {
+          message: 'Update successful, but could not found some datas.',
+          code: 'PARTLY_SUCCESS',
+        },
+      );
       return;
     }
     this.Response(res, 200, undefined, { message: 'User delete successful' });
