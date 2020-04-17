@@ -77,8 +77,8 @@ export default class Controller {
       .end();
   }
 
-  protected error = error;
-  protected assets = assets;
-  protected router: Router = Router();
-  protected auth = auth;
+  protected readonly error = error;
+  protected readonly assets = assets;
+  protected readonly auth = auth;
+  protected readonly router: Router = Router();
 }
