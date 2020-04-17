@@ -1,8 +1,18 @@
 import returnError from '../lib/returnError';
 
 export default {
+  custom: (message: string, status: number, code: string) =>
+    returnError(message, status, code),
   test() {
     return returnError(null, 418, null);
+  },
+  action: {
+    unsafe: () =>
+      returnError(
+        "Handling unsafe actions without 'unsafe' props is not allowed. This error is usually occurs when the action removes all datas of db or stops operation of server.",
+        403,
+        'UNSAFE_NOT_HANDLED',
+      ),
   },
   access: {
     pagenotfound(directory = '') {
