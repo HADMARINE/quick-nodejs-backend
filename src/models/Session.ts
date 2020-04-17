@@ -1,5 +1,5 @@
-import mongoose, { model, Schema, Document, Model } from 'mongoose';
-import Authorization from '@util/Authorization';
+import { model, Schema, Document, Model } from 'mongoose';
+import Auth from '@util/Auth';
 import error from '@error';
 import jwt from 'jsonwebtoken';
 import Assets from '@util/Assets';
@@ -23,13 +23,13 @@ export interface SessionDocument extends Document, SessionInterface {
 SessionSchema.methods.registerToken = async function (
   token: string,
 ): Promise<void> {
-  await Authorization.token.verify.manual(token, 'refresh', true);
+  await Auth.token.verify.manual(token, 'refresh', true);
   try {
     const tokenValue: any = jwt.decode(token);
     if (!tokenValue._id || !tokenValue.exp || !tokenValue.jwtid) {
-      throw error.authorization.tokeninvalid();
+      throw error.auth.tokeninvalid();
     }
-    await SessionModel.create({
+    await Session.create({
       jwtid: tokenValue.jwtid,
       user: tokenValue._id,
       expire: tokenValue.exp,
@@ -39,6 +39,6 @@ SessionSchema.methods.registerToken = async function (
   }
 };
 
-const SessionModel = model<SessionDocument>('Session', SessionSchema);
+const Session = model<SessionDocument>('Session', SessionSchema);
 
-export default SessionModel;
+export default Session;

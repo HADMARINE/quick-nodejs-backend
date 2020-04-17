@@ -1,8 +1,18 @@
 import returnError from '../lib/returnError';
 
 export default {
+  custom: (message: string, status: number, code: string) =>
+    returnError(message, status, code),
   test() {
     return returnError(null, 418, null);
+  },
+  action: {
+    unsafe: () =>
+      returnError(
+        "Handling unsafe actions without 'unsafe' props is not allowed. This error is usually occurs when the action removes all datas of db or stops operation of server.",
+        403,
+        'UNSAFE_NOT_HANDLED',
+      ),
   },
   access: {
     pagenotfound(directory = '') {
@@ -22,7 +32,7 @@ export default {
       );
     },
   },
-  authorization: {
+  auth: {
     tokeninvalid: () => returnError('Token Invalid', 403, 'TOKEN_INVALID'),
     fail: () => returnError('Login Failed', 403, 'LOGIN_FAIL'),
     access: {
@@ -68,5 +78,11 @@ export default {
     notfound() {
       return returnError(`Data not found.`, 404, `DATA_NOT_FOUND`);
     },
+    error: () =>
+      returnError(
+        `Failed to resolve database process`,
+        500,
+        `DATABASE_PROCESS_FAIL`,
+      ),
   },
 };

@@ -14,6 +14,6 @@ export interface AnyDocument extends Document, AnyInterface {
 
 // AnySchema.methods.~~
 
-const AnyModel = model<AnyDocument>('Any', AnySchema);
+const Any = model<AnyDocument>('Any', AnySchema);
 
-export default AnyModel;
+export default Any;

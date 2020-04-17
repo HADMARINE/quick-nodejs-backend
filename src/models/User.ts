@@ -33,6 +33,6 @@ UserSchema.pre('save', function (next: HookNextFunction) {
   });
 });
 
-const UserModel = model<UserDocument>('User', UserSchema);
+const User = model<UserDocument>('User', UserSchema);
 
-export default UserModel;
+export default User;

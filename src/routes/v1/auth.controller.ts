@@ -19,15 +19,13 @@ export default new (class extends Controller {
     const user: any = await User.findOne({ userid }).exec();
     if (!user) {
       await this.assets.delayExact(startTime);
-      throw this.error.authorization.fail();
+      throw this.error.auth.fail();
     }
-    if (
-      !this.authorization.password.verify(password, user.password, user.enckey)
-    ) {
+    if (!this.auth.password.verify(password, user.password, user.enckey)) {
       await this.assets.delayExact(startTime);
-      throw this.error.authorization.fail();
+      throw this.error.auth.fail();
     }
-    const token = await this.authorization.token.create.initial({
+    const token = await this.auth.token.create.initial({
       _id: user._id,
       userid: user.userid,
     });
@@ -37,14 +35,15 @@ export default new (class extends Controller {
   private resignAccessToken = this.Wrapper(async (req, res) => {
     const { token } = req.body;
     this.assets.checkNull(token);
-    const tokenValue = await this.authorization.token.verify.refresh(token);
-    const renewToken = await this.authorization.token.create.manual(
+    const tokenValue = await this.auth.token.verify.refresh(token);
+    const renewToken = await this.auth.token.create.manual(
       {
         _id: tokenValue._id,
         userid: tokenValue.userid,
       },
       'access',
     );
+
     this.Response(
       res,
       200,

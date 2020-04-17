@@ -9,7 +9,7 @@ import {
 import { defaultMessage, defaultCode } from '@lib/httpCode';
 import error from '@error';
 import assets from '@util/Assets';
-import authorization from '@util/Authorization';
+import auth from '@util/Auth';
 
 interface ResponseOptions {
   result?: boolean;
@@ -36,6 +36,16 @@ export default class Controller {
       Promise.resolve(requestHandler(req, res, next)).catch((e) => {
         next(e);
       });
+    };
+  }
+
+  public Delayer(delay: number) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      return Promise.resolve(this.assets.delayExact(Date.now(), delay)).then(
+        () => {
+          next();
+        },
+      );
     };
   }
 
@@ -67,8 +77,8 @@ export default class Controller {
       .end();
   }
 
-  protected error = error;
-  protected assets = assets;
-  protected router: Router = Router();
-  protected authorization = authorization;
+  protected readonly error = error;
+  protected readonly assets = assets;
+  protected readonly auth = auth;
+  protected readonly router: Router = Router();
 }

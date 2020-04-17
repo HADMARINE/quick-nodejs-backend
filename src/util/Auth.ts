@@ -31,26 +31,26 @@ async function verifyToken(
   try {
     tokenValue = jwt.verify(token, process.env.TOKEN_KEY || 'tokenkey');
   } catch (err) {
-    throw error.authorization.tokeninvalid();
+    throw error.auth.tokeninvalid();
   }
 
   if (type === 'refresh' && !initial) {
     const session = await Session.findOne({ jwtid: tokenValue.jwtid }).exec();
-    if (!session) throw error.authorization.tokeninvalid();
+    if (!session) throw error.auth.tokeninvalid();
   }
   if (typeof tokenValue === 'string') {
-    throw error.authorization.tokeninvalid();
+    throw error.auth.tokeninvalid();
   }
   let tokenType;
   try {
     // @ts-ignore
     tokenType = tokenValue.type;
   } catch {
-    throw error.authorization.tokeninvalid();
+    throw error.auth.tokeninvalid();
   }
 
   if (tokenType !== type) {
-    throw error.authorization.tokeninvalid();
+    throw error.auth.tokeninvalid();
   }
 
   return tokenValue;
@@ -74,16 +74,30 @@ async function verifyRefreshToken(token: string): Promise<Record<string, any>> {
   return verifyToken(token, 'refresh');
 }
 
-async function detachUser(userid: string) {}
+async function detachUser(userid: string): Promise<void> {
+  try {
+    await Session.deleteMany({ userid }).exec();
+  } catch {
+    throw error.db.error();
+  }
+}
+
+async function detachAllToken(): Promise<void> {
+  try {
+    await Session.deleteMany({}).exec();
+  } catch {
+    throw error.db.error();
+  }
+}
 
 async function removeExpiredToken(): Promise<number> {
   try {
     const result = await Session.find({
       expire: { $lt: Math.floor(Date.now() / 1000) },
     }).exec();
-    result.forEach(async (data) => {
-      await Session.findByIdAndDelete(data._id).exec();
-    });
+
+    await Session.deleteMany({ _id: { $in: result } }).exec();
+
     return result.length || 0;
   } catch {
     logger.debug('Token auto removal failed');
@@ -158,8 +172,8 @@ async function createToken(
 }
 
 interface InitialTokenCreateResult {
-  accessToken: string;
-  refreshToken: string;
+  access: string;
+  refresh: string;
 }
 
 /**
@@ -170,9 +184,9 @@ interface InitialTokenCreateResult {
 async function createTokenInitial(
   payload: CreateTokenPayload,
 ): Promise<InitialTokenCreateResult> {
-  const accessToken = await createToken(payload, 'access');
-  const refreshToken = await createToken(payload, 'refresh');
-  return { accessToken, refreshToken };
+  const access = await createToken(payload, 'access');
+  const refresh = await createToken(payload, 'refresh');
+  return { access, refresh };
 }
 
 interface PasswordCreateResult {
@@ -246,7 +260,7 @@ async function adminAuthority(req: Request, res: Response, next: NextFunction) {
     }
     const tokenValue = await verifyToken(tokenPayload);
     if (tokenValue.authority !== 'admin') {
-      throw error.authorization.access.lackOfAuthority();
+      throw error.auth.access.lackOfAuthority();
     }
     req.body.userData = await verifyToken(tokenPayload);
     next();
@@ -280,6 +294,10 @@ export default {
     },
     remove: {
       expired: removeExpiredToken,
+    },
+    detach: {
+      all: detachAllToken,
+      user: detachUser,
     },
   },
   user: {

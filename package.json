@@ -1,6 +1,6 @@
 {
   "name": "typescript-node-express-mongodb-backend",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "main": "index.ts",
   "author": "none",
   "license": "MIT",
@@ -23,6 +23,7 @@
     "@types/morgan": "^1.9.0",
     "@types/node": "^12.12.5",
     "@types/node-cron": "^2.0.3",
+    "@types/socket.io": "^2.1.4",
     "chalk": "^3.0.0",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
@@ -30,6 +31,7 @@
     "eslint": "^6.6.0",
     "express": "^4.17.1",
     "express-fileupload": "^1.1.7-alpha.3",
+    "express-ipfilter": "^1.1.2",
     "express-rate-limit": "^5.1.1",
     "helmet": "^3.21.2",
     "jsonwebtoken": "^8.5.1",
@@ -38,6 +40,7 @@
     "morgan": "^1.10.0",
     "node-cron": "^2.0.3",
     "nodemon": "^1.19.4",
+    "socket.io": "^2.3.0",
     "ts-lint": "^4.5.1",
     "ts-node": "^8.4.1"
   },
