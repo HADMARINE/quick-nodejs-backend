@@ -36,7 +36,7 @@ export default new (class extends Controller {
         ...hashResult,
       },
     ]);
-    this.Response(res, 201, {}, { message: 'Created user successfully.' });
+    this.Response(res, 201, user, { message: 'Created user successfully.' });
   });
 
   private updateUser = this.Wrapper(async (req, res) => {
