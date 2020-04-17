@@ -1,10 +1,4 @@
-import mongoose, {
-  model,
-  Schema,
-  Document,
-  HookNextFunction,
-  models,
-} from 'mongoose';
+import { model, Schema, Document, HookNextFunction, models } from 'mongoose';
 import error from '@error';
 
 export interface BanipInterface {
