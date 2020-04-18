@@ -29,7 +29,7 @@ export default new (class extends Controller {
       _id: user._id,
       userid: user.userid,
     });
-    this.Response(res, 200, { token }, { message: 'Login successful' });
+    res(200, { token }, { message: 'Login successful' });
   });
 
   private resignAccessToken = this.Wrapper(async (req, res) => {
@@ -43,12 +43,6 @@ export default new (class extends Controller {
       },
       'access',
     );
-
-    this.Response(
-      res,
-      200,
-      { token: renewToken },
-      { message: 'Token creation successful' },
-    );
+    res(200, { token: renewToken }, { message: 'Token creation successful' });
   });
 })();

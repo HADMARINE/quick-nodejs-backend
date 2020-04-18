@@ -11,7 +11,7 @@ export default new (class extends Controller {
     this.router.get('/info/time', this.timeInfo);
   }
 
-  private welcome = this.Wrapper(async (req, res) => {
+  private welcome = this.LegacyWrapper(async (req, res) => {
     res.send(
       welcome(
         'TS-NODE-EXPRESS-MONGO BACKEND',
@@ -27,10 +27,10 @@ export default new (class extends Controller {
       v0: 'deprecated',
       v1: 'production',
     };
-    this.Response(res, 200, data);
+    res(200, data);
   });
 
-  private timeInfo = this.Wrapper(async (req, res) => {
+  private timeInfo = this.LegacyWrapper(async (req, res) => {
     res.send(moment().format('YYYY-MM-DD HH:mm:ss'));
   });
 })();

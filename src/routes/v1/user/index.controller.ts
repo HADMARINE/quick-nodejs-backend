@@ -36,7 +36,7 @@ export default new (class extends Controller {
         ...hashResult,
       },
     ]);
-    this.Response(res, 201, user, { message: 'Created user successfully.' });
+    res(201, user, { message: 'Created user successfully.' });
   });
 
   private updateUser = this.Wrapper(async (req, res) => {
@@ -49,14 +49,14 @@ export default new (class extends Controller {
       .select('userid authority')
       .exec();
     if (!user) throw this.error.db.notfound();
-    this.Response(res, 200, user, { message: 'User data update successful' });
+    res(200, user, { message: 'User data update successful' });
   });
 
   private getUser = this.Wrapper(async (req, res) => {
     const { userData } = req.body;
     const user = await User.findById(userData._id, 'userid authority').exec();
     if (!user) throw this.error.db.notfound();
-    this.Response(res, 200, user, { message: 'Data found' });
+    res(200, user, { message: 'Data found' });
   });
 
   private deleteUser = this.Wrapper(async (req, res) => {
@@ -65,6 +65,6 @@ export default new (class extends Controller {
       .select('userid authority')
       .exec();
     if (!user) throw this.error.db.notfound();
-    this.Response(res, 200, user, { message: 'User removal successful' });
+    res(200, user, { message: 'User removal successful' });
   });
 })();

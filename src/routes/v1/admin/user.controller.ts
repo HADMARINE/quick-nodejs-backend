@@ -20,7 +20,7 @@ export default new (class extends Controller {
     this.assets.checkNull(userid);
     const user = await User.findOne({ userid }).exec();
     if (!user) throw this.error.db.notfound();
-    this.Response(res, 200, user, { message: `User found` });
+    res(200, user, { message: `User found` });
   });
 
   private getUserMany = this.Wrapper(async (req, res) => {
@@ -32,7 +32,7 @@ export default new (class extends Controller {
       .sort('-id')
       .exec();
     if (!user) throw this.error.db.notfound();
-    this.Response(res, 200, user, { message: `User found` });
+    res(200, user, { message: `User found` });
   });
 
   private deleteUser = this.Wrapper(async (req, res) => {
@@ -44,8 +44,7 @@ export default new (class extends Controller {
     }).exec();
     if (!user.n) throw this.error.db.notfound();
     if (userid.length > user.n) {
-      this.Response(
-        res,
+      res(
         200,
         { successAmount: user.n },
         {
@@ -55,7 +54,7 @@ export default new (class extends Controller {
       );
       return;
     }
-    this.Response(res, 200, undefined, { message: 'User delete successful' });
+    res(200, undefined, { message: 'User delete successful' });
   });
 
   private setUserAuthority = this.Wrapper(async (req, res) => {
@@ -69,13 +68,13 @@ export default new (class extends Controller {
     ).exec();
     if (!user.n) throw this.error.db.notfound();
     if (userid.length > user.n) {
-      this.Response(res, 200, undefined, {
+      res(200, undefined, {
         message: 'Update successful, but could not found some datas.',
         code: 'PARTLY_SUCCESS',
       });
       return;
     }
-    this.Response(res, 200, undefined, {
+    res(200, undefined, {
       message: 'Update authority successful.',
     });
   });
