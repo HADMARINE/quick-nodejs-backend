@@ -18,6 +18,17 @@ interface ResponseOptions {
   additionalData?: Record<string, any> | null;
 }
 
+type CustomResponseFunction = (
+  status: number,
+  data?: Record<string, any>,
+  options?: ResponseOptions,
+) => void;
+type CustomRequestHandler = (
+  req: Request,
+  res: CustomResponseFunction,
+  next?: NextFunction,
+) => void;
+
 const optionsDefault = {
   result: true,
   message: null,
@@ -31,7 +42,17 @@ export default class Controller {
    * @param {RequestHandler} requestHandler Request handler
    * @returns {RequestHandler} Returns request handler
    */
-  public Wrapper(requestHandler: RequestHandler): RequestHandler {
+  public Wrapper(requestHandler: CustomRequestHandler): any {
+    return (req: Request, res: Response, next: NextFunction) => {
+      Promise.resolve(requestHandler(req, this.Response(res), next)).catch(
+        (e) => {
+          next(e);
+        },
+      );
+    };
+  }
+
+  public LegacyWrapper(requestHandler: RequestHandler): RequestHandler {
     return (req: Request, res: Response, next: NextFunction) => {
       Promise.resolve(requestHandler(req, res, next)).catch((e) => {
         next(e);
@@ -57,24 +78,25 @@ export default class Controller {
    * @param {ResponseOptions} Options Response options
    * @returns {void}
    */
-  protected Response(
-    res: Response,
-    status: number,
-    data?: Record<string, any>,
-    options: ResponseOptions = {},
-  ): void {
-    options = Object.assign({}, optionsDefault, options);
-    res
-      .status(status)
-      .json({
-        status,
-        code: options.code || defaultCode(status),
-        message: options.message || defaultMessage(status),
-        result: options.result,
-        data,
-        ...options.additionalData,
-      })
-      .end();
+  protected Response(res: Response): CustomResponseFunction {
+    return function (
+      status: number,
+      data?: Record<string, any>,
+      options: ResponseOptions = {},
+    ): void {
+      options = Object.assign({}, optionsDefault, options);
+      res
+        .status(status)
+        .json({
+          status,
+          code: options.code || defaultCode(status),
+          message: options.message || defaultMessage(status),
+          result: options.result,
+          data,
+          ...options.additionalData,
+        })
+        .end();
+    };
   }
 
   protected readonly error = error;
