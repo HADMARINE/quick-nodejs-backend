@@ -66,9 +66,14 @@ function Root() {
     : 'development';
 
   // tslint:disable-next-line: no-floating-promises
-  connectDB().then(() => {
-    listen();
-  });
+  connectDB()
+    .then(() => {
+      listen();
+    })
+    .catch(() => {
+      logger.error('MongoDB Server connection failed.');
+      return;
+    });
 }
 
 export default Root();
