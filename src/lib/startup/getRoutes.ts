@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import { Router } from 'express';
-import chalk from 'chalk';
 import logger from '@lib/logger';
 
 interface GetRoutesProps {
@@ -24,9 +23,9 @@ function getPathRoutes(routePath = '/'): GetRoutes {
   function detectRouterType(file: string): NodeRequire {
     let resultFile;
     try {
-      if (file.match(/(.controller.ts|.controller.js)$/)) {
+      if (file.match(/.controller.(ts|js)$/)) {
         resultFile = require(file).default.router;
-      } else if (file.match(/(.routes.ts|.routes.js)$/)) {
+      } else if (file.match(/.routes.(ts|js)$/)) {
         resultFile = require(file).default;
         invalidlyRoutedList.push(file);
       }
@@ -44,7 +43,7 @@ function getPathRoutes(routePath = '/'): GetRoutes {
       datas.push(...getPathRoutes(`${routePath.replace(/\/$/, '')}/${f}`));
       continue;
     }
-    if (!file.match(/(.controller.ts|.controller.js|.routes.ts|.routes.js)$/)) {
+    if (!file.match(/.(controller|router).(js|ts)$/)) {
       continue;
     }
 
@@ -58,10 +57,7 @@ function getPathRoutes(routePath = '/'): GetRoutes {
     if (Object.getPrototypeOf(router) !== Router) {
       continue;
     }
-    let filename: string = f.replace(
-      /(.controller.ts|.controller.js|.routes.ts|.routes.js)$/,
-      '',
-    );
+    let filename: string = f.replace(/.(controller|router).(js|ts)$/, '');
     filename = filename === 'index' ? '' : `/${filename}`;
 
     datas.push({
