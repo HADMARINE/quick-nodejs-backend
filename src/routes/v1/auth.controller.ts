@@ -33,9 +33,12 @@ export default new (class extends Controller {
   });
 
   private resignAccessToken = this.Wrapper(async (req, res) => {
-    const { token } = req.body;
-    this.assets.checkNull(token);
+    const { userid, token } = req.body;
+    this.assets.checkNull(token, userid);
     const tokenValue = await this.auth.token.verify.refresh(token);
+    if (tokenValue.userid !== userid) {
+      throw this.error.auth.tokeninvalid();
+    }
     const renewToken = await this.auth.token.create.manual(
       {
         _id: tokenValue._id,
