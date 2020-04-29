@@ -29,13 +29,16 @@ export default new (class extends Controller {
       _id: user._id,
       userid: user.userid,
     });
-    this.Response(res, 200, { token }, { message: 'Login successful' });
+    res(200, { token }, { message: 'Login successful' });
   });
 
   private resignAccessToken = this.Wrapper(async (req, res) => {
-    const { token } = req.body;
-    this.assets.checkNull(token);
+    const { userid, token } = req.body;
+    this.assets.checkNull(token, userid);
     const tokenValue = await this.auth.token.verify.refresh(token);
+    if (tokenValue.userid !== userid) {
+      throw this.error.auth.tokeninvalid();
+    }
     const renewToken = await this.auth.token.create.manual(
       {
         _id: tokenValue._id,
@@ -43,12 +46,6 @@ export default new (class extends Controller {
       },
       'access',
     );
-
-    this.Response(
-      res,
-      200,
-      { token: renewToken },
-      { message: 'Token creation successful' },
-    );
+    res(200, { token: renewToken }, { message: 'Token creation successful' });
   });
 })();

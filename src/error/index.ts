@@ -1,4 +1,5 @@
 import returnError from '../lib/returnError';
+import logger from '@lib/logger';
 
 export default {
   custom: (message: string, status: number, code: string) =>
@@ -20,7 +21,12 @@ export default {
       if (directory) {
         data.directory = directory;
       }
-      return returnError('Page Not Found', 404, 'PAGE_NOT_FOUND', { data });
+      return returnError(
+        `Page Not Found. REQURI:${directory}`,
+        404,
+        'PAGE_NOT_FOUND',
+        { data },
+      );
     },
   },
   password: {

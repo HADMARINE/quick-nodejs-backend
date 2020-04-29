@@ -19,14 +19,14 @@ export default new (class extends Controller {
       .sort('-id')
       .exec();
     if (!banip) throw this.error.db.notfound();
-    this.Response(res, 200, { ...banip });
+    res(200, { ...banip });
   });
 
   private getBannedIp = this.Wrapper(async (req, res) => {
     const { ip } = req.params;
     const banip = await Banip.findOne({ ip }).select('ip reason due').exec();
     if (!banip) throw this.error.db.notfound();
-    this.Response(res, 200, banip);
+    res(200, banip);
   });
 
   private banIp = this.Wrapper(async (req, res) => {
@@ -38,7 +38,7 @@ export default new (class extends Controller {
       : `ISSUED BY ADMIN(${userData.userid})`;
     due = due ? due : -1;
     const banip = await Banip.create({ reason, due, ip });
-    this.Response(res, 201, { banip }, { message: 'Successfully banned ip' });
+    res(201, { banip }, { message: 'Successfully banned ip' });
   });
 
   private unbanIp = this.Wrapper(async (req, res) => {
@@ -50,12 +50,12 @@ export default new (class extends Controller {
     }).exec();
     if (!banip.n) throw this.error.db.notfound();
     if (ip.length > banip.n) {
-      this.Response(res, 200, undefined, {
+      res(200, undefined, {
         message: 'Update successful, but could not found some datas.',
         code: 'PARTLY_SUCCESS',
       });
       return;
     }
-    this.Response(res, 200, undefined, { message: 'Successfully debanned ip' });
+    res(200, undefined, { message: 'Successfully debanned ip' });
   });
 })();

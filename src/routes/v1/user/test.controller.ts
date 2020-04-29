@@ -20,7 +20,7 @@ export default new (class extends Controller {
   }
 
   private checkUserLogin = this.Wrapper((req, res) => {
-    this.Response(res, 200, undefined, {
+    res(200, undefined, {
       message: 'Successfully verified role',
     });
   });

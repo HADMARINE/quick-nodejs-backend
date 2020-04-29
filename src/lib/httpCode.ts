@@ -34,7 +34,7 @@ export function defaultMessage(httpCode: number): string {
 export function defaultCode(httpCode: number): string {
   let code = codeData[500];
   try {
-    code = codeData[httpCode];
+    code = codeData[httpCode] || codeData[500];
   } catch {}
   return code.toUpperCase().replace(/\ /g, '_');
 }

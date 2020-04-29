@@ -27,7 +27,7 @@ export default new (class extends Controller {
       .limit(parseInt(limit || 10, 10))
       .exec();
     if (!session.length) throw this.error.db.notfound();
-    this.Response(res, 200, session, {
+    res(200, session, {
       message: 'Found sessions',
     });
   });
@@ -51,8 +51,7 @@ export default new (class extends Controller {
     }
     const session = await Session.deleteMany(query).exec();
     if (!session.deletedCount) throw this.error.db.notfound();
-    this.Response(
-      res,
+    res(
       200,
       { amount: session.deletedCount },
       {

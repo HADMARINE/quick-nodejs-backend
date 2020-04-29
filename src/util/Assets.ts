@@ -35,9 +35,8 @@ function sleep(ms: number): Promise<number> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function delayExact(startTime: number, totalDelay: number = 250) {
+async function delayExact(startTime: number, totalDelay: number = 500) {
   let currentDate = null;
-  totalDelay += getRandomNumber(startTime / 10, totalDelay);
   do {
     await sleep(100);
     currentDate = Date.now();
@@ -63,6 +62,23 @@ function returnArray(data: any) {
   return data;
 }
 
+function verifyEmail(email: string): void {
+  const emailRegex = new RegExp(
+    /^(?:[a-zA-Z0-9])([-_0-9a-zA-Z]+(\.[-_0-9a-zA-Z]+)*|^\"([\001-\010\013\014\016-\037!#-\[\]-\177]|\\[\001-011\013\014\016-\177])*\")@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}\.?$/,
+  ); // if true. valid
+  if (!emailRegex.test(email)) {
+    throw error.data.parameterInvalid('email');
+  }
+  return;
+}
+
+function verifyPhone(phone: string): void {
+  const phoneRegex = new RegExp(/((?![0-9-]).)/g); // if true, invalid.
+  if (phoneRegex.test(phone)) {
+    throw error.data.parameterInvalid('phone');
+  }
+}
+
 export default {
   getObjectKeyByValue,
   getRandomNumber,
@@ -73,4 +89,10 @@ export default {
   delayExact,
   wrapper,
   returnArray,
+  data: {
+    verify: {
+      email: verifyEmail,
+      phone: verifyPhone,
+    },
+  },
 };
