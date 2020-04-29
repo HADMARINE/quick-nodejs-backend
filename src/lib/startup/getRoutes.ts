@@ -50,7 +50,9 @@ function getPathRoutes(routePath = '/'): GetRoutes {
     const router: NodeRequire = detectRouterType(file);
 
     if (!router) {
-      logger.warn(`File "${file}" has no default export. Ignoring...`);
+      logger.warn(
+        `File "${file}" has no default export or has syntax error. Ignoring...`,
+      );
       continue;
     }
 
