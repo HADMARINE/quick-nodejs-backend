@@ -14,8 +14,8 @@ export default new (class extends Controller {
     const { skip, limit } = req.query;
     const banip = await Banip.find()
       .select('ip reason due')
-      .skip(parseInt(skip || 0, 10))
-      .limit(parseInt(limit || 10, 10))
+      .skip(parseInt(this.assets.data.filter(skip, 'string') || 0, 10))
+      .limit(parseInt(this.assets.data.filter(limit, 'string') || 10, 10))
       .sort('-id')
       .exec();
     if (!banip) throw this.error.db.notfound();
