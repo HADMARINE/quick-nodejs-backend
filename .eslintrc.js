@@ -3,12 +3,7 @@ module.exports = {
     browser: true,
     node: true,
   },
-  extends: [
-    'plugin:@typescript-eslint/recommended',
-    'plugin:jest/recommended',
-    'plugin:import/errors',
-    'plugin:import/warnings',
-  ],
+  extends: ['plugin:@typescript-eslint/recommended', 'plugin:jest/recommended'],
   settings: {
     'import/resolver': {
       'babel-module': {},
@@ -41,12 +36,7 @@ module.exports = {
     'guard-for-in': 'error',
     'id-match': 'error',
     'max-classes-per-file': ['error', 1],
-    'max-len': [
-      'error',
-      {
-        code: 120,
-      },
-    ],
+    'max-len': ['off'],
     'new-parens': 'error',
     'no-bitwise': 'error',
     'no-caller': 'error',
