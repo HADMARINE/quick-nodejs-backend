@@ -13,7 +13,7 @@ const optionsDefault = {
 
 function returnError(
   message: string | null,
-  status: number = 500,
+  status = 500,
   code: string | null,
   options: Options = optionsDefault,
 ): Error {
