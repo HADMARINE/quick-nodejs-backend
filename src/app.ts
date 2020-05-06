@@ -1,9 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import morgan from 'morgan';
-import fs from 'fs';
-import path from 'path';
 import fileUploader from 'express-fileupload';
 
 import getRoutes from '@lib/startup/getRoutes';
@@ -13,10 +10,11 @@ import errorHandler from '@lib/middlewares/errorHandler';
 import Assets from '@util/Assets';
 import cron from '@lib/middlewares/cron';
 import ipfilter from '@lib/middlewares/ipfilter';
+import morgan from '@lib/middlewares/morgan';
 
 const app = express();
 
-function App() {
+function App(): express.Express {
   // Check Initial Environment Settings
   checkInitializeProjectSettings();
   cron();
@@ -26,16 +24,7 @@ function App() {
   // app.set('trust proxy', 1);
 
   // Morgan Logger
-  app.use(
-    morgan(
-      '[:date[iso]]: :method :url - :status(:total-time[3]ms) [:remote-addr :user-agent HTTP::http-version]',
-      {
-        stream: fs.createWriteStream(path.join(__dirname, 'tmp/access.log'), {
-          flags: 'a',
-        }),
-      },
-    ),
-  );
+  app.use(morgan());
 
   // Security settings
   app.use(
