@@ -10,7 +10,8 @@ export default new (class extends Controller {
 
   private getToken = this.Wrapper(async (req, res) => {
     let query = {};
-    const { user, time, jwtid, skip, limit } = req.query;
+    const { user, jwtid, skip, limit } = req.query;
+    const { time } = req.query as any;
     if (time) {
       query = Object.assign({}, query, {
         expire: { $lt: time.end, $gt: time.start },
@@ -23,8 +24,8 @@ export default new (class extends Controller {
       query = Object.assign({}, query, { jwtid });
     }
     const session = await Session.find(query)
-      .skip(parseInt(skip || 0, 10))
-      .limit(parseInt(limit || 10, 10))
+      .skip(parseInt(this.assets.data.filter(skip, 'string'), 10))
+      .limit(parseInt(this.assets.data.filter(limit, 'string'), 10))
       .exec();
     if (!session.length) throw this.error.db.notfound();
     res(200, session, {
@@ -34,7 +35,8 @@ export default new (class extends Controller {
 
   private deleteToken = this.Wrapper(async (req, res) => {
     let query = {};
-    const { user, time, jwtid, unsafe } = req.query;
+    const { user, jwtid, unsafe } = req.query;
+    const { time } = req.query as any;
     if (time) {
       query = Object.assign({}, query, {
         expire: { $lt: time.end, $gt: time.start },

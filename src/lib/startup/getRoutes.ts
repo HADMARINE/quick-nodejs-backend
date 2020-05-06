@@ -29,7 +29,8 @@ function getPathRoutes(routePath = '/'): GetRoutes {
         resultFile = require(file).default;
         invalidlyRoutedList.push(file);
       }
-    } catch {
+    } catch (e) {
+      logger.debug(e, false);
       resultFile = null;
     }
 
@@ -86,6 +87,7 @@ function getPathRoutes(routePath = '/'): GetRoutes {
 }
 
 function getRoutes(): GetRoutes {
+  console.clear();
   return getPathRoutes();
 }
 

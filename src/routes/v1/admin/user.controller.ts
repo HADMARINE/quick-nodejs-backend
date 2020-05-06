@@ -1,5 +1,4 @@
 import Controller from '@lib/blueprint/Controller';
-import Session from '@models/Session';
 import User from '@models/User';
 
 export default new (class extends Controller {
@@ -27,8 +26,8 @@ export default new (class extends Controller {
     const { skip, limit } = req.query;
     const user = await User.find()
       .select('userid authority')
-      .skip(parseInt(skip || 0, 10))
-      .limit(parseInt(limit || 10, 10))
+      .skip(parseInt(this.assets.data.filter(skip, 'string'), 10))
+      .limit(parseInt(this.assets.data.filter(limit, 'string'), 10))
       .sort('-id')
       .exec();
     if (!user) throw this.error.db.notfound();

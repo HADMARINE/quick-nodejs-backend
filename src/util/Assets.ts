@@ -1,7 +1,6 @@
 import error from '@error';
 import rateLimiter from 'express-rate-limit';
 import { RequestHandler, NextFunction, Response, Request } from 'express';
-import logger from '@lib/logger';
 
 function getObjectKeyByValue(object: any, value: string): string | undefined {
   return Object.keys(object).find((key) => object[key] === value);
@@ -16,7 +15,7 @@ function checkJong(value: string): boolean {
   return (result - 0xac00) % 28 > 0;
 }
 
-function checkNull(...param: Array<any>): void {
+function checkNull(...param: any[]): void {
   param.forEach((data) => {
     if (!data) {
       throw error.data.parameternull();
@@ -24,7 +23,10 @@ function checkNull(...param: Array<any>): void {
   });
 }
 
-function apiRateLimiter(standardTimeRate: number = 5, limitRate: number = 100) {
+function apiRateLimiter(
+  standardTimeRate = 5,
+  limitRate = 100,
+): rateLimiter.RateLimit {
   return rateLimiter({
     windowMs: standardTimeRate * 60 * 1000,
     max: limitRate,
@@ -35,7 +37,7 @@ function sleep(ms: number): Promise<number> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function delayExact(startTime: number, totalDelay: number = 500) {
+async function delayExact(startTime: number, totalDelay = 500): Promise<void> {
   let currentDate = null;
   do {
     await sleep(100);
@@ -44,14 +46,14 @@ async function delayExact(startTime: number, totalDelay: number = 500) {
 }
 
 function wrapper(requestHandler: any): RequestHandler {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction): void => {
     Promise.resolve(requestHandler(req, res, next)).catch((e) => {
       next(e);
     });
   };
 }
 
-function returnArray(data: any) {
+function returnArray(data: any): any {
   if (typeof data === 'string') {
     try {
       data = JSON.parse(data);
@@ -79,6 +81,13 @@ function verifyPhone(phone: string): void {
   }
 }
 
+function filterType(param: any, type: string): any {
+  if (typeof param !== type) {
+    throw error.data.parameterInvalid();
+  }
+  return param;
+}
+
 export default {
   getObjectKeyByValue,
   getRandomNumber,
@@ -94,5 +103,6 @@ export default {
       email: verifyEmail,
       phone: verifyPhone,
     },
+    filter: filterType,
   },
 };

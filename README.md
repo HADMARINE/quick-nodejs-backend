@@ -1,4 +1,4 @@
-<!-- @format -->
+# README is currently deprecated!
 
 # Typescript-Node-Express-Mongodb-backend
 
@@ -27,7 +27,8 @@ Please contribute your modified code at our organization, then we will add some 
 # How to use
 
 ## Cloning
-  <code>git clone --depth 1 --single-branch https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend "Your project name"</code>
+
+<code>git clone --depth 1 --single-branch https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend "Your project name"</code>
 
 ## Server execution
 
@@ -175,3 +176,7 @@ app.use(req => {
 
 ~~You should change your domain on Production build.<br/>
 To change your domain, Open /src/app.ts and modify your domain on line <b>14</b>.~~
+
+### All code belongs to HADMARINE. You can use this code as MIT License.
+
+Copyright 2020 HADMARINE, All rights reserved.
