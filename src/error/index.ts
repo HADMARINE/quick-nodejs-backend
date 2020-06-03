@@ -15,7 +15,7 @@ export default {
       ),
   },
   access: {
-    pagenotfound(directory = ''): Error {
+    pageNotFound(directory = ''): Error {
       const data: any = {};
       if (directory) {
         data.directory = directory;
@@ -38,8 +38,12 @@ export default {
     },
   },
   auth: {
-    tokeninvalid: (): Error =>
+    tokenInvalid: (): Error =>
       returnError('Token Invalid', 403, 'TOKEN_INVALID'),
+    tokenExpired: (): Error =>
+      returnError('Token Expired', 403, 'TOKEN_EXPIRED'),
+    tokenRenewNeeded: (): Error =>
+      returnError('Token renew needed', 403, 'TOKEN_RENEW_NEEDED'),
     fail: (): Error => returnError('Login Failed', 403, 'LOGIN_FAIL'),
     access: {
       lackOfAuthority: (): Error =>
@@ -51,7 +55,7 @@ export default {
     },
   },
   data: {
-    parameternull: (col: any = ''): Error =>
+    parameterNull: (col: any = ''): Error =>
       returnError(
         `Necessary parameter${col ? ` ${col}` : ``} is not provided.`,
         400,
