@@ -14,7 +14,7 @@ export default (
   req: Request,
   res: Response,
   next: NextFunction,
-) => {
+): void => {
   const status = error.status || 500;
   const message = error.message || defaultMessage(status);
   const code = error.code || defaultCode(status);
