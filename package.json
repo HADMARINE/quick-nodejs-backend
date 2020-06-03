@@ -9,7 +9,7 @@
     "dev": "nodemon",
     "build": "babel src --out-dir dist --extensions '.ts'",
     "tsc": "tsc",
-    "lint": "tslint -p",
+    "lint": "eslint -c .eslintrc.js --ext .ts ./src",
     "test": "jest --watch --detectOpenHandles --forceExit --testTimeout=10000"
   },
   "dependencies": {
