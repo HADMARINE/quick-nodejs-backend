@@ -20,12 +20,12 @@ function getPathRoutes(routePath = '/'): GetRoutes {
   const datas: GetRoutes = [];
   const invalidlyRoutedList: string[] = [];
 
-  function detectRouterType(file: string): NodeRequire {
+  function detectRouterTypeAndReturn(file: string): NodeRequire {
     let resultFile;
     try {
-      if (file.match(/.controller.(ts|js)$/)) {
+      if (file.match(/\.controller\.(ts|js)$/)) {
         resultFile = require(file).default.router;
-      } else if (file.match(/.routes.(ts|js)$/)) {
+      } else if (file.match(/\.routes\.(ts|js)$/)) {
         resultFile = require(file).default;
         invalidlyRoutedList.push(file);
       }
@@ -44,15 +44,15 @@ function getPathRoutes(routePath = '/'): GetRoutes {
       datas.push(...getPathRoutes(`${routePath.replace(/\/$/, '')}/${f}`));
       continue;
     }
-    if (!file.match(/.(controller|router).(js|ts)$/)) {
+    if (!file.match(/\.(controller|routes)\.(js|ts)$/)) {
       continue;
     }
 
-    const router: NodeRequire = detectRouterType(file);
+    const router: NodeRequire = detectRouterTypeAndReturn(file);
 
     if (!router) {
       logger.warn(
-        `File "${file}" has no default export or has syntax error. Ignoring...`,
+        `File "${file}" has no default export or have syntax error. Ignoring...`,
       );
       continue;
     }
@@ -60,7 +60,7 @@ function getPathRoutes(routePath = '/'): GetRoutes {
     if (Object.getPrototypeOf(router) !== Router) {
       continue;
     }
-    let filename: string = f.replace(/.(controller|router).(js|ts)$/, '');
+    let filename: string = f.replace(/\.(controller|routes)\.(js|ts)$/, '');
     filename = filename === 'index' ? '' : `/${filename}`;
 
     datas.push({
@@ -87,7 +87,6 @@ function getPathRoutes(routePath = '/'): GetRoutes {
 }
 
 function getRoutes(): GetRoutes {
-  console.clear();
   return getPathRoutes();
 }
 

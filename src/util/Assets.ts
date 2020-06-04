@@ -1,6 +1,8 @@
 import error from '@error';
 import rateLimiter from 'express-rate-limit';
 import { RequestHandler, NextFunction, Response, Request } from 'express';
+import fs from 'fs';
+import path from 'path';
 
 function getObjectKeyByValue(object: any, value: string): string | undefined {
   return Object.keys(object).find((key) => object[key] === value);
@@ -15,12 +17,13 @@ function checkJong(value: string): boolean {
   return (result - 0xac00) % 28 > 0;
 }
 
-function checkNull(...param: any[]): void {
+function checkNull(...param: any[]): any[] {
   param.forEach((data) => {
     if (!data) {
-      throw error.data.parameternull();
+      throw error.data.parameterNull();
     }
   });
+  return param;
 }
 
 function apiRateLimiter(
@@ -53,7 +56,7 @@ function wrapper(requestHandler: any): RequestHandler {
   };
 }
 
-function returnArray(data: any): any {
+function returnArray(data: any): any[] {
   if (typeof data === 'string') {
     try {
       data = JSON.parse(data);
@@ -81,11 +84,34 @@ function verifyPhone(phone: string): void {
   }
 }
 
-function filterType(param: any, type: string): any {
-  if (typeof param !== type) {
+function filterType(param: any, type: string): any | undefined {
+  if (typeof param !== type && typeof param !== 'undefined') {
     throw error.data.parameterInvalid();
   }
   return param;
+}
+
+function dirCollector(dirname: string): Record<string, any> {
+  const dirs: string[] = fs.readdirSync(dirname);
+  const datas: Record<string, any> = {};
+
+  for (const f of dirs) {
+    const file: any = path.join(dirname, f);
+    const stat = fs.statSync(file);
+    if (f.match(/index\.(ts|js)/) || f.match(/example/)) {
+      continue;
+    }
+    if (stat.isDirectory()) {
+      datas[f] = dirCollector(file);
+      continue;
+    }
+    try {
+      datas[f.replace(/\.(js|ts)$/g, '')] = require(file).default;
+    } catch (e) {
+      console.error('Error while getting datas with dirCollector : ' + e);
+    }
+  }
+  return datas;
 }
 
 export default {
@@ -105,4 +131,5 @@ export default {
     },
     filter: filterType,
   },
+  dirCollector,
 };

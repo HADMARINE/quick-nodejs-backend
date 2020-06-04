@@ -21,7 +21,7 @@ export interface BanipDocument extends Document, BanipInterface {
 
 BanipSchema.pre('save', function (next: HookNextFunction) {
   const doc = this as BanipDocument;
-  models['Banip'].findOne({ ip: doc.ip }, function (err, user) {
+  models.Banip.findOne({ ip: doc.ip }, function (err, user) {
     if (user) next(error.db.exists() as any);
     if (err) next(err);
     next();

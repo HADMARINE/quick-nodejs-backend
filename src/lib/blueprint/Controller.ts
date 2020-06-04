@@ -10,6 +10,7 @@ import { defaultMessage, defaultCode } from '@lib/httpCode';
 import error from '@error';
 import assets from '@util/Assets';
 import auth from '@util/Auth';
+import models from '@models/index';
 
 interface ResponseOptions {
   result?: boolean;
@@ -99,8 +100,10 @@ export default class Controller {
     };
   }
 
+  protected readonly router: Router = Router();
+
   protected readonly error = error;
   protected readonly assets = assets;
   protected readonly auth = auth;
-  protected readonly router: Router = Router();
+  protected readonly models = models;
 }

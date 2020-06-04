@@ -1,8 +1,7 @@
-import { model, Schema, Document, Model } from 'mongoose';
+import { model, Schema, Document } from 'mongoose';
 import Auth from '@util/Auth';
 import error from '@error';
 import jwt from 'jsonwebtoken';
-import Assets from '@util/Assets';
 
 export interface SessionInterface {
   jwtid: string;
@@ -26,12 +25,12 @@ SessionSchema.methods.registerToken = async function (
   await Auth.token.verify.manual(token, 'refresh', true);
   try {
     const tokenValue: any = jwt.decode(token);
-    if (!tokenValue._id || !tokenValue.exp || !tokenValue.jwtid) {
-      throw error.auth.tokeninvalid();
+    if (!tokenValue.exp || !tokenValue.jti) {
+      throw error.auth.tokenInvalid();
     }
     await Session.create({
-      jwtid: tokenValue.jwtid,
-      user: tokenValue._id,
+      jwtid: tokenValue.jti,
+      user: (tokenValue.jti as string).split('_')[1],
       expire: tokenValue.exp,
     });
   } catch (e) {

@@ -24,11 +24,11 @@ export const codeData: Record<number, string> = {
 };
 
 export function defaultMessage(httpCode: number): string {
-  let message = `500 ${codeData[500]}`;
   try {
-    message = `${httpCode} ${codeData[httpCode]}`;
-  } catch {}
-  return message;
+    return `${httpCode} ${codeData[httpCode]}`;
+  } catch {
+    return `500 ${codeData[500]}`;
+  }
 }
 
 export function defaultCode(httpCode: number): string {

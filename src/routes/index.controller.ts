@@ -24,7 +24,6 @@ export default new (class extends Controller {
 
   private apiInfo = this.Wrapper(async (req, res) => {
     const data = {
-      v0: 'deprecated',
       v1: 'production',
     };
     res(200, data);

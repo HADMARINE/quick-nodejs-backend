@@ -4,7 +4,7 @@ import helmet from 'helmet';
 import fileUploader from 'express-fileupload';
 
 import getRoutes from '@lib/startup/getRoutes';
-import checkInitializeProjectSettings from '@lib/startup/checkInitializeProjectSettings';
+import checkInitialProjectSettings from '@lib/startup/checkInitialProjectSettings';
 import error from '@error';
 import errorHandler from '@lib/middlewares/errorHandler';
 import Assets from '@util/Assets';
@@ -16,7 +16,7 @@ const app = express();
 
 function App(): express.Express {
   // Check Initial Environment Settings
-  checkInitializeProjectSettings();
+  checkInitialProjectSettings();
   cron();
 
   // Enable if you're behind a reverse proxy
@@ -45,7 +45,7 @@ function App(): express.Express {
       limits: { fileSize: 50 * 1024 * 1024 },
       useTempFiles: true,
       tempFileDir: '/tmp/file/',
-      debug: process.env.NODE_ENV === 'development' ? true : false,
+      debug: process.env.NODE_ENV === 'development',
     }),
   );
 
@@ -63,7 +63,7 @@ function App(): express.Express {
 
   // 404
   app.use((req) => {
-    throw error.access.pagenotfound(req.url);
+    throw error.access.pageNotFound(`${req.method} ${req.url}`);
   });
 
   // Error handler
