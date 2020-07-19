@@ -33,6 +33,12 @@ function apiRateLimiter(
   return rateLimiter({
     windowMs: standardTimeRate * 60 * 1000,
     max: limitRate,
+    handler: (req, res) =>
+      res.status(429).json({
+        result: false,
+        ...error.access.tooManyRequests(),
+        message: 'Too many requests',
+      }),
   });
 }
 
@@ -86,9 +92,54 @@ function verifyPhone(phone: string): void {
 
 function filterType(param: any, type: string): any | undefined {
   if (typeof param !== type && typeof param !== 'undefined') {
+    if (type === 'number') {
+      try {
+        return parseInt(param, 10);
+      } catch {}
+    }
     throw error.data.parameterInvalid();
   }
   return param;
+}
+
+function updateQueryBuilder(
+  doc: Record<string, any>,
+  allowDepth = -1,
+  currentDepth = 0,
+): Record<string, any> {
+  const result = {};
+  Object.keys(doc).forEach((key) => {
+    const value = doc[key];
+    if (
+      typeof value === 'object' &&
+      value !== null &&
+      (allowDepth === -1 || currentDepth < allowDepth)
+    ) {
+      Object.assign(result, {
+        [key]: updateQueryBuilder(value, allowDepth, currentDepth + 1),
+      });
+    } else if (value !== undefined) {
+      if (Array.isArray(value)) {
+        if ((value as any[]).length === 0) {
+          return;
+        }
+        const val: any[] = [];
+        (value as any[]).forEach((v) => {
+          if (v) {
+            if (typeof v === 'object' && JSON.stringify(v) === '{}') {
+              return;
+            }
+            val.push(v);
+          }
+        });
+        if (val.length === 0) return;
+        Object.assign(result, { [key]: val });
+      } else {
+        Object.assign(result, { [key]: value });
+      }
+    }
+  });
+  return result;
 }
 
 function dirCollector(dirname: string): Record<string, any> {
@@ -115,6 +166,7 @@ function dirCollector(dirname: string): Record<string, any> {
 }
 
 export default {
+  updateQueryBuilder,
   getObjectKeyByValue,
   getRandomNumber,
   checkJong,
