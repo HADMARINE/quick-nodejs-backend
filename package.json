@@ -58,7 +58,7 @@
     "@types/helmet": "^0.0.45",
     "@types/jest": "^25.2.1",
     "@types/jsonwebtoken": "^8.3.9",
-    "@types/mongoose": "^5.5.31",
+    "@types/mongoose": "^5.7.32",
     "@types/morgan": "^1.9.0",
     "@types/node": "^12.12.5",
     "@types/node-cron": "^2.0.3",
