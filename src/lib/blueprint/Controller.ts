@@ -10,6 +10,8 @@ import { defaultMessage, defaultCode } from '@lib/httpCode';
 import error from '@error';
 import assets from '@util/Assets';
 import auth from '@util/Auth';
+import aws from '@util/Aws';
+import encrypt from '@util/Encrypt';
 import models from '@models/index';
 
 interface ResponseOptions {
@@ -43,7 +45,7 @@ export default class Controller {
    * @param {RequestHandler} requestHandler Request handler
    * @returns {RequestHandler} Returns request handler
    */
-  public Wrapper(requestHandler: CustomRequestHandler): RequestHandler {
+  static Wrapper(requestHandler: CustomRequestHandler): RequestHandler {
     return (req: Request, res: Response, next: NextFunction): void => {
       Promise.resolve(requestHandler(req, this.Response(res), next)).catch(
         (e) => {
@@ -53,7 +55,7 @@ export default class Controller {
     };
   }
 
-  public LegacyWrapper(requestHandler: RequestHandler): RequestHandler {
+  static RawWrapper(requestHandler: RequestHandler): RequestHandler {
     return (req: Request, res: Response, next: NextFunction): void => {
       Promise.resolve(requestHandler(req, res, next)).catch((e) => {
         next(e);
@@ -61,13 +63,17 @@ export default class Controller {
     };
   }
 
-  public Delayer(delay: number) {
-    return async (req: Request, res: Response, next: NextFunction): void => {
-      return Promise.resolve(this.assets.delayExact(Date.now(), delay)).then(
-        () => {
-          next();
-        },
-      );
+  static Delayer(delay: number) {
+    return async (
+      req: Request,
+      res: Response,
+      next: NextFunction,
+    ): Promise<void> => {
+      return Promise.resolve(
+        Controller.assets.delayExact(Date.now(), delay),
+      ).then((): void => {
+        next();
+      });
     };
   }
 
@@ -79,10 +85,10 @@ export default class Controller {
    * @param {ResponseOptions} Options Response options
    * @returns {void}
    */
-  protected Response(res: Response): CustomResponseFunction {
+  static Response(res: Response): CustomResponseFunction {
     return function (
       status: number,
-      data?: Record<string, any>,
+      data?: Record<string, any> | string,
       options: ResponseOptions = {},
     ): void {
       options = Object.assign({}, optionsDefault, options);
@@ -102,8 +108,10 @@ export default class Controller {
 
   protected readonly router: Router = Router();
 
-  protected readonly error = error;
-  protected readonly assets = assets;
-  protected readonly auth = auth;
-  protected readonly models = models;
+  static readonly error = error;
+  static readonly assets = assets;
+  static readonly auth = auth;
+  static readonly models = models;
+  static readonly aws = aws;
+  static readonly encrypt = encrypt;
 }
