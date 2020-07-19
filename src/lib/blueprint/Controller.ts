@@ -43,8 +43,8 @@ export default class Controller {
    * @param {RequestHandler} requestHandler Request handler
    * @returns {RequestHandler} Returns request handler
    */
-  public Wrapper(requestHandler: CustomRequestHandler): any {
-    return (req: Request, res: Response, next: NextFunction) => {
+  public Wrapper(requestHandler: CustomRequestHandler): RequestHandler {
+    return (req: Request, res: Response, next: NextFunction): void => {
       Promise.resolve(requestHandler(req, this.Response(res), next)).catch(
         (e) => {
           next(e);
@@ -54,7 +54,7 @@ export default class Controller {
   }
 
   public LegacyWrapper(requestHandler: RequestHandler): RequestHandler {
-    return (req: Request, res: Response, next: NextFunction) => {
+    return (req: Request, res: Response, next: NextFunction): void => {
       Promise.resolve(requestHandler(req, res, next)).catch((e) => {
         next(e);
       });
@@ -62,7 +62,7 @@ export default class Controller {
   }
 
   public Delayer(delay: number) {
-    return async (req: Request, res: Response, next: NextFunction) => {
+    return async (req: Request, res: Response, next: NextFunction): void => {
       return Promise.resolve(this.assets.delayExact(Date.now(), delay)).then(
         () => {
           next();
