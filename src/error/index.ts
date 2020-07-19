@@ -27,15 +27,12 @@ export default {
         { data },
       );
     },
+    tooManyRequests: (): Error =>
+      returnError('Too many requests', 429, 'TOO_MANY_REQUESTS'),
   },
   password: {
-    encryption(): Error {
-      return returnError(
-        'Password Encryption failed',
-        500,
-        'PASSWORD_ENCRYTION_FAIL',
-      );
-    },
+    encryption: (): Error =>
+      returnError('Password Encryption failed', 500, 'PASSWORD_ENCRYTION_FAIL'),
   },
   auth: {
     tokenInvalid: (): Error =>
@@ -94,5 +91,11 @@ export default {
         500,
         `DATABASE_PROCESS_FAIL`,
       ),
+  },
+  aws: {
+    SES: (): Error =>
+      returnError(`Sending email failed.`, 500, `EMAIL_SEND_FAIL`),
+    S3: (message = `Uploading file failed.`): Error =>
+      returnError(message, 500, `FILE_PROCESS_FAIL`),
   },
 };
