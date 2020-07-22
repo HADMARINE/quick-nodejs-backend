@@ -62,7 +62,7 @@
     "@types/morgan": "^1.9.0",
     "@types/node": "^12.12.5",
     "@types/node-cron": "^2.0.3",
-    "@types/socket.io": "^2.1.4",
+    "@types/socket.io": "^2.1.10",
     "@types/supertest": "^2.0.8",
     "@typescript-eslint/eslint-plugin": "^2.24.0",
     "@typescript-eslint/parser": "^2.24.0",
