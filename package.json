@@ -25,7 +25,7 @@
     "dotenv": "^8.2.0",
     "eslint": "^6.6.0",
     "express": "^4.17.1",
-    "express-fileupload": "^1.1.7-alpha.3",
+    "express-fileupload": "^1.1.9",
     "express-ipfilter": "^1.1.2",
     "express-rate-limit": "^5.1.1",
     "helmet": "^3.21.2",
