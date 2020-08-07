@@ -1,10 +1,8 @@
 import jwt from 'jsonwebtoken';
 import { pbkdf2Sync, randomBytes } from 'crypto';
 import { Schema } from 'mongoose';
-
 import Session from '@models/Session';
 import User from '@models/User';
-
 import error from '@error';
 import { NextFunction, Response, Request, RequestHandler } from 'express';
 import logger from '@lib/logger';
@@ -13,6 +11,7 @@ import logger from '@lib/logger';
  * @description Verifies token
  * @param {string} token JWT token
  * @param {string} type Token type
+ * @param initial
  * @returns {Promise<Record<string, any>>} Return token payload value
  */
 async function verifyToken(
@@ -252,7 +251,7 @@ async function adminAuthority(
   try {
     const tokenPayload = req.headers['x-access-token'];
     if (typeof tokenPayload !== 'string') {
-      throw error.data.parameterInvalid();
+      throw error.auth.tokenInvalid();
     }
     const tokenValue = await verifyToken(tokenPayload);
     if (tokenValue.authority !== 'admin') {
@@ -274,7 +273,7 @@ function specifiedUserAuthority(...authority: string[]): RequestHandler {
     try {
       const tokenPayload = req.headers['x-access-token'];
       if (typeof tokenPayload !== 'string') {
-        throw error.data.parameterInvalid();
+        throw error.auth.tokenInvalid();
       }
       const tokenValue = await verifyToken(tokenPayload);
       if (
@@ -299,7 +298,7 @@ async function userAuthority(
   try {
     const tokenPayload = req.headers['x-access-token'];
     if (typeof tokenPayload !== 'string') {
-      throw error.data.parameterInvalid();
+      throw error.auth.tokenInvalid();
     }
     req.body.userData = await verifyToken(tokenPayload);
     next();

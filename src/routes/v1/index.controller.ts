@@ -1,16 +1,20 @@
-import { Request, Response } from 'express';
-import Controller from '@lib/blueprint/Controller';
+import C from '@lib/blueprint/Controller';
+import packageSettings from '@src/../package.json';
 
-export default new (class extends Controller {
+export default new (class extends C {
   constructor() {
     super();
     this.router.all('/', this.getIndex);
   }
 
-  private getIndex = this.LegacyWrapper(async (req, res) => {
-    this.Response(res)(
+  private getIndex = C.RawWrapper(async (req, res) => {
+    C.Response(res)(
       200,
-      { status: 'alive', mode: process.env.NODE_ENV || 'development' },
+      {
+        status: 'alive',
+        mode: process.env.NODE_ENV || 'development',
+        version: packageSettings.version,
+      },
       { message: 'Welcome to V1 API' },
     );
   });

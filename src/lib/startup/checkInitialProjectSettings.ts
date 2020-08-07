@@ -19,6 +19,16 @@ export default function checkInitializeProjectSettings(): void {
     throw new Error(e);
   }
 
+  if (!process.env.NODE_ENV) {
+    process.env.NODE_ENV = 'development';
+  }
+
+  if (process.env.NODE_ENV === 'development') {
+    logger.info(
+      'Please install openssl (or libressl) to encrypt, decrypt .env files!',
+    );
+  }
+
   if (!process.env.REQUEST_URI) {
     logger.warn(
       'process.env.REQUEST_URI IS NOT DEFINED. ANY ORIGIN REQUEST WOULD BE ALLOWED IF NOT DEFINED.',
