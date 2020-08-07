@@ -1,4 +1,3 @@
-import { Request, Response } from 'express';
 import C from '@lib/blueprint/Controller';
 import packageSettings from '@src/../package.json';
 
