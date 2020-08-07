@@ -1,6 +1,8 @@
 import error from '@error';
 import rateLimiter from 'express-rate-limit';
 import { RequestHandler, NextFunction, Response, Request } from 'express';
+import deasync from 'deasync';
+import logger from '@lib/logger';
 import fs from 'fs';
 import path from 'path';
 
@@ -103,10 +105,23 @@ function filterType(param: any, type: string): any | undefined {
 }
 
 function updateQueryBuilder(
-  doc: Record<string, any>,
+  doc: Record<string, any> | any[],
   allowDepth = -1,
   currentDepth = 0,
-): Record<string, any> {
+): Record<string, any> | any[] | undefined {
+  if (Array.isArray(doc)) {
+    const arrVal = [];
+    for (const v of doc) {
+      if (v) {
+        if (typeof v === 'object' && JSON.stringify(v) === '{}') {
+          continue;
+        }
+        arrVal.push(v);
+      }
+    }
+    if (arrVal.length === 0) return undefined;
+    return arrVal;
+  }
   const result = {};
   Object.keys(doc).forEach((key) => {
     const value = doc[key];
@@ -140,6 +155,56 @@ function updateQueryBuilder(
     }
   });
   return result;
+}
+
+const DEFAULT_TIMEOUTS = 10 * 1000;
+
+const STATE = {
+  INITIAL: 'INITIAL',
+  RESOLVED: 'RESOLVED',
+  REJECTED: 'REJECTED',
+};
+
+const DEFAULT_TICK = 100;
+
+function syncifyFunction<T>(
+  func: Function,
+  options: { timeout?: number; tick?: number } = {},
+): any {
+  logger.error('syncifyFunction is currently not working properly!');
+  return (...args: any[]) => {
+    let promiseError;
+    let promiseValue;
+    let promiseStatus = STATE.INITIAL;
+    const timeouts = options.timeout || DEFAULT_TIMEOUTS;
+    const tick = options.tick || DEFAULT_TICK;
+
+    func(...args)
+      .then((value: T) => {
+        console.log(value);
+        promiseValue = value;
+        promiseStatus = STATE.RESOLVED;
+      })
+      .catch((e: any) => {
+        console.log(e);
+        promiseError = e;
+        promiseStatus = STATE.REJECTED;
+      });
+
+    const waitUntil = new Date(new Date().getTime() + timeouts);
+    while (waitUntil > new Date() && promiseStatus === STATE.INITIAL) {
+      console.log(promiseStatus, waitUntil, promiseValue, promiseError);
+      deasync.sleep(tick);
+    }
+
+    if (promiseStatus === STATE.RESOLVED) {
+      return promiseValue;
+    } else if (promiseStatus === STATE.REJECTED) {
+      throw promiseError;
+    } else {
+      throw new Error(`${func.name} called timeout`);
+    }
+  };
 }
 
 function dirCollector(dirname: string): Record<string, any> {
@@ -176,6 +241,7 @@ export default {
   delayExact,
   wrapper,
   returnArray,
+  syncifyFunction,
   data: {
     verify: {
       email: verifyEmail,
