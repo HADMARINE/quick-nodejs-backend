@@ -71,7 +71,7 @@
     "eslint-plugin-jest": "^23.8.2",
     "jest": "^25.3.0",
     "supertest": "^4.0.2",
-    "ts-jest": "^25.4.0",
+    "ts-jest": "^26.1.4",
     "tsconfig-paths": "^3.9.0",
     "tslint": "^6.0.0-beta0",
     "tslint-config-standard": "^9.0.0",
