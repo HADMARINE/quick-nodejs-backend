@@ -2,7 +2,7 @@ console.clear();
 import logger from '@lib/logger';
 logger.info('Starting server...');
 import http from 'http';
-import app from '@src/App';
+import app from '@src/app';
 import chalk from 'chalk';
 // import io from '@src/io';
 import connectDB from '@lib/startup/connectDB';
