@@ -1,11 +1,13 @@
+const package = require('./package.json');
+
 module.exports = {
   apps: [
     {
-      name: 'your-server-name',
+      name: package.name,
       exec_mode: 'cluster',
       instances: 'max',
       script: './dist/index.js',
-      watch: true,
+      watch: false,
       env: {
         ENV: 'development',
       },
