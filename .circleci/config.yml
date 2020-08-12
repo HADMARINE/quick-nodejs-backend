@@ -1,0 +1,30 @@
+version: 2.1
+orbs:
+  node: circleci/node@3.0.0
+jobs:
+  test:
+    docker:
+      - image: playauto/circleci-node10-awscli
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - root-fb2-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Dependencies package installation
+          command: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: root-fb2-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Testing
+          command: npm run test-auto
+      - run:
+          name: Build
+          command: npm run build
+workflows:
+  test-build-deployment:
+    jobs:
+      - test

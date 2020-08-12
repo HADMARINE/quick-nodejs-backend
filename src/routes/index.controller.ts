@@ -1,7 +1,7 @@
-import { Request, Response } from 'express';
 import C from '@lib/blueprint/Controller';
 import welcome from '@src/pages/Welcome';
 import moment from 'moment';
+import packageJson from '../../package.json';
 
 export default new (class extends C {
   constructor() {
@@ -14,7 +14,7 @@ export default new (class extends C {
   private welcome = C.RawWrapper(async (req, res) => {
     res.send(
       welcome(
-        'TS-NODE-EXPRESS-MONGO BACKEND',
+        packageJson.name,
         `${moment().format(
           'YYYY-MM-DD HH:mm:ss',
         )}<br/> See api info on <a href="/info"><b>GET /info</b></a>`,
