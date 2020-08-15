@@ -4,12 +4,12 @@ logger.info('Starting server...');
 import http from 'http';
 import app from '@src/app';
 import chalk from 'chalk';
-// import io from '@src/io';
+import io from '@src/io';
 import connectDB from '@lib/startup/connectDB';
 
 const PORT: number = parseInt(process.env.PORT || '4000', 10);
 const server = http.createServer(app);
-// io(server); // Enable when using socket.io
+io(server); // Enable when using socket.io
 
 function listen(port = PORT): number {
   if (port <= 0 || port >= 65536) {
