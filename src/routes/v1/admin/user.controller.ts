@@ -1,7 +1,7 @@
 import C from '@lib/blueprint/Controller';
 import User from '@models/User';
 
-export default new (class extends C {
+export default class extends C {
   constructor() {
     super();
     this.router.get('/', C.auth.authority.admin, this.getUserMany);
@@ -77,4 +77,4 @@ export default new (class extends C {
       message: 'Update authority successful.',
     });
   });
-})();
+}

@@ -3,7 +3,7 @@ import welcome from '@src/pages/Welcome';
 import moment from 'moment';
 import packageJson from '../../package.json';
 
-export default new (class extends C {
+export default class extends C {
   constructor() {
     super();
     this.router.all('/', this.welcome);
@@ -32,4 +32,4 @@ export default new (class extends C {
   private timeInfo = C.RawWrapper(async (req, res) => {
     res.send(moment().format('YYYY-MM-DD HH:mm:ss'));
   });
-})();
+}

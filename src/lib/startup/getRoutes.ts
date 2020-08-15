@@ -24,7 +24,7 @@ function getPathRoutes(routePath = '/'): GetRoutes {
     let resultFile;
     try {
       if (file.match(/\.controller\.(ts|js)$/)) {
-        resultFile = require(file).default.router;
+        resultFile = new (require(file).default)().router;
       } else if (file.match(/\.routes\.(ts|js)$/)) {
         resultFile = require(file).default;
         invalidlyRoutedList.push(file);

@@ -1,53 +1,154 @@
-# README is currently deprecated!
-
 # Typescript-Node-Express-Mongodb-backend
 
 ## Readme for other languages
 
-### [한국어 리드미](https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend/blob/master/README_ko.md)
+### [한국어 리드미 (만료)](https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend/blob/master/README_ko.md)
 
 ### Description
 
 Backend boilerplate codes for developing backend by typescript
-
-### Purpose and Orientation of this Template
-
-I was always annoyed when I create every Node.js project because of the configurations. At first, I copy and pasted my projects to save time, but it was not a good solution because of the variety of configurations of each project, it returned a lot of errors every time. While I was thinking about it, I decided to make a boilerplate of the Node.js project.
-That's why I created this code not only to save time but also to allow to concentrate on your logics and codes, not annoying configurations.
 
 ### Informations
 
 Default database package is currently [<b>Mongoose</b>](https://www.npmjs.com/package/mongoose)<br/>
 You must modify your code on your own to execute without mongoose.
 
-### Suggestion
-
-Please contribute your modified code at our organization, then we will add some repositories. Thank you! :)
-
-# How to use
-
 ## Cloning
 
 <code>git clone --depth 1 --single-branch https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend "Your project name"</code>
 
-## Server execution
+# How to use
 
-### 1. Routing
+
+## 1. HTTP Router (Express based)
 
 Place your file in routes like :
-<code>/routes/YOUR_ROUTE/index.routes.ts</code><br/>
-and, export like : <code>export default router;</code><br/>
+<code>/routes/YOUR_ROUTE/index.controller/router.ts</code><br/>
 Then automated code will route your files :)
 
-<b>Warning! if the filename is not like \*.routes.ts or \*.routes.js, it will exclude from router!</b>
+<b>Warning! if the filename is not like \*.routes.ts or \*.controller.ts it will exclude from router!</b>
 
-### 2. Commanding
+#### Differences of *.controller.ts and *.routes.ts
+
+- controller.ts is controlled router, your code will be guided by pre-written codes.
+- routes.ts is uncontrolled router, export default express requestHandler function to execute.
+##### Usage
+- Write the boilerplate code.
+- Follow the description below.
+```typescript 
+// Code from routes/index.controller.ts
+
+import C from '@lib/blueprint/Controller';
+import welcome from '@src/pages/Welcome';
+import moment from 'moment';
+import packageJson from '../../package.json';
+
+export default class extends C {
+  constructor() {
+    super();
+    // Declare your router here. this.router contains router of Express. 
+    this.router.all('/', this.welcome);
+    this.router.get('/info', this.apiInfo);
+    this.router.get('/info/time', this.timeInfo);
+  }
+
+  // RawWrapper is Wrapper that is not responsing strict json datas.
+  private welcome = C.RawWrapper(async (req, res) => {
+    res.send(
+      welcome(
+        packageJson.name,
+        `${moment().format(
+          'YYYY-MM-DD HH:mm:ss',
+        )}<br/> See api info on <a href="/info"><b>GET /info</b></a>`,
+      ),
+    );
+  });
+
+  // Wrapper responses strict json response contains status code (number), message, status code(string), data, result(boolean))
+  private apiInfo = C.Wrapper(async (req, res) => {
+    const data = {
+      v1: 'production',
+    };
+    // res(status code(number), data (Record<string,any>, options (ResponseOptions))
+    /*
+    ResponseOptions {
+      result?: boolean; - strictly returns result parameter
+      message?: string | null; - custom message parameter
+      code?: string | null; - custom code parameter
+      additionalData?: Record<string, any> | null; - return parameter outside of data parameter
+    }
+    */
+    res(200, data);
+  });
+
+  private timeInfo = C.RawWrapper(async (req, res) => {
+    res.send(moment().format('YYYY-MM-DD HH:mm:ss'));
+  });
+}
+```
+
+Strict response example<br/>
+Success
+```json
+{
+    "status": 200,
+    "code": "OK",
+    "message": "Welcome to V1 API",
+    "result": true,
+    "data": {
+        "status": "alive",
+        "mode": "development",
+        "version": "3.5.0"
+    }
+}
+```
+Fail
+```json
+{
+    "status": 403,
+    "message": "Token Invalid",
+    "code": "TOKEN_INVALID",
+    "result": false
+}
+```
+All data except data parameters are automatic.
+
+## 2. Socket Event Handler
+1. Place your socket event handler file on src/io/routes<br/>
+<code>foo.socket.ts</code> or <code>bar.rawsocket.ts</code>
+
+2. Write your boilerplate code
+- *.socket.ts
+```typescript
+import SC from '@lib/blueprint/SocketController';
+
+export default class extends SC {
+  main() {
+    //your code goes here
+    //this.parameters - parameters of current event
+    //this.global - socketio.Server (global io)
+    //this.current - socketio.Socket (current socket event handler)
+  }
+}
+```
+<b>strict event handler will be auto assigned by file name (filename.socket.ts -> filename event listener)</b>
+- *.rawsocket.ts
+```typescript
+export default function (io: Socketio.Server, socket: Socketio.Socket) {
+    //your code goes here
+}
+```
+<b>raw event handler will not assign events automatically.</b>
+
+
+
+## 3. Commands
 
 Execute <code>yarn dev</code> on your command line.<br/>
 If the port (default port is 4000) is already in use, it will try to listen on another port automatically. <br/>
 If you don't want this function, set <code>PORT_STRICT</code> on your <code>.env</code> to true.
 
-## Error Handling (throwError.ts)
+### Error Handling (returnError.ts)
 
 We made some boilerplate errors on <code>./src/error/index.ts</code>. <br/>
 We suggest to use this method because if you create your own error every time,<br/> **integrity of error datas would be broken** and can cause side-effects.<br/>
@@ -55,21 +156,21 @@ So, if you can, declare error on <code>./src/error/index.ts</code> and use.
 
 ### How to create error
 
-First, import <code>throwError</code> module.
+#### First, declare error on <code>src/error</code> file.
 
 ```typescript
-import throwError from 'YOUR_DIR_HERE/lib/throwError.ts';
+returnError(ERROR_MESSAGE, HTTP_ERROR_CODE_NUMBER, ERROR_REASON_STRING, OPTIONS);
 ```
 
-<br/>
-
-And, throw your error like :
+#### Next, throw your error on routing files.
 
 ```typescript
-throwError(ERROR_MESSAGE, HTTP_ERROR_CODE_NUMBER, ERROR_REASON_STRING, OPTIONS);
+class Foo {
+    private getFoo = C.Wrapper(async (req,res) => {
+        throw C.error.fooError();
+    })
+}
 ```
-
-<br/>
 
 ##### Description
 
@@ -78,84 +179,24 @@ throwError(ERROR_MESSAGE, HTTP_ERROR_CODE_NUMBER, ERROR_REASON_STRING, OPTIONS);
 <code>ERROR_REASON_STRING</code> is string type, you may use this data for managing exceptions.<br/>
 <code>OPTIONS</code> is Object type. You can give factors below. It is not a required factor.<br/>
 
-```json
+```typescript
 {
   "log": true
 } //Will print log on console.
 ```
 
-##### Example
+##### Import and usage
 
 ```typescript
-throwError('Login failed', 400, 'LOGIN_FAIL');
-throwError('Page not found', 404, 'PAGE_NOT_FOUND', { log: true });
-```
-
-### Suggest
-
-Declare error with OOP-like style to maintain your error easily.
-
-#### Legacy code
-
-###### Declaration
-
-```typescript
-export const PageNotFound = (directory: string = '') => {
-  let errorMessage = 'Page Not found.';
-  if (directory) {
-  }
-  throwError(errorMessage, 404, 'PAGE_NOT_FOUND');
-};
-```
-
-###### Import and usage
-
-```typescript
-import { PageNotFound } from './src/error/index';
-...
-
-// 404
-app.use(req => {
-  PageNotFound(req.url);
-});
-```
-
-#### Improved code (OOP Style)
-
-###### Declaration
-
-```typescript
-export default {
-  PageNotFound(directory: string = '') {
-    let errorMessage = 'Page Not found.';
-    if (directory) {
-      errorMessage += ` Request Directory : ${directory}`;
-    }
-    throwError(errorMessage, 404, 'PAGE_NOT_FOUND');
-  },
-  // NewError(){...},
-  // NewError(){...},
-};
-```
-
-###### Import and usage
-
-```typescript
-import Error from './src/error/index';
+import error from './src/error/index';
 ...
 // 404
 app.use(req => {
-  Error.PageNotFound(req.url);
+  error.pageNotFound(req.url);
 });
 ```
 
-###### Pros
-
-1. Don't need to import each errors every time since you imported default error file.
-2. IDE suggests every error, so you don't need to find error every time.
-3. You can divide errors by identifier like : <code>Error.identifier1.error</code>
-
-## .env(dotenv)
+## 4. env(dotenv)
 
 ### Required Factors
 
@@ -163,19 +204,17 @@ app.use(req => {
 <code>DB_NAME</code> : mongodb database name<br/>
 <code>DB_USER</code> : mongodb user<br/>
 <code>DB_PASS</code> : mongodb password<br/>
-<code>REQUEST_URI</code> : URI that your client will access. If you don't set your domain, cors origin uri will set to <b>\*</b> (wildcard) and cannot protect your api. If you want to set your origin uri to a wildcard, set to <b>\*</b> or if will occur warning log.
+<code>REQUEST_URI</code> : URI that your client will access. If you don't set your domain, cors origin uri will set to <b>\*</b> (wildcard) and cannot protect your api. If you want to set your origin uri to a wildcard, set to <b>\*</b> or if will occur warning log.<br/>
+<code>TOKEN_KEY</code> : JWT Token private key
 
 ### Not Required Factors
 
 <code>PORT</code> : Port that server app will run<br/>
 <code>PORT_STRICT</code> : Set to <b>true</b> if you don't want to use auto port-detection and use only your own port.
+<code>EXAMINE_PASSWORD</code> : parameter whether double-check password encryption<br/>
 
-## app.ts
 
-#### From [THIS](https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend/commit/02a7255290b81c49f3770f6fbaae4703069c963c) version of commit, cors origin uri settings will be automated. Set your .env file properly.
-
-~~You should change your domain on Production build.<br/>
-To change your domain, Open /src/app.ts and modify your domain on line <b>14</b>.~~
+## ETC
 
 ### All code belongs to HADMARINE. You can use this code as MIT License.
 

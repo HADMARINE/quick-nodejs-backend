@@ -1,7 +1,7 @@
 import C from '@lib/blueprint/Controller';
 import Session from '@models/Session';
 
-export default new (class extends C {
+export default class extends C {
   constructor() {
     super();
     this.router.get('/', C.auth.authority.admin, this.getToken);
@@ -61,4 +61,4 @@ export default new (class extends C {
       },
     );
   });
-})();
+}
