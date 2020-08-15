@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import C from '@lib/blueprint/Controller';
 import User from '@models/User';
 
-export default new (class extends C {
+export default class extends C {
   constructor() {
     super();
     this.router.get(
@@ -67,4 +67,4 @@ export default new (class extends C {
     if (!user) throw C.error.db.notfound();
     res(200, user, { message: 'User removal successful' });
   });
-})();
+}

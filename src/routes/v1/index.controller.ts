@@ -1,7 +1,7 @@
 import C from '@lib/blueprint/Controller';
 import packageSettings from '@src/../package.json';
 
-export default new (class extends C {
+export default class extends C {
   constructor() {
     super();
     this.router.all('/', this.getIndex);
@@ -18,4 +18,4 @@ export default new (class extends C {
       { message: 'Welcome to V1 API' },
     );
   });
-})();
+}

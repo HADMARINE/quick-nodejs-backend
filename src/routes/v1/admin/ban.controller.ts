@@ -1,7 +1,7 @@
 import C from '@lib/blueprint/Controller';
 import Banip from '@models/Banip';
 
-export default new (class extends C {
+export default class extends C {
   constructor() {
     super();
     this.router.get(`/ip`, C.auth.authority.admin, this.getBannedIpList);
@@ -58,4 +58,4 @@ export default new (class extends C {
     }
     res(200, undefined, { message: 'Successfully debanned ip' });
   });
-})();
+}

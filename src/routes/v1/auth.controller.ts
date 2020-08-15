@@ -1,7 +1,7 @@
 import C from '@lib/blueprint/Controller';
 import User from '@models/User';
 
-export default new (class extends C {
+export default class extends C {
   constructor() {
     super();
     this.router.post('/', C.assets.apiRateLimiter(1, 5), this.signInUser);
@@ -45,4 +45,4 @@ export default new (class extends C {
     );
     res(200, { token: renewToken }, { message: 'Token creation successful' });
   });
-})();
+}
