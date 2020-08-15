@@ -8,43 +8,33 @@
 
 Backend boilerplate codes for developing backend by typescript
 
-### Purpose and Orientation of this Template
-
-I was always annoyed when I create every Node.js project because of the configurations. At first, I copy and pasted my projects to save time, but it was not a good solution because of the variety of configurations of each project, it returned a lot of errors every time. While I was thinking about it, I decided to make a boilerplate of the Node.js project.
-That's why I created this code not only to save time but also to allow to concentrate on your logics and codes, not annoying configurations.
-
 ### Informations
 
 Default database package is currently [<b>Mongoose</b>](https://www.npmjs.com/package/mongoose)<br/>
 You must modify your code on your own to execute without mongoose.
 
-### Suggestion
-
-Please contribute your modified code at our organization, then we will add some repositories. Thank you! :)
-
-# How to use
-
 ## Cloning
 
 <code>git clone --depth 1 --single-branch https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend "Your project name"</code>
 
-## Server execution
+# How to use
 
-### 1. Routing
+
+## 1. HTTP Router (Express based)
 
 Place your file in routes like :
 <code>/routes/YOUR_ROUTE/index.controller/router.ts</code><br/>
-and, export like : <code>export default router;</code><br/>
 Then automated code will route your files :)
 
 <b>Warning! if the filename is not like \*.routes.ts or \*.controller.ts it will exclude from router!</b>
 
 #### Differences of *.controller.ts and *.routes.ts
 
-    1. controller.ts is controlled router, your code will be guided by pre-written codes.
+- controller.ts is controlled router, your code will be guided by pre-written codes.
+- routes.ts is uncontrolled router, export default express requestHandler function to execute.
 ##### Usage
-    1. Write the boilerplate code.
-    2. Follow the description below.
+- Write the boilerplate code.
+- Follow the description below.
 ```typescript 
 // Code from routes/index.controller.ts
 
@@ -123,13 +113,42 @@ Fail
 ```
 All data except data parameters are automatic.
 
-### 2. Commanding
+## 2. Socket Event Handler
+1. Place your socket event handler file on src/io/routes<br/>
+<code>foo.socket.ts</code> or <code>bar.rawsocket.ts</code>
+
+2. Write your boilerplate code
+- *.socket.ts
+```typescript
+import SC from '@lib/blueprint/SocketController';
+
+export default class extends SC {
+  main() {
+    //your code goes here
+    //this.parameters - parameters of current event
+    //this.global - socketio.Server (global io)
+    //this.current - socketio.Socket (current socket event handler)
+  }
+}
+```
+<b>strict event handler will be auto assigned by file name (filename.socket.ts -> filename event listener)</b>
+- *.rawsocket.ts
+```typescript
+export default function (io: Socketio.Server, socket: Socketio.Socket) {
+    //your code goes here
+}
+```
+<b>raw event handler will not assign events automatically.</b>
+
+
+
+## 3. Commands
 
 Execute <code>yarn dev</code> on your command line.<br/>
 If the port (default port is 4000) is already in use, it will try to listen on another port automatically. <br/>
 If you don't want this function, set <code>PORT_STRICT</code> on your <code>.env</code> to true.
 
-## Error Handling (returnError.ts)
+### Error Handling (returnError.ts)
 
 We made some boilerplate errors on <code>./src/error/index.ts</code>. <br/>
 We suggest to use this method because if you create your own error every time,<br/> **integrity of error datas would be broken** and can cause side-effects.<br/>
@@ -177,7 +196,7 @@ app.use(req => {
 });
 ```
 
-## .env(dotenv)
+## 4. env(dotenv)
 
 ### Required Factors
 
@@ -195,6 +214,7 @@ app.use(req => {
 <code>EXAMINE_PASSWORD</code> : parameter whether double-check password encryption<br/>
 
 
+## ETC
 
 ### All code belongs to HADMARINE. You can use this code as MIT License.
 
