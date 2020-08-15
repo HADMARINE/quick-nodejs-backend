@@ -26,6 +26,7 @@ type CustomResponseFunction = (
   data?: Record<string, any>,
   options?: ResponseOptions,
 ) => void;
+
 type CustomRequestHandler = (
   req: Request,
   res: CustomResponseFunction,
@@ -106,7 +107,7 @@ export default class Controller {
     };
   }
 
-  protected readonly router: Router = Router();
+  public readonly router: Router = Router();
 
   static readonly error = error;
   static readonly assets = assets;
