@@ -3,5 +3,8 @@ import socketio from 'socket.io';
 export {};
 
 declare global {
-  type socketServer = socketio.Server;
+  namespace Socketio {
+    type Server = socketio.Server;
+    type Socket = socketio.Socket;
+  }
 }
