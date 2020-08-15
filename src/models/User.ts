@@ -5,7 +5,7 @@ export interface UserInterface {
   userid: string;
   password: string;
   enckey: string;
-  authority: string;
+  authority?: string;
 }
 
 const UserSchema = new Schema<UserDocument>({
