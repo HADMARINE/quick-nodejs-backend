@@ -1,16 +1,17 @@
-import Controller from '@lib/blueprint/Controller';
+import C from '@lib/blueprint/Controller';
 import Session from '@models/Session';
 
-export default new (class extends Controller {
+export default class extends C {
   constructor() {
     super();
-    this.router.get('/', this.auth.authority.admin, this.getToken);
-    this.router.delete('/', this.auth.authority.admin, this.deleteToken);
+    this.router.get('/', C.auth.authority.admin, this.getToken);
+    this.router.delete('/', C.auth.authority.admin, this.deleteToken);
   }
 
-  private getToken = this.Wrapper(async (req, res) => {
+  private getToken = C.Wrapper(async (req, res) => {
     let query = {};
-    const { user, time, jwtid, skip, limit } = req.query;
+    const { user, jwtid, skip, limit } = req.query;
+    const { time } = req.query as any;
     if (time) {
       query = Object.assign({}, query, {
         expire: { $lt: time.end, $gt: time.start },
@@ -23,18 +24,19 @@ export default new (class extends Controller {
       query = Object.assign({}, query, { jwtid });
     }
     const session = await Session.find(query)
-      .skip(parseInt(skip || 0, 10))
-      .limit(parseInt(limit || 10, 10))
+      .skip(parseInt(C.assets.data.filter(skip, 'string'), 10))
+      .limit(parseInt(C.assets.data.filter(limit, 'string'), 10))
       .exec();
-    if (!session.length) throw this.error.db.notfound();
+    if (!session.length) throw C.error.db.notfound();
     res(200, session, {
       message: 'Found sessions',
     });
   });
 
-  private deleteToken = this.Wrapper(async (req, res) => {
+  private deleteToken = C.Wrapper(async (req, res) => {
     let query = {};
-    const { user, time, jwtid, unsafe } = req.query;
+    const { user, jwtid, unsafe } = req.query;
+    const { time } = req.query as any;
     if (time) {
       query = Object.assign({}, query, {
         expire: { $lt: time.end, $gt: time.start },
@@ -47,10 +49,10 @@ export default new (class extends Controller {
       query = Object.assign({}, query, { jwtid });
     }
     if (unsafe !== 'true' && JSON.stringify(query) === '{}') {
-      throw this.error.action.unsafe();
+      throw C.error.action.unsafe();
     }
     const session = await Session.deleteMany(query).exec();
-    if (!session.deletedCount) throw this.error.db.notfound();
+    if (!session.deletedCount) throw C.error.db.notfound();
     res(
       200,
       { amount: session.deletedCount },
@@ -59,4 +61,4 @@ export default new (class extends Controller {
       },
     );
   });
-})();
+}

@@ -1,9 +1,9 @@
-import { Request, Response } from 'express';
-import Controller from '@lib/blueprint/Controller';
+import C from '@lib/blueprint/Controller';
 import welcome from '@src/pages/Welcome';
 import moment from 'moment';
+import packageJson from '../../package.json';
 
-export default new (class extends Controller {
+export default class extends C {
   constructor() {
     super();
     this.router.all('/', this.welcome);
@@ -11,10 +11,10 @@ export default new (class extends Controller {
     this.router.get('/info/time', this.timeInfo);
   }
 
-  private welcome = this.LegacyWrapper(async (req, res) => {
+  private welcome = C.RawWrapper(async (req, res) => {
     res.send(
       welcome(
-        'TS-NODE-EXPRESS-MONGO BACKEND',
+        packageJson.name,
         `${moment().format(
           'YYYY-MM-DD HH:mm:ss',
         )}<br/> See api info on <a href="/info"><b>GET /info</b></a>`,
@@ -22,15 +22,14 @@ export default new (class extends Controller {
     );
   });
 
-  private apiInfo = this.Wrapper(async (req, res) => {
+  private apiInfo = C.Wrapper(async (req, res) => {
     const data = {
-      v0: 'deprecated',
       v1: 'production',
     };
     res(200, data);
   });
 
-  private timeInfo = this.LegacyWrapper(async (req, res) => {
+  private timeInfo = C.RawWrapper(async (req, res) => {
     res.send(moment().format('YYYY-MM-DD HH:mm:ss'));
   });
-})();
+}

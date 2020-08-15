@@ -1,56 +1,48 @@
 import jwt from 'jsonwebtoken';
 import { pbkdf2Sync, randomBytes } from 'crypto';
 import { Schema } from 'mongoose';
-
 import Session from '@models/Session';
 import User from '@models/User';
-
 import error from '@error';
-import { NextFunction, Response, Request } from 'express';
+import { NextFunction, Response, Request, RequestHandler } from 'express';
 import logger from '@lib/logger';
-
-// function verifyUser(headers: any, id: string = '') {
-//   const token = headers['x-access-token'];
-//   Assets.checkNull([token]);
-//   const userValue = verifyToken(token, id);
-//   return userValue;
-// }
 
 /**
  * @description Verifies token
  * @param {string} token JWT token
  * @param {string} type Token type
+ * @param initial
  * @returns {Promise<Record<string, any>>} Return token payload value
  */
 async function verifyToken(
   token: string,
   type: string | null = 'access',
-  initial: boolean = false,
+  initial = false,
 ): Promise<Record<string, any>> {
   let tokenValue: any;
   try {
-    tokenValue = jwt.verify(token, process.env.TOKEN_KEY || 'tokenkey');
+    tokenValue = jwt.verify(token, process.env.TOKEN_KEY || 'token_key');
   } catch (err) {
-    throw error.auth.tokeninvalid();
+    if (err.message === 'jwt expired') throw error.auth.tokenExpired();
+    throw error.auth.tokenInvalid();
   }
 
   if (type === 'refresh' && !initial) {
-    const session = await Session.findOne({ jwtid: tokenValue.jwtid }).exec();
-    if (!session) throw error.auth.tokeninvalid();
+    const session = await Session.findOne({ jwtid: tokenValue.jti }).exec();
+    if (!session) throw error.auth.tokenInvalid();
   }
   if (typeof tokenValue === 'string') {
-    throw error.auth.tokeninvalid();
+    throw error.auth.tokenInvalid();
   }
   let tokenType;
   try {
-    // @ts-ignore
     tokenType = tokenValue.type;
   } catch {
-    throw error.auth.tokeninvalid();
+    throw error.auth.tokenInvalid();
   }
 
   if (tokenType !== type) {
-    throw error.auth.tokeninvalid();
+    throw error.auth.tokenInvalid();
   }
 
   return tokenValue;
@@ -113,7 +105,6 @@ interface CreateTokenPayload {
 interface TokenPayload {
   userid: string;
   _id: Schema.Types.ObjectId;
-  jwtid: string;
   type: string;
   authority: string;
 }
@@ -139,6 +130,7 @@ async function createToken(
   try {
     const jwtSettings: jwt.SignOptions = {
       expiresIn: expireTime(),
+      jwtid: `${Date.now()}_${payload._id}_${tokenType}`,
       issuer:
         process.env.NODE_ENV === 'development'
           ? '*'
@@ -150,7 +142,6 @@ async function createToken(
     const _payload: TokenPayload = {
       userid: payload.userid,
       _id: payload._id,
-      jwtid: `${Date.now()}_${payload._id}`,
       type: tokenType,
       authority: user.authority || 'normal',
     };
@@ -202,7 +193,7 @@ interface PasswordCreateResult {
  */
 function createPassword(
   password: string,
-  customKey: string = '',
+  customKey = '',
 ): PasswordCreateResult {
   const buf: string = customKey
     ? customKey
@@ -252,11 +243,15 @@ function verifyPassword(
   return false;
 }
 
-async function adminAuthority(req: Request, res: Response, next: NextFunction) {
+async function adminAuthority(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
   try {
     const tokenPayload = req.headers['x-access-token'];
     if (typeof tokenPayload !== 'string') {
-      throw error.data.parameterInvalid();
+      throw error.auth.tokenInvalid();
     }
     const tokenValue = await verifyToken(tokenPayload);
     if (tokenValue.authority !== 'admin') {
@@ -269,11 +264,41 @@ async function adminAuthority(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-async function userAuthority(req: Request, res: Response, next: NextFunction) {
+function specifiedUserAuthority(...authority: string[]): RequestHandler {
+  return async function (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const tokenPayload = req.headers['x-access-token'];
+      if (typeof tokenPayload !== 'string') {
+        throw error.auth.tokenInvalid();
+      }
+      const tokenValue = await verifyToken(tokenPayload);
+      if (
+        authority.indexOf(tokenValue.authority) === -1 ||
+        tokenValue.authority !== 'admin'
+      ) {
+        throw error.auth.access.lackOfAuthority();
+      }
+      req.body.userData = await verifyToken(tokenPayload);
+      next();
+    } catch (e) {
+      next(e);
+    }
+  };
+}
+
+async function userAuthority(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
   try {
     const tokenPayload = req.headers['x-access-token'];
     if (typeof tokenPayload !== 'string') {
-      throw error.data.parameterInvalid();
+      throw error.auth.tokenInvalid();
     }
     req.body.userData = await verifyToken(tokenPayload);
     next();
@@ -281,6 +306,7 @@ async function userAuthority(req: Request, res: Response, next: NextFunction) {
     next(e);
   }
 }
+
 export default {
   token: {
     verify: {
@@ -300,12 +326,10 @@ export default {
       user: detachUser,
     },
   },
-  user: {
-    // verify: verifyUser,
-  },
   authority: {
     admin: adminAuthority,
     user: userAuthority,
+    specify: specifiedUserAuthority,
   },
   password: {
     create: createPassword,

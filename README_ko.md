@@ -1,3 +1,5 @@
+# 경고: README가 최근 변동사항에 대해 업데이트가 되지 않았습니다.
+
 # Typescript-Node-Express-Mongodb-backend
 
 ### 설명
@@ -171,3 +173,7 @@ app.use(req => {
 
 ~~상용 빌드에서는 당신의 도메인으로 설정해야 합니다.<br/>
 도메인을 변경하고 싶으시면, /src/app.ts 을 열어 <b>14</b>번째 줄의 도메인 정보를 변경하세요.~~
+
+### 모든 코드는 HADMARINE 에게 저작권이 있으며, MIT 라이선스에 의해 사용될 수 있습니다.
+
+Copyright 2020 HADMARINE, All rights reserved.

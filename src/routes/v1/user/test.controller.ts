@@ -1,27 +1,27 @@
-import Controller from '@lib/blueprint/Controller';
+import C from '@lib/blueprint/Controller';
 import User from '@models/User';
 
-export default new (class extends Controller {
+export default class extends C {
   constructor() {
     super();
 
     this.router.get(
       '/admin',
-      this.assets.apiRateLimiter(1, 20),
-      this.auth.authority.admin,
+      C.assets.apiRateLimiter(1, 20),
+      C.auth.authority.admin,
       this.checkUserLogin,
     );
     this.router.get(
       '/user',
-      this.assets.apiRateLimiter(1, 20),
-      this.auth.authority.user,
+      C.assets.apiRateLimiter(1, 20),
+      C.auth.authority.user,
       this.checkUserLogin,
     );
   }
 
-  private checkUserLogin = this.Wrapper((req, res) => {
+  private checkUserLogin = C.Wrapper((req, res) => {
     res(200, undefined, {
       message: 'Successfully verified role',
     });
   });
-})();
+}

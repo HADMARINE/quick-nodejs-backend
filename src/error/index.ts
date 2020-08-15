@@ -1,14 +1,13 @@
 import returnError from '../lib/returnError';
-import logger from '@lib/logger';
 
 export default {
-  custom: (message: string, status: number, code: string) =>
+  custom: (message: string, status: number, code: string): Error =>
     returnError(message, status, code),
-  test() {
+  test(): Error {
     return returnError(null, 418, null);
   },
   action: {
-    unsafe: () =>
+    unsafe: (): Error =>
       returnError(
         "Handling unsafe actions without 'unsafe' props is not allowed. This error is usually occurs when the action removes all datas of db or stops operation of server.",
         403,
@@ -16,7 +15,7 @@ export default {
       ),
   },
   access: {
-    pagenotfound(directory = '') {
+    pageNotFound(directory = ''): Error {
       const data: any = {};
       if (directory) {
         data.directory = directory;
@@ -28,21 +27,23 @@ export default {
         { data },
       );
     },
+    tooManyRequests: (): Error =>
+      returnError('Too many requests', 429, 'TOO_MANY_REQUESTS'),
   },
   password: {
-    encryption() {
-      return returnError(
-        'Password Encryption failed',
-        500,
-        'PASSWORD_ENCRYTION_FAIL',
-      );
-    },
+    encryption: (): Error =>
+      returnError('Password Encryption failed', 500, 'PASSWORD_ENCRYTION_FAIL'),
   },
   auth: {
-    tokeninvalid: () => returnError('Token Invalid', 403, 'TOKEN_INVALID'),
-    fail: () => returnError('Login Failed', 403, 'LOGIN_FAIL'),
+    tokenInvalid: (): Error =>
+      returnError('Token Invalid', 403, 'TOKEN_INVALID'),
+    tokenExpired: (): Error =>
+      returnError('Token Expired', 403, 'TOKEN_EXPIRED'),
+    tokenRenewNeeded: (): Error =>
+      returnError('Token renew needed', 403, 'TOKEN_RENEW_NEEDED'),
+    fail: (): Error => returnError('Login Failed', 403, 'LOGIN_FAIL'),
     access: {
-      lackOfAuthority: () =>
+      lackOfAuthority: (): Error =>
         returnError(
           'Authority is not enough to access',
           403,
@@ -51,13 +52,13 @@ export default {
     },
   },
   data: {
-    parameternull: (col: any = '') =>
+    parameterNull: (col: any = ''): Error =>
       returnError(
         `Necessary parameter${col ? ` ${col}` : ``} is not provided.`,
         400,
         'PARAMETER_NOT_PROVIDED',
       ),
-    parameterInvalid: (col: any = '') =>
+    parameterInvalid: (col: any = ''): Error =>
       returnError(
         `Parameter${col ? ` ${col}` : ``} is invalid.`,
         400,
@@ -65,7 +66,7 @@ export default {
       ),
   },
   db: {
-    create(collection: string | null = null) {
+    create(collection: string | null = null): Error {
       return returnError(
         `Failed to save data${
           collection ? ` of ${collection}` : ``
@@ -74,21 +75,27 @@ export default {
         'DATABASE_SAVE_FAIL',
       );
     },
-    exists(collection: string | null = null) {
+    exists(collection: string | null = null): Error {
       return returnError(
         `${collection ? `${collection} ` : ``}Data Already exists.`,
         409,
         `UNIQUE_DATA_CONFLICT`,
       );
     },
-    notfound() {
+    notfound(): Error {
       return returnError(`Data not found.`, 404, `DATA_NOT_FOUND`);
     },
-    error: () =>
+    error: (): Error =>
       returnError(
         `Failed to resolve database process`,
         500,
         `DATABASE_PROCESS_FAIL`,
       ),
+  },
+  aws: {
+    SES: (): Error =>
+      returnError(`Sending email failed.`, 500, `EMAIL_SEND_FAIL`),
+    S3: (message = `Uploading file failed.`): Error =>
+      returnError(message, 500, `FILE_PROCESS_FAIL`),
   },
 };

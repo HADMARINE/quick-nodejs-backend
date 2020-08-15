@@ -1,44 +1,17 @@
+console.clear();
+import logger from '@lib/logger';
+logger.info('Starting server...');
 import http from 'http';
-import chalk from 'chalk';
 import app from '@src/app';
+import chalk from 'chalk';
 import io from '@src/io';
 import connectDB from '@lib/startup/connectDB';
-import logger from '@lib/logger';
 
-const PORT = parseInt(process.env.PORT || '4000', 10);
+const PORT: number = parseInt(process.env.PORT || '4000', 10);
 const server = http.createServer(app);
-// io(server); // Enable when using socket.io
+io(server); // Enable when using socket.io
 
-async function Root(): Promise<Record<string, any> | http.Server> {
-  logger.info(
-    'Created project TSNODE-backend-template by HADMARINE(https://github.com/hadmarine)',
-  );
-
-  if (process.env.NODE_ENV === 'test') {
-    await connectDB();
-    return server;
-  }
-
-  process.env.NODE_ENV = process.env.NODE_ENV
-    ? process.env.NODE_ENV
-    : 'development';
-
-  let port;
-
-  // tslint:disable-next-line: no-floating-promises
-  connectDB()
-    .then(() => {
-      if (process.env.NODE_ENV === 'test') return;
-      port = listen();
-    })
-    .catch((e) => {
-      logger.error('MongoDB Server connection failed.');
-      logger.debug(e);
-    });
-  return { server, port };
-}
-
-function listen(port: number = PORT): number {
+function listen(port = PORT): number {
   if (port <= 0 || port >= 65536) {
     logger.error(`PORT Range is Invalid. Recieved port : ${port}`);
 
@@ -66,7 +39,7 @@ function listen(port: number = PORT): number {
       logger.info(
         `Port ${port} is currently in use. Retrying with port ${port + 1}`,
       );
-      const newPort = port === 65535 ? 20000 : port + 1;
+      const newPort = port > 65535 ? 20000 : port + 1;
       listen(newPort);
       isError = true;
     }
@@ -80,6 +53,28 @@ function listen(port: number = PORT): number {
     }
   });
   return port;
+}
+
+async function Root(): Promise<Record<string, any> | http.Server> {
+  if (process.env.NODE_ENV === 'test') {
+    await connectDB();
+    return server;
+  }
+
+  let port;
+  connectDB()
+    .then(() => {
+      if (process.env.NODE_ENV === 'test') return;
+      port = listen();
+    })
+    .catch((e) => {
+      logger.error('MongoDB Server connection failed.');
+      logger.debug(e);
+    });
+  return {
+    server,
+    port,
+  };
 }
 
 export default Root();
