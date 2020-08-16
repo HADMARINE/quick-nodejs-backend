@@ -1,30 +1,42 @@
 import path from 'path';
 import fs from 'fs';
 
-export default function getEvents() {
-  const eventPath: string = path.resolve(__dirname, '../../io/routes');
-  const files = fs.readdirSync(eventPath);
+function getEventRoutes(): string[] {
+  const eventDirPath = path.join(__dirname, '../../io/routes/');
+  return fs.readdirSync(eventDirPath).filter((value) => {
+    return fs.statSync(path.join(eventDirPath, value)).isDirectory();
+  });
+}
 
-  const eventList: {
-    raw: Record<string, any>;
-    controlled: Record<string, any>;
-  } = { raw: {}, controlled: {} };
+export default function getEvents(): Record<string, any> {
+  const events = {};
+  const eventDirRoutes = getEventRoutes();
+  for (let dirs of eventDirRoutes) {
+    const eventPath: string = path.resolve(__dirname, '../../io/routes/', dirs);
+    const files = fs.readdirSync(eventPath);
 
-  for (const f of files) {
-    const file = path.join(eventPath, f);
-    const stat = fs.statSync(file);
+    const eventList: {
+      raw: Record<string, any>;
+      controlled: Record<string, any>;
+    } = { raw: {}, controlled: {} };
 
-    if (stat.isDirectory()) continue;
-    if (!file.match(/\.(socket|rawsocket)\.(js|ts)$/)) continue;
-    let fileType: 'raw' | 'controlled';
-    if (file.match(/\.socket\.(js|ts)$/)) {
-      fileType = 'controlled';
-    } else {
-      fileType = 'raw';
+    for (const f of files) {
+      const file = path.join(eventPath, f);
+      const stat = fs.statSync(file);
+
+      if (stat.isDirectory()) continue;
+      if (!file.match(/\.(socket|rawsocket)\.(js|ts)$/)) continue;
+      let fileType: 'raw' | 'controlled';
+      if (file.match(/\.socket\.(js|ts)$/)) {
+        fileType = 'controlled';
+      } else {
+        fileType = 'raw';
+      }
+      const event = f.replace(/\.(socket|rawsocket)\.(js|ts)$/, '');
+
+      Object.assign(eventList[fileType], { [event]: require(file).default });
     }
-    const event = f.replace(/\.(socket|rawsocket)\.(js|ts)$/, '');
-
-    Object.assign(eventList[fileType], { [event]: require(file).default });
+    Object.assign(events, { [dirs]: eventList });
   }
-  return eventList;
+  return events;
 }

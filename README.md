@@ -197,6 +197,7 @@ app.use(req => {
 ```
 
 ## 4. env(dotenv)
+Create .env file on your project's root directory.
 
 ### Required Factors
 
