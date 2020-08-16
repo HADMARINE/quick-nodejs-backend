@@ -10,6 +10,25 @@ interface GetRoutesProps {
 
 type GetRoutes = GetRoutesProps[];
 
+const invalidlyRoutedList: string[] = [];
+
+function detectRouterTypeAndReturn(file: string): NodeRequire {
+  let resultFile;
+  try {
+    if (file.match(/\.controller\.(ts|js)$/)) {
+      resultFile = new (require(file).default)().router;
+    } else if (file.match(/\.routes\.(ts|js)$/)) {
+      resultFile = require(file).default;
+      invalidlyRoutedList.push(file);
+    }
+  } catch (e) {
+    logger.debug(e, false);
+    resultFile = null;
+  }
+
+  return resultFile;
+}
+
 function getPathRoutes(routePath = '/'): GetRoutes {
   const routesPath: string = path.resolve(
     __dirname,
@@ -18,24 +37,6 @@ function getPathRoutes(routePath = '/'): GetRoutes {
   );
   const dir: string[] = fs.readdirSync(routesPath);
   const datas: GetRoutes = [];
-  const invalidlyRoutedList: string[] = [];
-
-  function detectRouterTypeAndReturn(file: string): NodeRequire {
-    let resultFile;
-    try {
-      if (file.match(/\.controller\.(ts|js)$/)) {
-        resultFile = new (require(file).default)().router;
-      } else if (file.match(/\.routes\.(ts|js)$/)) {
-        resultFile = require(file).default;
-        invalidlyRoutedList.push(file);
-      }
-    } catch (e) {
-      logger.debug(e, false);
-      resultFile = null;
-    }
-
-    return resultFile;
-  }
 
   for (const f of dir) {
     const file: any = path.join(routesPath, f);
