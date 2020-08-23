@@ -5,7 +5,7 @@ interface Auth {
   pass: string;
 }
 
-const MONGO_URL = 'mongodb://' + process.env.DB_HOST;
+const MONGO_URL = process.env.DB_HOST;
 const env = process.env.NODE_ENV || 'development';
 
 if (!process.env.DB_USER || !process.env.DB_PASS) {
