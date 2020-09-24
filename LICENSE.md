@@ -1,7 +1,4 @@
-Copyright (C) 2020 HADMARINE, EunwooSong
-
-All rights reserved.
+Copyright (C) 2020 HADMARINE
 
 HADMARINE : https://github.com/HADMARINE
 
-EunwooSong :https://github.com/EunwooSong
