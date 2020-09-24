@@ -80,6 +80,7 @@ module.exports = {
       },
     ],
     'id-blacklist': 'off',
+    '@typescript-eslint/type-annotation-spacing': 'warn',
     'no-throw-literal': 'error',
     'no-trailing-spaces': 'error',
     'no-undef-init': 'error',
@@ -91,6 +92,7 @@ module.exports = {
     'no-unused-vars': 'error',
     'one-var': ['error', 'never'],
     '@typescript-eslint/isolatedModules': 'off',
+
     radix: 'error',
     'spaced-comment': 'error',
     'use-isnan': 'error',

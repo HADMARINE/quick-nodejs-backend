@@ -5,6 +5,8 @@
     "quotemark": false,
     "space-before-function-paren": false,
     "trailing-comma": true,
-    "no-empty": false
+    "no-empty": false,
+    "typedef-whitespace": false,
+    "whitespace": false
   }
 }
