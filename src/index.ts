@@ -19,7 +19,7 @@ function listen(port = PORT): number {
       logger.error(
         ' Set PORT_STRICT to false on your .env if you want to execute anyway.',
       );
-      throw new Error('PORT STRICT');
+      throw new Error('PORT STRICT ERROR');
     }
     port = 20000;
     logger.info(`Retrying with Port ${port}`);
@@ -70,6 +70,7 @@ async function Root(): Promise<Record<string, any> | http.Server> {
     .catch((e) => {
       logger.error('MongoDB Server connection failed.');
       logger.debug(e);
+      process.exit(1);
     });
   return {
     server,
