@@ -5,8 +5,15 @@ node_modules
 yarn-error.log
 
 .idea
+
 tmp
 
 package-lock.json
 
 dist
+
+.pnp.js
+
+.yarnrc.yml
+
+.yarn
