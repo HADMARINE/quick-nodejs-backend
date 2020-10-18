@@ -14,7 +14,10 @@
     "test-auto": "npx jest --config ./jest.config.js",
     "enc:env": "openssl aes-256-cbc -e -in .env -out .env.pub -md md5 -k $PROGRAM_ENV_SECRET_KEY",
     "dec:env": "openssl aes-256-cbc -d -in .env.pub -out .env -md md5 -k $PROGRAM_ENV_SECRET_KEY",
-    "dec:env-m": "openssl aes-256-cbc -d -in .env.pub -out .env -md md5 -k"
+    "dec:env-m": "openssl aes-256-cbc -d -in .env.pub -out .env -md md5 -k",
+    "berry": "yarn set version berry",
+    "latest": "yarn set version latest",
+    "classic": "yarn set version classic"
   },
   "dependencies": {
     "aws-sdk": "^2.715.0",
