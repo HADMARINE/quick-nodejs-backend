@@ -10,7 +10,7 @@ interface MiddlewareError {
 }
 
 export default (
-  error: MiddlewareError,
+  error: MiddlewareError | any,
   req: Request,
   res: Response,
   next: NextFunction,

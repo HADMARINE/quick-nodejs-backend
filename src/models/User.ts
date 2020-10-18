@@ -20,13 +20,13 @@ export interface UserDocument extends Document, UserInterface {
 }
 
 UserSchema.methods.checkUserExists = async function (userid) {
-  if (await models['User'].findOne({ userid }).exec()) return true;
+  if (await models.User.findOne({ userid }).exec()) return true;
   return false;
 };
 
 UserSchema.pre('save', function (next: HookNextFunction) {
   const doc = this as UserDocument;
-  models['User'].findOne({ userid: doc.userid }, function (err, user) {
+  models.User.findOne({ userid: doc.userid }, function (err, user) {
     if (user) next(error.db.exists() as any);
     if (err) next(err);
     next();

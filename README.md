@@ -2,7 +2,7 @@
 
 ## Readme for other languages
 
-### [한국어 리드미 (만료)](https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend/blob/master/README_ko.md)
+### [한국어 리드미 (만료됨 - 영어 문서를 참고해주세요.)](https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend/blob/master/README_ko.md)
 
 ### Description
 
@@ -211,7 +211,7 @@ Create .env file on your project's root directory.
 ### Not Required Factors
 
 <code>PORT</code> : Port that server app will run<br/>
-<code>PORT_STRICT</code> : Set to <b>true</b> if you don't want to use auto port-detection and use only your own port.
+<code>PORT_STRICT</code> : Set to <b>true</b> if you don't want to use auto port-detection and use only your own port.<br/>
 <code>EXAMINE_PASSWORD</code> : parameter whether double-check password encryption<br/>
 
 
