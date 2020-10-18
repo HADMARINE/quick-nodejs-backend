@@ -42,14 +42,14 @@ export default function checkInitializeProjectSettings(): void {
     !process.env.DB_USER ||
     !process.env.DB_PASS
   ) {
-    logger.error('MONGO_DB Data is not provided properly at .env');
+    logger.warn('MONGO_DB Data is not provided properly at .env - mongoose initialization will not proceeded.');
     logger.plain(instructions);
-    throw new Error('DATABASE INFO NOT PROVIDED');
+    // throw new Error('DATABASE INFO NOT PROVIDED');
   }
 
   if (!process.env.TOKEN_KEY) {
     logger.warn(
-      'TOKEN_KEY is not provided as env variable. It would cause security issues.',
+      'TOKEN_KEY is not provided as env variable. Due to potential of security issues, program will not executed on production mode if not provided.',
     );
     if (process.env.NODE_ENV === 'production') {
       logger.error(

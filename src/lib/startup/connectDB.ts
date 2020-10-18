@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import logger from '@lib/logger';
 
 interface Auth {
   user: string;
@@ -25,11 +26,23 @@ if (env === 'development') {
   mongoose.set('debug', true);
 }
 
-export default (): Promise<typeof mongoose> =>
-  mongoose.connect(mongoURL, {
+export default (): Promise<typeof mongoose | undefined> => {
+  if (
+    !process.env.DB_HOST ||
+    !process.env.DB_NAME ||
+    !process.env.DB_USER ||
+    !process.env.DB_PASS
+  ) {
+    return new Promise((res) => {
+      res();
+    });
+  }
+
+  return mongoose.connect(mongoURL, {
     ...auth,
     dbName,
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
   });
+};

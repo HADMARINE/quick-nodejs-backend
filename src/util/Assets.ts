@@ -5,6 +5,7 @@ import deasync from 'deasync';
 import logger from '@lib/logger';
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 
 function getObjectKeyByValue(object: any, value: string): string | undefined {
   return Object.keys(object).find((key) => object[key] === value);
@@ -224,10 +225,26 @@ function dirCollector(dirname: string): Record<string, any> {
     try {
       datas[f.replace(/\.(js|ts)$/g, '')] = require(file).default;
     } catch (e) {
-      console.error('Error while getting datas with dirCollector : ' + e);
+      logger.error('Error while getting datas with dirCollector : ' + e);
     }
   }
   return datas;
+}
+
+function encryptSymmetry(value: string): string {
+  if (!process.env.CIPHER_KEY) throw new Error('Could not resolve Cipher key');
+  const cipher = crypto.createCipher('aes-256-cbc', process.env.CIPHER_KEY);
+  let result = cipher.update(value, 'utf8', 'base64');
+  result += cipher.final('base64');
+  return result;
+}
+
+function decryptSymmetry(value: string): string {
+  if (!process.env.CIPHER_KEY) throw new Error('Could not resolve Cipher key');
+  const decipher = crypto.createDecipher('aes-256-cbc', process.env.CIPHER_KEY);
+  let result = decipher.update(value, 'base64', 'utf8');
+  result += decipher.final('utf8');
+  return result;
 }
 
 export default {
@@ -248,6 +265,12 @@ export default {
       phone: verifyPhone,
     },
     filter: filterType,
+  },
+  encryption: {
+    symmetry: {
+      encrypt: encryptSymmetry,
+      decrypt: decryptSymmetry,
+    },
   },
   dirCollector,
 };

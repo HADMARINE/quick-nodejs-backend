@@ -11,7 +11,6 @@ import error from '@error';
 import assets from '@util/Assets';
 import auth from '@util/Auth';
 import aws from '@util/Aws';
-import encrypt from '@util/Encrypt';
 import models from '@models/index';
 
 interface ResponseOptions {
@@ -114,5 +113,4 @@ export default class Controller {
   static readonly auth = auth;
   static readonly models = models;
   static readonly aws = aws;
-  static readonly encrypt = encrypt;
 }

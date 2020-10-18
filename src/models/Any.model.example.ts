@@ -17,7 +17,7 @@ export interface AnyDocument extends Document, AnyInterface {
 
 AnySchema.pre('save', function (next: HookNextFunction): void {
   const doc = this as AnyDocument;
-  models['Any'].findOne(
+  models.Any.findOne(
     {
       $or: [],
     },
