@@ -14,9 +14,13 @@ export default class extends C {
 
   private signInUser = C.Wrapper(async (req, res) => {
     const startTime = Date.now();
-    const { userid, password } = req.body;
-    C.assets.checkNull(userid, password);
+    const { userid, password } = req.verify.body({
+      userid: 'string',
+      password: 'string',
+    });
+
     const user: any = await User.findOne({ userid }).exec();
+
     if (!user) {
       await C.assets.delayExact(startTime);
       throw C.error.auth.fail();
@@ -33,8 +37,9 @@ export default class extends C {
   });
 
   private resignAccessToken = C.Wrapper(async (req, res) => {
-    const { token } = req.body;
-    C.assets.checkNull(token);
+    const { token } = req.verify.body({
+      token: 'string',
+    });
     const tokenValue = await C.auth.token.verify.refresh(token);
     const renewToken = await C.auth.token.create.manual(
       {

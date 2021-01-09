@@ -15,19 +15,23 @@ export default class extends C {
   }
 
   private getUser = C.Wrapper(async (req, res) => {
-    const { userid } = req.params;
-    C.assets.checkNull(userid);
+    const { userid } = req.verify.params({
+      userid: 'string',
+    });
     const user = await User.findOne({ userid }).exec();
     if (!user) throw C.error.db.notfound();
     res(200, user, { message: `User found` });
   });
 
   private getUserMany = C.Wrapper(async (req, res) => {
-    const { skip, limit } = req.query;
+    const { skip, limit } = req.verify.query({
+      skip: 'number',
+      limit: 'number',
+    });
     const user = await User.find()
       .select('userid authority')
-      .skip(parseInt(C.assets.data.filter(skip, 'string'), 10))
-      .limit(parseInt(C.assets.data.filter(limit, 'string'), 10))
+      .skip(skip)
+      .limit(limit)
       .sort('-id')
       .exec();
     if (!user) throw C.error.db.notfound();
@@ -35,9 +39,9 @@ export default class extends C {
   });
 
   private deleteUser = C.Wrapper(async (req, res) => {
-    let { userid } = req.body;
-    C.assets.checkNull(userid);
-    userid = C.assets.returnArray(userid);
+    const { userid } = req.verify.body({
+      userid: 'array',
+    });
     const user = await User.deleteMany({
       userid: { $in: userid },
     }).exec();
@@ -57,10 +61,10 @@ export default class extends C {
   });
 
   private setUserAuthority = C.Wrapper(async (req, res) => {
-    const { authority } = req.body;
-    let { userid } = req.body;
-    userid = C.assets.returnArray(userid);
-    C.assets.checkNull(userid, authority);
+    const { userid, authority } = req.verify.body({
+      userid: 'array',
+      authority: 'string',
+    });
     const user = await User.updateMany(
       { userid: { $in: userid } },
       { $set: { authority } },
