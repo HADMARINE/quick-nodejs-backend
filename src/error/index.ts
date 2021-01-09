@@ -1,8 +1,12 @@
 import returnError from '../lib/returnError';
+import { codeData } from '@lib/httpCode';
 
 export default {
-  custom: (message: string, status: number, code: string): Error =>
-    returnError(message, status, code),
+  custom: (
+    message: string,
+    status: keyof typeof codeData,
+    code: string,
+  ): Error => returnError(message, status, code),
   test(): Error {
     return returnError(null, 418, null);
   },
