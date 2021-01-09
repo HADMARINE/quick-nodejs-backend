@@ -1,6 +1,4 @@
 import mongoose from 'mongoose';
-import logger from '@lib/logger';
-
 interface Auth {
   user: string;
   pass: string;
@@ -34,7 +32,7 @@ export default (): Promise<typeof mongoose | undefined> => {
     !process.env.DB_PASS
   ) {
     return new Promise((res) => {
-      res();
+      res(undefined);
     });
   }
 
