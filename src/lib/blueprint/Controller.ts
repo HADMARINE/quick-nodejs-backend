@@ -5,10 +5,9 @@ import {
   RequestHandler,
   Router,
 } from 'express';
-
-import { defaultMessage, defaultCode } from '@lib/httpCode';
+import { defaultMessage, defaultCode, codeData } from '@lib/httpCode';
 import error from '@error';
-import assets from '@util/Assets';
+import assets, { VerifierWrapperInnerFunction } from '@util/Assets';
 import auth from '@util/Auth';
 import aws from '@util/Aws';
 import models from '@models/index';
@@ -20,14 +19,25 @@ interface ResponseOptions {
   additionalData?: Record<string, any> | null;
 }
 
+type CustomRequestProperties = {
+  verify: {
+    body: VerifierWrapperInnerFunction;
+    headers: VerifierWrapperInnerFunction;
+    cookies: VerifierWrapperInnerFunction;
+    signedCookies: VerifierWrapperInnerFunction;
+    query: VerifierWrapperInnerFunction;
+    params: VerifierWrapperInnerFunction;
+  };
+} & Request;
+
 type CustomResponseFunction = (
-  status: number,
+  status: keyof typeof codeData,
   data?: Record<string, any>,
   options?: ResponseOptions,
 ) => void;
 
 type CustomRequestHandler = (
-  req: Request,
+  req: CustomRequestProperties,
   res: CustomResponseFunction,
   next?: NextFunction,
 ) => void;
@@ -47,11 +57,11 @@ export default class Controller {
    */
   static Wrapper(requestHandler: CustomRequestHandler): RequestHandler {
     return (req: Request, res: Response, next: NextFunction): void => {
-      Promise.resolve(requestHandler(req, this.Response(res), next)).catch(
-        (e) => {
-          next(e);
-        },
-      );
+      Promise.resolve(
+        requestHandler(this.Request(req), this.Response(res), next),
+      ).catch((e) => {
+        next(e);
+      });
     };
   }
 
@@ -87,7 +97,7 @@ export default class Controller {
    */
   static Response(res: Response): CustomResponseFunction {
     return function (
-      status: number,
+      status: keyof typeof codeData,
       data?: Record<string, any> | string,
       options: ResponseOptions = {},
     ): void {
@@ -104,6 +114,44 @@ export default class Controller {
         })
         .end();
     };
+  }
+
+  static Request(req: Request): CustomRequestProperties {
+    const request = {
+      ...req,
+      setTimeout: req.setTimeout,
+      destroy: req.destroy,
+      _read: req._read,
+      read: req.read,
+      setEncoding: req.setEncoding,
+      pause: req.pause,
+      resume: req.resume,
+      isPaused: req.isPaused,
+      unpipe: req.unpipe,
+      unshift: req.unshift,
+      wrap: req.wrap,
+      push: req.push,
+      _destroy: req._destroy,
+      addListener: req.addListener,
+      emit: req.emit,
+      on: req.on,
+      once: req.once,
+      prependListener: req.prependListener,
+      prependOnceListener: req.prependOnceListener,
+      removeListener: req.removeListener,
+      pipe: req.pipe,
+      [Symbol.asyncIterator]: req[Symbol.asyncIterator],
+      verify: {
+        body: assets.data.paramVerifier.wrapper(req.body),
+        headers: assets.data.paramVerifier.wrapper(req.headers),
+        cookies: assets.data.paramVerifier.wrapper(req.cookies),
+        signedCookies: assets.data.paramVerifier.wrapper(req.signedCookies),
+        query: assets.data.paramVerifier.wrapper(req.query),
+        params: assets.data.paramVerifier.wrapper(req.params),
+      },
+    };
+
+    return request;
   }
 
   public readonly router: Router = Router();
