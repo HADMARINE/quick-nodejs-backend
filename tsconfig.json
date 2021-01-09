@@ -73,7 +73,7 @@
   },
   "include": [
     "src/**/*",
-    "types/**/*"
+    "types/**/*",
   ],
   "exclude": ["node_modules", ".vscode"]
 }
