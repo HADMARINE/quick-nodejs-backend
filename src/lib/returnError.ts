@@ -1,4 +1,4 @@
-import { defaultMessage, defaultCode } from '@lib/httpCode';
+import { defaultMessage, defaultCode, codeData } from '@lib/httpCode';
 import logger from '@lib/logger';
 
 interface Options {
@@ -13,7 +13,7 @@ const optionsDefault = {
 
 function returnError(
   message: string | null,
-  status = 500,
+  status: keyof typeof codeData = 500,
   code: string | null,
   options: Options = optionsDefault,
 ): Error {
