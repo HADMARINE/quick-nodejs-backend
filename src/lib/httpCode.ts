@@ -1,4 +1,4 @@
-export const codeData: Record<number, string> = {
+export const codeData = {
   100: 'Continue',
   101: 'Switching Protocol',
   200: 'OK',
@@ -23,7 +23,7 @@ export const codeData: Record<number, string> = {
   503: 'Service Unavailable',
 };
 
-export function defaultMessage(httpCode: number): string {
+export function defaultMessage(httpCode: keyof typeof codeData): string {
   try {
     return `${httpCode} ${codeData[httpCode]}`;
   } catch {
@@ -31,7 +31,7 @@ export function defaultMessage(httpCode: number): string {
   }
 }
 
-export function defaultCode(httpCode: number): string {
+export function defaultCode(httpCode: keyof typeof codeData): string {
   let code = codeData[500];
   try {
     code = codeData[httpCode] || codeData[500];
