@@ -57,7 +57,7 @@ async function delayExact(startTime: number, totalDelay = 500): Promise<void> {
   } while (currentDate - startTime < totalDelay);
 }
 
-function wrapper(requestHandler: any): RequestHandler {
+function wrapper(requestHandler: RequestHandler): RequestHandler {
   return (req: Request, res: Response, next: NextFunction): void => {
     Promise.resolve(requestHandler(req, res, next)).catch((e) => {
       next(e);
