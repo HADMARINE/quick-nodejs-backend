@@ -78,7 +78,7 @@ export default class extends C {
       additionalData?: Record<string, any> | null; - return parameter outside of data parameter
     }
     */
-    res(200, data);
+    res.strict(200, data);
   });
 
   private timeInfo = C.RawWrapper(async (req, res) => {
@@ -188,7 +188,7 @@ class Foo {
 ##### Import and usage
 
 ```typescript
-import error from './src/error/index';
+import error from '@error/index';
 ...
 // 404
 app.use(req => {
