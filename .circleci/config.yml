@@ -4,7 +4,7 @@ orbs:
 jobs:
   test:
     docker:
-      - image: node
+      - image: yarnpkg/node-yarn
     working_directory: ~/repo
     steps:
       - checkout
@@ -13,17 +13,17 @@ jobs:
             - root-fb2-dependencies-{{ checksum "package.json" }}
       - run:
           name: Dependencies package installation
-          command: npm install
+          command: yarn install
       - save_cache:
           paths:
             - node_modules
           key: root-fb2-dependencies-{{ checksum "package.json" }}
       - run:
           name: Testing
-          command: npm run test-auto
+          command: yarn test-auto
       - run:
           name: Build
-          command: npm run build
+          command: yarn build
 workflows:
   test-build-deployment:
     jobs:
