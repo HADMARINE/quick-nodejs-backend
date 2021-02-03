@@ -11,7 +11,7 @@ function getEventRoutes(): string[] {
 export default function getEvents(): Record<string, any> {
   const events = {};
   const eventDirRoutes = getEventRoutes();
-  for (let dirs of eventDirRoutes) {
+  for (const dirs of eventDirRoutes) {
     const eventPath: string = path.resolve(__dirname, '../../io/routes/', dirs);
     const files = fs.readdirSync(eventPath);
 

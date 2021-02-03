@@ -57,7 +57,7 @@ async function delayExact(startTime: number, totalDelay = 500): Promise<void> {
   } while (currentDate - startTime < totalDelay);
 }
 
-function wrapper(requestHandler: any): RequestHandler {
+function wrapper(requestHandler: RequestHandler): RequestHandler {
   return (req: Request, res: Response, next: NextFunction): void => {
     Promise.resolve(requestHandler(req, res, next)).catch((e) => {
       next(e);
@@ -71,6 +71,17 @@ function returnArray(data: any): any[] {
       data = JSON.parse(data);
     } catch {
       data = JSON.parse(`[${data}]`);
+    }
+  }
+  return data;
+}
+
+function returnRecord(data: any): Record<any, any> | null {
+  if (typeof data === 'string') {
+    try {
+      data = JSON.parse(data);
+    } catch {
+      return null;
     }
   }
   return data;
@@ -247,6 +258,139 @@ function decryptSymmetry(value: string): string {
   return result;
 }
 
+type verificationTypes =
+  | 'object'
+  | 'object-nullable'
+  | 'number'
+  | 'number-nullable'
+  | 'boolean'
+  | 'boolean-nullable'
+  | 'string'
+  | 'string-nullable'
+  | 'function'
+  | 'function-nullable'
+  | 'any'
+  | 'array'
+  | 'array-nullable'
+  | 'notnull';
+
+type RequestVerificationBuilderProps = verificationTypes;
+
+function verifyData(data: any, type: verificationTypes, key: string): any {
+  if (type === 'any') {
+    return data;
+  }
+
+  const nullableFlag = type.slice(-8) === 'nullable';
+
+  if (nullableFlag) {
+    type = type.slice(0, -9) as verificationTypes;
+  }
+
+  if (!data) {
+    if (nullableFlag) {
+      return null;
+    }
+    throw error.data.parameterNull(key);
+  }
+
+  switch (type) {
+    case 'notnull':
+      return data;
+    case 'array':
+      if (Array.isArray(data)) {
+        return data;
+      }
+      const a = returnArray(data);
+
+      if (Array.isArray(a)) {
+        return a;
+      }
+      throw error.data.parameterInvalid(key);
+    case 'boolean':
+      if (typeof data === 'boolean') {
+        return data;
+      }
+
+      if (typeof data === 'string') {
+        switch (data) {
+          case 'true':
+            return true;
+          case 'false':
+            return false;
+          default:
+            throw error.data.parameterInvalid(key);
+        }
+      }
+
+      throw error.data.parameterInvalid(key);
+    case 'object':
+      if (typeof data === 'object') {
+        return data;
+      }
+      const r = returnRecord(data);
+      if (r === null || typeof r !== 'object') {
+        throw error.data.parameterInvalid(key);
+      }
+      return r;
+
+    case 'function':
+      logger.debug('Verifying function has no effect. Returning raw data.');
+      return data;
+
+    case 'string':
+      if (typeof data === 'string') {
+        return data;
+      }
+      throw error.data.parameterInvalid(key);
+
+    case 'number':
+      if (isNaN(data)) {
+        throw error.data.parameterInvalid(key);
+      }
+      return parseFloat(data);
+
+    default:
+      throw error.data.parameterInvalid(key);
+  }
+  // return type === typeof data;
+}
+
+const verificationProcessor = <T>(props: RequestVerificationBuilderProps) => {
+  return function (rawData: Record<string, any>, key: string): T {
+    const targetData = rawData[key];
+
+    return verifyData(targetData, props, key);
+  };
+};
+
+function requestVerificationBuilder<T>(
+  type: RequestVerificationBuilderProps,
+): (rawData: Record<string, any>, key: string) => T {
+  return verificationProcessor<T>(type);
+}
+
+function getRequestWithVerification(data: Record<string, any>) {
+  return function (
+    processors: Record<string, verificationTypes>,
+  ): Record<string, any> {
+    const returnValue = {};
+
+    Object.keys(processors).forEach((key) => {
+      const processor = requestVerificationBuilder(processors[key]);
+      const result = processor(data, key);
+      Object.assign(returnValue, { [key]: result });
+      // const value = (returnValue[key] = result[key]);
+    });
+
+    return returnValue;
+  };
+}
+
+export type VerifierWrapperInnerFunction = (
+  processors: Record<string, verificationTypes>,
+) => Record<string, any>;
+
 export default {
   updateQueryBuilder,
   getObjectKeyByValue,
@@ -258,6 +402,7 @@ export default {
   delayExact,
   wrapper,
   returnArray,
+  returnRecord,
   syncifyFunction,
   data: {
     verify: {
@@ -265,6 +410,10 @@ export default {
       phone: verifyPhone,
     },
     filter: filterType,
+    paramVerifier: {
+      builder: requestVerificationBuilder,
+      wrapper: getRequestWithVerification,
+    },
   },
   encryption: {
     symmetry: {

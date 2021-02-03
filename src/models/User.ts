@@ -26,7 +26,7 @@ UserSchema.methods.checkUserExists = async function (userid) {
 
 UserSchema.pre('save', function (next: HookNextFunction) {
   const doc = this as UserDocument;
-  models.User.findOne({ userid: doc.userid }, function (err, user) {
+  models.User.findOne({ userid: doc.userid }, function (err: any, user: UserDocument) {
     if (user) next(error.db.exists() as any);
     if (err) next(err);
     next();

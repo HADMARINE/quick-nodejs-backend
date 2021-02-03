@@ -1,5 +1,6 @@
 import { model, Schema, Document, HookNextFunction, models } from 'mongoose';
 import error from '@error';
+import { UserDocument } from './User';
 
 export interface BanipInterface {
   ip: string;
@@ -21,7 +22,7 @@ export interface BanipDocument extends Document, BanipInterface {
 
 BanipSchema.pre('save', function (next: HookNextFunction) {
   const doc = this as BanipDocument;
-  models.Banip.findOne({ ip: doc.ip }, function (err, user) {
+  models.Banip.findOne({ ip: doc.ip }, (err: any, user: UserDocument) => {
     if (user) next(error.db.exists() as any);
     if (err) next(err);
     next();

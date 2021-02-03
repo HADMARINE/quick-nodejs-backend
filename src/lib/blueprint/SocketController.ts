@@ -15,6 +15,10 @@ export default class SC {
     this.parameters = parameters;
   }
 
+  protected main(): void {
+    return;
+  }
+
   protected global: Socketio.Server;
   protected current: Socketio.Socket;
   protected parameters: any[];

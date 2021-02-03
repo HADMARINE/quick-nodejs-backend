@@ -1,7 +1,8 @@
 import SC from '@lib/blueprint/SocketController';
+import logger from '@lib/logger';
 
 export default class extends SC {
   main() {
-    console.log(`${this.current.id} has been disconnected!`);
+    logger.info(`${this.current.id} has been disconnected!`);
   }
 }
