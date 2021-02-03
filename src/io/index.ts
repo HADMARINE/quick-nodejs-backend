@@ -17,6 +17,7 @@ export default function (server: http.Server) {
 
     const eventList = events[eventDir];
     io.on('connection', (socket: Socketio.Socket) => {
+      logger.debug(`Socket ${socket.id} connected!`, false);
       Object.keys(eventList.controlled).forEach((key) => {
         socket.on(key, (...data: any[]) => {
           const guidedSocketClass = eventList.controlled[key];
