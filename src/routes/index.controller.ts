@@ -21,7 +21,7 @@ export default class extends C {
 
     console.log(obj, req.body.obj);
 
-    res(200);
+    res.strict(200);
   });
 
   private welcome = C.RawWrapper(async (req, res) => {
@@ -49,7 +49,7 @@ export default class extends C {
       serverVersion: packageJson.version,
     };
 
-    res(200, data);
+    res.strict(200, data);
   });
 
   private timeInfo = C.RawWrapper(async (req, res) => {

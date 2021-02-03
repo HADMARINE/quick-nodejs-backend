@@ -8,7 +8,7 @@ export default class extends C {
   }
 
   private getIndex = C.RawWrapper(async (req, res) => {
-    C.Response(res)(
+    C.Response(res).strict(
       200,
       {
         status: 'alive',

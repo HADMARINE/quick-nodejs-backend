@@ -1,6 +1,7 @@
-import { Request, Response } from 'express';
 import C from '@lib/blueprint/Controller';
 import User from '@models/User';
+import Auth from '@util/Auth';
+import Assets from '@util/Assets';
 
 export default class extends C {
   constructor() {
@@ -27,36 +28,42 @@ export default class extends C {
   }
 
   private createUser = C.Wrapper(async (req, res) => {
-    const { userid, password } = req.body;
-    C.assets.checkNull(userid, password);
-    const hashResult = C.auth.password.create(password);
+    const { userid, password } = req.verify.body({
+      userid: 'string',
+      password: 'string',
+    });
+
+    const hashResult = Auth.password.create(password);
+
     const user = await User.create([
       {
         userid,
         ...hashResult,
       },
     ]);
-    res(201, user, { message: 'Created user successfully.' });
+    res.strict(201, user, { message: 'Created user successfully.' });
   });
 
   private updateUser = C.Wrapper(async (req, res) => {
-    const { password } = req.body;
+    const { password } = req.verify.body({
+      password: 'string-nullable',
+    });
 
-    const hashResult = password ? C.auth.password.create(password) : null;
+    const hashResult = password ? Auth.password.create(password) : null;
     const user = await User.findByIdAndUpdate(req.body.userData._id, {
-      $set: { ...hashResult },
+      $set: Assets.updateQueryBuilder({ ...hashResult }),
     })
       .select('userid authority')
       .exec();
     if (!user) throw C.error.db.notfound();
-    res(200, user, { message: 'User data update successful' });
+    res.strict(200, user, { message: 'User data update successful' });
   });
 
   private getUser = C.Wrapper(async (req, res) => {
     const { userData } = req.body;
     const user = await User.findById(userData._id, 'userid authority').exec();
     if (!user) throw C.error.db.notfound();
-    res(200, user, { message: 'Data found' });
+    res.strict(200, user, { message: 'Data found' });
   });
 
   private deleteUser = C.Wrapper(async (req, res) => {
@@ -65,6 +72,6 @@ export default class extends C {
       .select('userid authority')
       .exec();
     if (!user) throw C.error.db.notfound();
-    res(200, user, { message: 'User removal successful' });
+    res.strict(200, user, { message: 'User removal successful' });
   });
 }

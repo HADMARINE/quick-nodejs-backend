@@ -22,7 +22,7 @@ export default class extends C {
       .sort('-id')
       .exec();
     if (!banip) throw C.error.db.notfound();
-    res(200, { ...banip });
+    res.strict(200, { ...banip });
   });
 
   private getBannedIp = C.Wrapper(async (req, res) => {
@@ -31,7 +31,7 @@ export default class extends C {
     });
     const banip = await Banip.findOne({ ip }).select('ip reason due').exec();
     if (!banip) throw C.error.db.notfound();
-    res(200, banip);
+    res.strict(200, banip);
   });
 
   private banIp = C.Wrapper(async (req, res) => {
@@ -46,7 +46,7 @@ export default class extends C {
       : `ISSUED BY ADMIN(${userData.userid})`;
     due = due ? due : -1;
     const banip = await Banip.create({ reason, due, ip });
-    res(201, { banip }, { message: 'Successfully banned ip' });
+    res.strict(201, { banip }, { message: 'Successfully banned ip' });
   });
 
   private unbanIp = C.Wrapper(async (req, res) => {
@@ -58,12 +58,12 @@ export default class extends C {
     }).exec();
     if (!banip.n) throw C.error.db.notfound();
     if (ip.length > banip.n) {
-      res(200, undefined, {
+      res.strict(200, undefined, {
         message: 'Update successful, but could not found some datas.',
         code: 'PARTLY_SUCCESS',
       });
       return;
     }
-    res(200, undefined, { message: 'Successfully debanned ip' });
+    res.strict(200, undefined, { message: 'Successfully unbanned ip' });
   });
 }

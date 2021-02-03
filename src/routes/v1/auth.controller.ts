@@ -1,5 +1,6 @@
 import C from '@lib/blueprint/Controller';
 import User from '@models/User';
+import Assets from '@util/Assets';
 
 export default class extends C {
   constructor() {
@@ -7,7 +8,7 @@ export default class extends C {
     this.router.post('/', C.assets.apiRateLimiter(1, 5), this.signInUser);
     this.router.post(
       '/resign',
-      C.assets.apiRateLimiter(1, 10),
+      Assets.apiRateLimiter(1, 10),
       this.resignAccessToken,
     );
   }
@@ -22,18 +23,18 @@ export default class extends C {
     const user: any = await User.findOne({ userid }).exec();
 
     if (!user) {
-      await C.assets.delayExact(startTime);
+      await Assets.delayExact(startTime);
       throw C.error.auth.fail();
     }
     if (!C.auth.password.verify(password, user.password, user.enckey)) {
-      await C.assets.delayExact(startTime);
+      await Assets.delayExact(startTime);
       throw C.error.auth.fail();
     }
     const token = await C.auth.token.create.initial({
       _id: user._id,
       userid: user.userid,
     });
-    res(200, { token }, { message: 'Login successful' });
+    res.strict(200, { token }, { message: 'Login successful' });
   });
 
   private resignAccessToken = C.Wrapper(async (req, res) => {
@@ -48,6 +49,10 @@ export default class extends C {
       },
       'access',
     );
-    res(200, { token: renewToken }, { message: 'Token creation successful' });
+    res.strict(
+      200,
+      { token: renewToken },
+      { message: 'Token creation successful' },
+    );
   });
 }

@@ -30,15 +30,17 @@ type CustomRequestProperties = {
   };
 } & Request;
 
-type CustomResponseFunction = (
-  status: keyof typeof codeData,
-  data?: Record<string, any>,
-  options?: ResponseOptions,
-) => void;
+type CustomResponseProperties = {
+  strict: (
+    status: keyof typeof codeData,
+    data?: Record<string, any>,
+    options?: ResponseOptions,
+  ) => void;
+} & Response;
 
 type CustomRequestHandler = (
   req: CustomRequestProperties,
-  res: CustomResponseFunction,
+  res: CustomResponseProperties,
   next?: NextFunction,
 ) => void;
 
@@ -95,8 +97,8 @@ export default class Controller {
    * @param {ResponseOptions} Options Response options
    * @returns {void}
    */
-  static Response(res: Response): CustomResponseFunction {
-    return function (
+  static Response(res: Response): CustomResponseProperties {
+    function strict(
       status: keyof typeof codeData,
       data?: Record<string, any> | string,
       options: ResponseOptions = {},
@@ -113,7 +115,45 @@ export default class Controller {
           ...options.additionalData,
         })
         .end();
+    }
+
+    const response = {
+      ...res,
+      assignSocket: res.assignSocket,
+      detachSocket: res.detachSocket,
+      writeContinue: res.writeContinue,
+      writeHead: res.writeHead,
+      writeProcessing: res.writeProcessing,
+      setTimeout: res.setTimeout,
+      setHeader: res.setHeader,
+      getHeader: res.getHeader,
+      getHeaders: res.getHeaders,
+      getHeaderNames: res.getHeaderNames,
+      hasHeader: res.hasHeader,
+      removeHeader: res.removeHeader,
+      addTrailers: res.addTrailers,
+      flushHeaders: res.flushHeaders,
+      _write: res._write,
+      _destroy: res._destroy,
+      _final: res._final,
+      write: res.write,
+      setDefaultEncoding: res.setDefaultEncoding,
+      end: res.end,
+      cork: res.cork,
+      uncork: res.uncork,
+      destroy: res.destroy,
+      addListener: res.addListener,
+      emit: res.emit,
+      on: res.on,
+      once: res.once,
+      prependListener: res.prependListener,
+      prependOnceListener: res.prependOnceListener,
+      removeListener: res.removeListener,
+      pipe: res.pipe,
+      strict,
     };
+
+    return response;
   }
 
   static Request(req: Request): CustomRequestProperties {

@@ -1,11 +1,12 @@
 import C from '@lib/blueprint/Controller';
 import Session from '@models/Session';
+import Auth from '@util/Auth';
 
 export default class extends C {
   constructor() {
     super();
-    this.router.get('/', C.auth.authority.admin, this.getToken);
-    this.router.delete('/', C.auth.authority.admin, this.deleteToken);
+    this.router.get('/', Auth.authority.admin, this.getToken);
+    this.router.delete('/', Auth.authority.admin, this.deleteToken);
   }
 
   private getToken = C.Wrapper(async (req, res) => {
@@ -32,7 +33,7 @@ export default class extends C {
 
     const session = await Session.find(query).skip(skip).limit(limit).exec();
     if (!session.length) throw C.error.db.notfound();
-    res(200, session, {
+    res.strict(200, session, {
       message: 'Found sessions',
     });
   });
@@ -61,7 +62,7 @@ export default class extends C {
     }
     const session = await Session.deleteMany(query).exec();
     if (!session.deletedCount) throw C.error.db.notfound();
-    res(
+    res.strict(
       200,
       { amount: session.deletedCount },
       {

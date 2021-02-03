@@ -20,7 +20,7 @@ export default class extends C {
     });
     const user = await User.findOne({ userid }).exec();
     if (!user) throw C.error.db.notfound();
-    res(200, user, { message: `User found` });
+    res.strict(200, user, { message: `User found` });
   });
 
   private getUserMany = C.Wrapper(async (req, res) => {
@@ -35,7 +35,7 @@ export default class extends C {
       .sort('-id')
       .exec();
     if (!user) throw C.error.db.notfound();
-    res(200, user, { message: `User found` });
+    res.strict(200, user, { message: `User found` });
   });
 
   private deleteUser = C.Wrapper(async (req, res) => {
@@ -47,7 +47,7 @@ export default class extends C {
     }).exec();
     if (!user.n) throw C.error.db.notfound();
     if (userid.length > user.n) {
-      res(
+      res.strict(
         200,
         { successAmount: user.n },
         {
@@ -57,7 +57,7 @@ export default class extends C {
       );
       return;
     }
-    res(200, undefined, { message: 'User delete successful' });
+    res.strict(200, undefined, { message: 'User delete successful' });
   });
 
   private setUserAuthority = C.Wrapper(async (req, res) => {
@@ -71,13 +71,13 @@ export default class extends C {
     ).exec();
     if (!user.n) throw C.error.db.notfound();
     if (userid.length > user.n) {
-      res(200, undefined, {
+      res.strict(200, undefined, {
         message: 'Update successful, but could not found some datas.',
         code: 'PARTLY_SUCCESS',
       });
       return;
     }
-    res(200, undefined, {
+    res.strict(200, undefined, {
       message: 'Update authority successful.',
     });
   });
