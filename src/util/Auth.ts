@@ -148,7 +148,7 @@ async function createToken(
 
     const result = jwt.sign(
       _payload,
-      process.env.TOKEN_KEY || 'token_key',
+      process.env.TOKEN_KEY as string,
       jwtSettings,
     );
 
