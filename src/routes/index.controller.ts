@@ -1,4 +1,5 @@
 import C from '@lib/blueprint/Controller';
+import logger from '@lib/logger';
 import welcome from '@src/pages/Welcome';
 import moment from 'moment';
 import packageJson from '../../package.json';
@@ -19,7 +20,7 @@ export default class extends C {
       obj: 'array',
     });
 
-    console.log(obj, req.body.obj);
+    logger.debug(obj, req.body.obj);
 
     res.strict(200);
   });
@@ -45,7 +46,7 @@ export default class extends C {
 
   private apiInfo = C.Wrapper(async (req, res) => {
     const data = {
-      v1: 'production',
+      v1: process.env.NODE_ENV,
       serverVersion: packageJson.version,
     };
 

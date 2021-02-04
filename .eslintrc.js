@@ -89,13 +89,18 @@ module.exports = {
     'no-unused-expressions': 'error',
     'no-unused-labels': 'error',
     'object-shorthand': 'error',
-    'no-unused-vars': 'error',
+    'no-unused-vars': 'off', // Catches this at @typescript-eslint rules
     'one-var': ['error', 'never'],
     '@typescript-eslint/isolatedModules': 'off',
-
     radix: 'error',
     'spaced-comment': 'error',
     'use-isnan': 'error',
     'valid-typeof': 'off',
+    "jest/valid-expect": [
+      "error",
+      {
+        "maxArgs": 2
+      }
+    ]
   },
 };

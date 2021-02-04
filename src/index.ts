@@ -1,5 +1,5 @@
-console.clear();
 import logger from '@lib/logger';
+logger.clear();
 logger.info('Starting server...');
 import http from 'http';
 import app from '@src/app';
