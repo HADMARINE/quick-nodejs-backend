@@ -3,15 +3,20 @@ import http from 'http';
 import getEvents from '@lib/startup/getSocketEvents';
 import logger from '@lib/logger';
 
-export default function (server: http.Server) {
+export default function (server: http.Server): void {
   const events = getEvents();
 
   for (const eventDir of Object.keys(events)) {
-    const io = socketio(server, {
-      origins:
-        process.env.REQUEST_URI === '*'
-          ? undefined
-          : `${process.env.REQUEST_URI}`,
+    const io = new socketio.Server(server, {
+      //   process.env.REQUEST_URI === '*'
+      //     ? undefined
+      //     : `${process.env.REQUEST_URI}`,
+      cors: {
+        origin:
+          process.env.REQUEST_URI === '*'
+            ? undefined
+            : `${process.env.REQUEST_URI}`,
+      },
       path: `/socket/${eventDir === 'index' ? '' : eventDir}`,
     });
 
