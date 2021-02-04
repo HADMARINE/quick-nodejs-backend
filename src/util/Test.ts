@@ -17,5 +17,6 @@ export default {
   server: {
     create: createServer,
     close: closeServer,
+    instance: app,
   },
 };
