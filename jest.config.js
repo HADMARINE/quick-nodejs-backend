@@ -15,5 +15,6 @@ module.exports = {
       diagnostics: true,
     },
   },
-  verbose: true
+  verbose: true,
+  setupFilesAfterEnv: ["jest-expect-message"]
 };
