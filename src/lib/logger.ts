@@ -2,6 +2,9 @@ import chalk from 'chalk';
 import moment from 'moment';
 
 function logger(message: string, isError = false): void {
+  if (process.env.NODE_ENV === 'test') {
+    return;
+  }
   const out: Function = isError ? console.error : console.log;
   out(
     `${chalk.gray(`[${moment().format('YYYY-MM-DD HH:mm:ss')}]: `)}${message}`,
@@ -34,6 +37,11 @@ function success(...message: string[]): void {
   logger(`${chalk.bgGreen.black(` SUCC `)} ${chalk.green(...message)}`);
 }
 
+function clear() {
+  if (process.env.NODE_ENV === 'test') return;
+  console.clear();
+}
+
 export default {
   error,
   warn,
@@ -41,4 +49,5 @@ export default {
   plain: logger,
   debug: debugLogger,
   success,
+  clear,
 };
