@@ -1,9 +1,9 @@
-const package = require('./package.json');
+const pkg = require('./package.json');
 
 module.exports = {
   apps: [
     {
-      name: package.name,
+      name: pkg.name,
       exec_mode: 'cluster',
       instances: 'max',
       script: './dist/index.js',

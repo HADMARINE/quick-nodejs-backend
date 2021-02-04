@@ -1,29 +1,35 @@
 version: 2.1
 orbs:
-  node: circleci/node@3.0.0
+  node: circleci/node@4.1.0
 jobs:
   test:
     docker:
-      - image: playauto/circleci-node10-awscli
+      - image: cimg/base:stable-18.04
     working_directory: ~/repo
     steps:
       - checkout
+      - node/install:
+          install-yarn: true
+          yarn-version: 1.22.10
       - restore_cache:
           keys:
             - root-fb2-dependencies-{{ checksum "package.json" }}
       - run:
           name: Dependencies package installation
-          command: npm install
+          command: yarn install
       - save_cache:
           paths:
             - node_modules
           key: root-fb2-dependencies-{{ checksum "package.json" }}
       - run:
+          name: .env decryption
+          command: yarn dec:env
+      - run:
           name: Testing
-          command: npm run test-auto
+          command: yarn test-auto
       - run:
           name: Build
-          command: npm run build
+          command: yarn build
 workflows:
   test-build-deployment:
     jobs:

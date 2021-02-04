@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Express } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import fileUploader from 'express-fileupload';
@@ -14,7 +14,7 @@ import morgan from '@lib/middlewares/morgan';
 
 const app = express();
 
-function App(): express.Express {
+function App(): Express {
   // Check Initial Environment Settings
   checkInitialProjectSettings();
   cron();

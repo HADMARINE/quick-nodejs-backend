@@ -1,11 +1,10 @@
 import mongoose from 'mongoose';
-
 interface Auth {
   user: string;
   pass: string;
 }
 
-const MONGO_URL = 'mongodb://' + process.env.DB_HOST;
+const MONGO_URL = process.env.DB_HOST;
 const env = process.env.NODE_ENV || 'development';
 
 if (!process.env.DB_USER || !process.env.DB_PASS) {
@@ -25,11 +24,23 @@ if (env === 'development') {
   mongoose.set('debug', true);
 }
 
-export default (): Promise<typeof mongoose> =>
-  mongoose.connect(mongoURL, {
+export default (): Promise<typeof mongoose | undefined> => {
+  if (
+    !process.env.DB_HOST ||
+    !process.env.DB_NAME ||
+    !process.env.DB_USER ||
+    !process.env.DB_PASS
+  ) {
+    return new Promise((res) => {
+      res(undefined);
+    });
+  }
+
+  return mongoose.connect(mongoURL, {
     ...auth,
     dbName,
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
   });
+};

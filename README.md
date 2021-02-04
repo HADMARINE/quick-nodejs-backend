@@ -2,7 +2,7 @@
 
 ## Readme for other languages
 
-### [한국어 리드미 (만료)](https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend/blob/master/README_ko.md)
+### [한국어 리드미 (만료됨 - 영어 문서를 참고해주세요.)](https://github.com/WebBoilerplates/Typescript-Node-Express-Mongodb-backend/blob/master/README_ko.md)
 
 ### Description
 
@@ -78,7 +78,7 @@ export default class extends C {
       additionalData?: Record<string, any> | null; - return parameter outside of data parameter
     }
     */
-    res(200, data);
+    res.strict(200, data);
   });
 
   private timeInfo = C.RawWrapper(async (req, res) => {
@@ -188,7 +188,7 @@ class Foo {
 ##### Import and usage
 
 ```typescript
-import error from './src/error/index';
+import error from '@error/index';
 ...
 // 404
 app.use(req => {
@@ -211,7 +211,7 @@ Create .env file on your project's root directory.
 ### Not Required Factors
 
 <code>PORT</code> : Port that server app will run<br/>
-<code>PORT_STRICT</code> : Set to <b>true</b> if you don't want to use auto port-detection and use only your own port.
+<code>PORT_STRICT</code> : Set to <b>true</b> if you don't want to use auto port-detection and use only your own port.<br/>
 <code>EXAMINE_PASSWORD</code> : parameter whether double-check password encryption<br/>
 
 

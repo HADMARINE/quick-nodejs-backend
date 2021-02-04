@@ -1,7 +1,7 @@
 import app from '../index';
 
-async function createServer(): Promise<any> {
-  return (await app).listen(80);
+async function createServer(): Promise<typeof app> {
+  return (await app).listen(63000);
 }
 
 async function closeServer(
@@ -15,7 +15,7 @@ async function closeServer(
 
 export default {
   server: {
-    create: createServer(),
+    create: createServer,
     close: closeServer,
   },
 };

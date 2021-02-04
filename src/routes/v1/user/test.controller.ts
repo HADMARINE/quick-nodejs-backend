@@ -1,5 +1,4 @@
 import C from '@lib/blueprint/Controller';
-import User from '@models/User';
 
 export default class extends C {
   constructor() {
@@ -20,7 +19,7 @@ export default class extends C {
   }
 
   private checkUserLogin = C.Wrapper((req, res) => {
-    res(200, undefined, {
+    res.strict(200, undefined, {
       message: 'Successfully verified role',
     });
   });
