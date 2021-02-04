@@ -22,6 +22,9 @@ jobs:
             - node_modules
           key: root-fb2-dependencies-{{ checksum "package.json" }}
       - run:
+          name: .env decryption
+          command: yarn dec:env
+      - run:
           name: Testing
           command: yarn test-auto
       - run:
