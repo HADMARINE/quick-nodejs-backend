@@ -69,6 +69,12 @@ function getPathRoutes(routePath = '/'): GetRoutes {
       router,
     });
   }
+  return datas;
+}
+
+function getRoutes(): GetRoutes {
+  const res = getPathRoutes();
+
   if (invalidlyRoutedList.length > 0) {
     logger.debug(`Some files was routed by Routes routing.`, false);
     logger.debug(
@@ -84,11 +90,8 @@ function getPathRoutes(routePath = '/'): GetRoutes {
       logger.debug(`${index + 1}: ${data}`, false);
     });
   }
-  return datas;
-}
 
-function getRoutes(): GetRoutes {
-  return getPathRoutes();
+  return res;
 }
 
 export default getRoutes;
