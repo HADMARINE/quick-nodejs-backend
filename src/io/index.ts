@@ -8,9 +8,6 @@ export default function (server: http.Server): void {
 
   for (const eventDir of Object.keys(events)) {
     const io = new socketio.Server(server, {
-      //   process.env.REQUEST_URI === '*'
-      //     ? undefined
-      //     : `${process.env.REQUEST_URI}`,
       cors: {
         origin:
           process.env.REQUEST_URI === '*'
