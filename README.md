@@ -150,9 +150,9 @@ If you don't want this function, set <code>PORT_STRICT</code> on your <code>.env
 
 ### Error Handling (returnError.ts)
 
-We made some boilerplate errors on <code>./src/error/index.ts</code>. <br/>
+We made some boilerplate errors on <code>./src/error/ErrorDictionary.ts</code>. <br/>
 We suggest to use this method because if you create your own error every time,<br/> **integrity of error datas would be broken** and can cause side-effects.<br/>
-So, if you can, declare error on <code>./src/error/index.ts</code> and use.
+So, if you can, declare error on <code>./src/error/ErrorDictionary.ts</code> and use.
 
 ### How to create error
 
