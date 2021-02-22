@@ -5,7 +5,7 @@ import fileUploader from 'express-fileupload';
 
 import getRoutes from '@lib/startup/getRoutes';
 import checkInitialProjectSettings from '@lib/startup/checkInitialProjectSettings';
-import error from '@error';
+import error from '@error/ErrorDictionary';
 import errorHandler from '@lib/middlewares/errorHandler';
 import Assets from '@util/Assets';
 import cron from '@lib/middlewares/cron';
