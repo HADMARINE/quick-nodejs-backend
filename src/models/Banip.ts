@@ -1,5 +1,5 @@
 import { model, Schema, Document, HookNextFunction, models } from 'mongoose';
-import error from '@error';
+import error from '@error/ErrorDictionary';
 import { UserDocument } from './User';
 
 export interface BanipInterface {

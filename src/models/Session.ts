@@ -1,6 +1,6 @@
 import { model, Schema, Document } from 'mongoose';
 import Auth from '@util/Auth';
-import error from '@error';
+import error from '@error/ErrorDictionary';
 import jwt from 'jsonwebtoken';
 
 export interface SessionInterface {
@@ -26,7 +26,7 @@ SessionSchema.methods.registerToken = async function (
   try {
     const tokenValue: any = jwt.decode(token);
     if (!tokenValue.exp || !tokenValue.jti) {
-      throw error.auth.tokenInvalid();
+      throw new Error();
     }
     await Session.create({
       jwtid: tokenValue.jti,
