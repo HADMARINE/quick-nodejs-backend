@@ -1,69 +1,95 @@
-import C from '@lib/blueprint/Controller';
-import Banip from '@models/Banip';
+import ErrorDictionary from '@error/ErrorDictionary';
+import Banip, { BanipDocument } from '@models/Banip';
+import BanipRepository from '@repo/BanipRepository';
+import { WrappedRequest } from '@util/ControllerUtil';
+import { DataTypes } from '@util/DataVerify';
+import { AdminAuthority } from '@util/Middleware';
+import {
+  Controller,
+  DeleteMapping,
+  GetMapping,
+  PostMapping,
+  SetMiddleware,
+  SetSuccessMessage,
+} from '@util/RestDecorator';
 
-export default class extends C {
-  constructor() {
-    super();
-    this.router.get(`/ip`, C.auth.authority.admin, this.getBannedIpList);
-    this.router.get(`/ip/:ip`, C.auth.authority.admin, this.getBannedIp);
-    this.router.post('/ip', C.auth.authority.admin, this.banIp);
-    this.router.delete('/ip', C.auth.authority.admin, this.unbanIp);
+interface AdminBanControllerInterface {
+  create(req: WrappedRequest): Promise<BanipDocument | null>;
+  readOne(req: WrappedRequest): Promise<BanipDocument | null>;
+  readMany(req: WrappedRequest): Promise<BanipDocument[] | null>;
+  delete(req: WrappedRequest): Promise<void | null>;
+}
+
+const banipRepository = new BanipRepository();
+
+@Controller
+export default class AdminBanController implements AdminBanControllerInterface {
+  @PostMapping('/ip')
+  @SetMiddleware(AdminAuthority)
+  @SetSuccessMessage('Banned ip successfully.')
+  async create(req: WrappedRequest): Promise<BanipDocument | null> {
+    const { reason, due, ip, userData } = req.verify.body({
+      reason: DataTypes.stringNull,
+      due: DataTypes.numberNull,
+      ip: DataTypes.string,
+      userData: DataTypes.object,
+    });
+
+    return await banipRepository.create({
+      ip,
+      reason: reason
+        ? `${reason} - ISSUED BY ADMIN(${userData.userid})`
+        : `ISSUED BY ADMIN(${userData.userid})`,
+      due: due ? due : -1,
+    });
   }
 
-  private getBannedIpList = C.Wrapper(async (req, res) => {
-    const { skip, limit } = req.verify.query({
-      skip: 'number',
-      limit: 'number',
-    });
-    const banip = await Banip.find()
-      .select('ip reason due')
-      .skip(skip)
-      .limit(limit)
-      .sort('-id')
-      .exec();
-    if (!banip) throw C.error.db.notfound();
-    res.strict(200, { ...banip });
-  });
+  @GetMapping('/ip/:ip')
+  @SetMiddleware(AdminAuthority)
+  @SetSuccessMessage('Found banned ip')
+  async readOne(req: WrappedRequest): Promise<BanipDocument | null> {
+    const data = req.verify.params({ ip: DataTypes.string });
+    return await banipRepository.findByIp(data);
+  }
 
-  private getBannedIp = C.Wrapper(async (req, res) => {
-    const { ip } = req.verify.params({
-      ip: 'string',
+  @GetMapping('/ip')
+  @SetMiddleware(AdminAuthority)
+  @SetSuccessMessage('Found banned ips')
+  async readMany(req: WrappedRequest): Promise<BanipDocument[] | null> {
+    const { skip, limit, ip, due_from, due_to, reason } = req.verify.query({
+      skip: DataTypes.numberNull,
+      limit: DataTypes.numberNull,
+      ip: DataTypes.arrayNull<string>(),
+      due_from: DataTypes.numberNull,
+      due_to: DataTypes.numberNull,
+      reason: DataTypes.stringNull,
     });
-    const banip = await Banip.findOne({ ip }).select('ip reason due').exec();
-    if (!banip) throw C.error.db.notfound();
-    res.strict(200, banip);
-  });
 
-  private banIp = C.Wrapper(async (req, res) => {
-    let { reason, due, userData, ip } = req.verify.body({
-      reason: 'string-nullable',
-      due: 'number-nullable',
-      userData: 'object-nullable',
-      ip: 'string',
+    return await banipRepository.findMany({
+      skip,
+      limit,
+      query: {
+        due_from,
+        due_to,
+        ip,
+        reason,
+      },
     });
-    reason = reason
-      ? `${reason} - ISSUED BY ADMIN(${userData.userid})`
-      : `ISSUED BY ADMIN(${userData.userid})`;
-    due = due ? due : -1;
-    const banip = await Banip.create({ reason, due, ip });
-    res.strict(201, { banip }, { message: 'Successfully banned ip' });
-  });
+  }
 
-  private unbanIp = C.Wrapper(async (req, res) => {
-    const { ip } = req.verify.body({
-      ip: 'array',
+  @DeleteMapping('/ip')
+  @SetMiddleware(AdminAuthority)
+  @SetSuccessMessage('Unbanned ips successfully')
+  async delete(req: WrappedRequest): Promise<void | null> {
+    const { ip, due } = req.verify.body({
+      ip: DataTypes.array<string>(),
+      due: DataTypes.numberNull,
     });
-    const banip = await Banip.deleteMany({
-      ip: { $in: ip },
-    }).exec();
-    if (!banip.n) throw C.error.db.notfound();
-    if (ip.length > banip.n) {
-      res.strict(200, undefined, {
-        message: 'Update successful, but could not found some datas.',
-        code: 'PARTLY_SUCCESS',
-      });
-      return;
+
+    const result = await banipRepository.deleteMany({ ip, due });
+    if (DataTypes.number(result)) {
+      throw ErrorDictionary.db.partial('delete', result);
     }
-    res.strict(200, undefined, { message: 'Successfully unbanned ip' });
-  });
+    return result;
+  }
 }

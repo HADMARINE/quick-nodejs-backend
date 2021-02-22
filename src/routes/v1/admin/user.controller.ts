@@ -1,6 +1,8 @@
 import C from '@lib/blueprint/Controller';
 import User from '@models/User';
+import logger from '@lib/logger';
 
+// TODO : Change to decorative class
 export default class extends C {
   constructor() {
     super();
@@ -32,7 +34,7 @@ export default class extends C {
       .select('userid authority')
       .skip(skip)
       .limit(limit)
-      .sort('-id')
+      .sort('-_id')
       .exec();
     if (!user) throw C.error.db.notfound();
     res.strict(200, user, { message: `User found` });
@@ -45,6 +47,9 @@ export default class extends C {
     const user = await User.deleteMany({
       userid: { $in: userid },
     }).exec();
+
+    logger.debug(user, false);
+
     if (!user.n) throw C.error.db.notfound();
     if (userid.length > user.n) {
       res.strict(
