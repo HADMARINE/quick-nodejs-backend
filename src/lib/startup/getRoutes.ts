@@ -49,11 +49,11 @@ function getPathRoutes(routePath = '/'): GetRoutes {
       continue;
     }
 
-    const router: NodeRequire = detectRouterTypeAndReturn(file);
+    const router = detectRouterTypeAndReturn(file);
 
     if (!router) {
       logger.warn(
-        `File "${file}" has no default export or have syntax error. Ignoring...`,
+        `${file} has no default export or have syntax error. Ignoring...`,
       );
       continue;
     }
