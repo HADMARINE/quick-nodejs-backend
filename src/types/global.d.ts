@@ -7,4 +7,13 @@ declare global {
     type Server = socketio.Server;
     type Socket = socketio.Socket;
   }
+  type ValueOf<T> = T[keyof T];
+  type TypeGuard<T extends (args: any) => any> = T extends (
+    args: any,
+  ) => args is infer R
+    ? R
+    : any;
+  type Nullish<T> = {
+    [P in keyof T]-?: T[P] | null;
+  };
 }
