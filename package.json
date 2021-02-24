@@ -1,6 +1,6 @@
 {
   "name": "typescript-node-express-mongodb-backend",
-  "version": "4.4.0",
+  "version": "5.0.0",
   "main": "index.ts",
   "author": "HADMARINE",
   "license": "MIT",
