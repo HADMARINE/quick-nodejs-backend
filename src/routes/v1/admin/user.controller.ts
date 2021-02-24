@@ -1,89 +1,69 @@
-import C from '@lib/blueprint/Controller';
-import User from '@models/User';
-import logger from '@lib/logger';
+import { UserDocument } from '@models/User';
+import {
+  Controller,
+  DeleteMapping,
+  GetMapping,
+  PatchMapping,
+  SetMiddleware,
+} from '@util/RestDecorator';
+import { WrappedRequest } from '@util/ControllerUtil';
+import { AdminAuthority } from '@util/Middleware';
+import UserRepository from '@repo/UserRepository';
+import { DataTypes } from '@util/DataVerify';
 
-// TODO : Change to decorative class
-export default class extends C {
-  constructor() {
-    super();
-    this.router.get('/', C.auth.authority.admin, this.getUserMany);
-    this.router.get('/:userid', C.auth.authority.admin, this.getUser);
-    this.router.patch(
-      '/authority',
-      C.auth.authority.admin,
-      this.setUserAuthority,
-    );
-    this.router.delete('/', C.auth.authority.admin, this.deleteUser);
+interface AdminUserControllerInterface {
+  readMany(req: WrappedRequest): Promise<UserDocument[] | null>;
+  readOne(req: WrappedRequest): Promise<UserDocument | null>;
+  update(req: WrappedRequest): Promise<UserDocument | null>;
+  delete(req: WrappedRequest): Promise<void | null>;
+}
+
+const userRepository = new UserRepository();
+@Controller
+export default class AdminUserController
+  implements AdminUserControllerInterface {
+  @GetMapping('/:userid')
+  @SetMiddleware(AdminAuthority)
+  async readOne(req: WrappedRequest): Promise<UserDocument | null> {
+    const { userid } = req.verify.params({ userid: DataTypes.string });
+    return await userRepository.findById({ userid });
   }
 
-  private getUser = C.Wrapper(async (req, res) => {
-    const { userid } = req.verify.params({
-      userid: 'string',
+  @GetMapping()
+  @SetMiddleware(AdminAuthority)
+  async readMany(req: WrappedRequest): Promise<UserDocument[] | null> {
+    const { skip, limit, userid, _id, authority } = req.verify.query({
+      skip: DataTypes.numberNull,
+      limit: DataTypes.numberNull,
+      userid: DataTypes.stringNull,
+      _id: DataTypes.stringNull,
+      authority: DataTypes.stringNull,
     });
-    const user = await User.findOne({ userid }).exec();
-    if (!user) throw C.error.db.notfound();
-    res.strict(200, user, { message: `User found` });
-  });
-
-  private getUserMany = C.Wrapper(async (req, res) => {
-    const { skip, limit } = req.verify.query({
-      skip: 'number',
-      limit: 'number',
+    return await userRepository.findMany({
+      skip,
+      limit,
+      userid,
+      _id,
+      authority,
     });
-    const user = await User.find()
-      .select('userid authority')
-      .skip(skip)
-      .limit(limit)
-      .sort('-_id')
-      .exec();
-    if (!user) throw C.error.db.notfound();
-    res.strict(200, user, { message: `User found` });
-  });
+  }
 
-  private deleteUser = C.Wrapper(async (req, res) => {
-    const { userid } = req.verify.body({
-      userid: 'array',
+  @PatchMapping('/:docid')
+  @SetMiddleware(AdminAuthority)
+  async update(req: WrappedRequest): Promise<UserDocument | null> {
+    const { docid } = req.verify.params({ docid: DataTypes.string });
+    const { userid, password, authority } = req.verify.body({
+      userid: DataTypes.stringNull,
+      password: DataTypes.stringNull,
+      authority: DataTypes.stringNull,
     });
-    const user = await User.deleteMany({
-      userid: { $in: userid },
-    }).exec();
+    return userRepository.updateByDocId(docid, { userid, password, authority });
+  }
 
-    logger.debug(user, false);
-
-    if (!user.n) throw C.error.db.notfound();
-    if (userid.length > user.n) {
-      res.strict(
-        200,
-        { successAmount: user.n },
-        {
-          message: 'Update successful, but could not found some datas.',
-          code: 'PARTLY_SUCCESS',
-        },
-      );
-      return;
-    }
-    res.strict(200, undefined, { message: 'User delete successful' });
-  });
-
-  private setUserAuthority = C.Wrapper(async (req, res) => {
-    const { userid, authority } = req.verify.body({
-      userid: 'array',
-      authority: 'string',
-    });
-    const user = await User.updateMany(
-      { userid: { $in: userid } },
-      { $set: { authority } },
-    ).exec();
-    if (!user.n) throw C.error.db.notfound();
-    if (userid.length > user.n) {
-      res.strict(200, undefined, {
-        message: 'Update successful, but could not found some datas.',
-        code: 'PARTLY_SUCCESS',
-      });
-      return;
-    }
-    res.strict(200, undefined, {
-      message: 'Update authority successful.',
-    });
-  });
+  @DeleteMapping('/:docid')
+  @SetMiddleware(AdminAuthority)
+  async delete(req: WrappedRequest): Promise<void | null> {
+    const { docid } = req.verify.params({ docid: DataTypes.string });
+    return userRepository.deleteByDocId(docid);
+  }
 }

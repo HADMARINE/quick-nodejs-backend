@@ -12,6 +12,7 @@ import {
 import { WrappedRequest } from '@util/ControllerUtil';
 import UserRepository from '@repo/UserRepository';
 import { AdminAuthority, RateLimiter, UserAuthority } from '@util/Middleware';
+import { DataTypes } from '@util/DataVerify';
 
 interface UserControllerInterface {
   create(req: WrappedRequest): Promise<void>;
@@ -36,8 +37,8 @@ export default class UserController implements UserControllerInterface {
   @SetSuccessMessage('User created successfully')
   async create(req: WrappedRequest): Promise<void> {
     const { userid, password } = req.verify.body({
-      userid: 'string',
-      password: 'string',
+      userid: DataTypes.string,
+      password: DataTypes.string,
     });
 
     return await userRepository.create({ userid, password });
@@ -48,9 +49,9 @@ export default class UserController implements UserControllerInterface {
   @SetMiddleware(UserAuthority)
   @SetSuccessMessage('User data found')
   async read(req: WrappedRequest): Promise<UserDocument | null> {
-    const { userData } = req.verify.body({ userData: 'object' });
+    const { userData } = req.verify.body({ userData: DataTypes.object });
 
-    return userRepository.findByDocId({ _id: userData._id });
+    return userRepository.findByDocId(userData._id);
   }
 
   @PatchMapping()
@@ -59,11 +60,11 @@ export default class UserController implements UserControllerInterface {
   @SetSuccessMessage('User data updated')
   async update(req: WrappedRequest): Promise<UserDocument | null> {
     const { password, userData } = req.verify.body({
-      password: 'string-nullable',
-      userData: 'object',
+      password: DataTypes.stringNull,
+      userData: DataTypes.object,
     });
 
-    return userRepository.update({ _id: userData._id, password });
+    return userRepository.updateByDocId(userData._id, { password });
   }
 
   @DeleteMapping()
@@ -72,10 +73,10 @@ export default class UserController implements UserControllerInterface {
   @SetSuccessMessage('User deleted successfully')
   async delete(req: WrappedRequest): Promise<null | void> {
     const { userData } = req.verify.body({
-      userData: 'object',
+      userData: DataTypes.object,
     });
 
-    return userRepository.deleteByDocId({ _id: userData._id });
+    return userRepository.deleteByDocId(userData._id);
   }
 
   @GetMapping('/test/admin')

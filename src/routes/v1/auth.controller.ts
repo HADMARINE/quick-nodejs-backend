@@ -8,6 +8,7 @@ import {
   SetSuccessMessage,
 } from '@util/RestDecorator';
 import { RateLimiter } from '@util/Middleware';
+import { DataTypes } from '@util/DataVerify';
 
 interface AuthControllerInterface {
   signIn(req: WrappedRequest): Promise<InitialTokenCreateResult | null>;
@@ -24,8 +25,8 @@ export default class AuthController implements AuthControllerInterface {
   @SetSuccessMessage('Login success')
   async signIn(req: WrappedRequest): Promise<InitialTokenCreateResult | null> {
     const { userid, password } = req.verify.body({
-      userid: 'string',
-      password: 'string',
+      userid: DataTypes.string,
+      password: DataTypes.string,
     });
 
     return authRepository.signInitial({ userid, password });
@@ -36,7 +37,7 @@ export default class AuthController implements AuthControllerInterface {
   @SetSuccessMessage('Successfully renewed access token')
   async resign(req: WrappedRequest): Promise<string | null> {
     const { token } = req.verify.body({
-      token: 'string',
+      token: DataTypes.string,
     });
 
     return authRepository.renewToken({ token });
