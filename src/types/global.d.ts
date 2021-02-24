@@ -14,6 +14,10 @@ declare global {
     ? R
     : any;
   type Nullish<T> = {
-    [P in keyof T]-?: T[P] | null;
+    [P in keyof T]: T[P] | null;
+  };
+  type PartialNullish<T> = Partial<Nullish<T>>;
+  type Arrayify<T> = {
+    [P in keyof T]: T[P][];
   };
 }
