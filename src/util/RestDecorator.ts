@@ -1,10 +1,16 @@
 import { RequestHandler, Router } from 'express';
-import { WrappedRequest, ResponseOptions, Wrapper } from '@util/ControllerUtil';
+import {
+  WrappedRequest,
+  ResponseOptions,
+  Wrapper,
+  RawWrapper,
+} from '@util/ControllerUtil';
 import error from '@error/ErrorDictionary';
 
 export type EndpointProcessProperties = Partial<{
   method: METHODS;
   useCustomHandler: boolean;
+  returnRawData: boolean;
   path: string | RegExp | (string | RegExp)[];
   successMessage: string;
   noErrorOnNull: boolean;
@@ -62,11 +68,14 @@ const processHandlers = (
     v.handlers[v.handlers.length - 1] = Wrapper(async (req, res) => {
       const preResult = await preHandler(req);
 
-      if (preResult === null && !properties.noErrorOnNull) {
-        throw error.data.dataNull();
+      if (properties.returnRawData) {
+        res.send(preResult).status(200);
+      } else {
+        if (preResult === null && !properties.noErrorOnNull) {
+          throw error.data.dataNull();
+        }
+        res.strict(200, preResult, responseOptions);
       }
-
-      res.strict(200, preResult, responseOptions);
     });
   }
 
@@ -170,6 +179,20 @@ export const SetEndpointProperties = (value: EndpointProcessProperties) => {
   };
 };
 
+export const ReturnRawData = (value = true) => {
+  return (
+    target: any,
+    propName: string,
+    description: PropertyDescriptor,
+  ): void => {
+    const v = validateUnsureValue(description.value);
+
+    v.properties.returnRawData = value;
+
+    description.value = v;
+  };
+};
+
 export const Controller = <T extends new (...args: any[]) => {}>(
   target: T,
 ): {
@@ -215,4 +238,5 @@ export default {
   setSuccessMessage: SetSuccessMessage,
   noErrorOnNull: NoErrorOnNull,
   setEndpointProperties: SetEndpointProperties,
+  returnRawData: ReturnRawData,
 };
