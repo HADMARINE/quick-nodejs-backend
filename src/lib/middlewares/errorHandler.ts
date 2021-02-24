@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { defaultMessage, defaultCode } from '@lib/httpCode';
 import { IpDeniedError } from 'express-ipfilter';
+import logger from '@lib/logger';
 
 interface MiddlewareError {
   status?: number;
@@ -19,6 +20,8 @@ export default (
   const message = error.message || defaultMessage(status);
   const code = error.code || defaultCode(status);
   const data = error.data || {};
+
+  logger.debug(error);
 
   if (error instanceof IpDeniedError) {
     res

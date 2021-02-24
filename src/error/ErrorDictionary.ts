@@ -7,9 +7,7 @@ export default {
     status: keyof typeof codeData,
     code: string,
   ): Error => returnError(message, status, code),
-  test(): Error {
-    return returnError(null, 418, null);
-  },
+  test: (): Error => returnError(null, 418, null),
   action: {
     unsafe: (): Error =>
       returnError(
@@ -18,7 +16,7 @@ export default {
         'UNSAFE_NOT_HANDLED',
       ),
   },
-  access: {
+  connection: {
     pageNotFound(directory = ''): Error {
       const data: any = {};
       if (directory) {
@@ -68,6 +66,8 @@ export default {
         400,
         'PARAMETER_INVALID',
       ),
+    dataNull: (col: any = ''): Error =>
+      returnError(`Data${col ? ` ${col}` : ``} is null`, 500, 'DATA_NULL'),
   },
   db: {
     create(collection: string | null = null): Error {
@@ -89,6 +89,12 @@ export default {
     notfound(): Error {
       return returnError(`Data not found.`, 404, `DATA_NOT_FOUND`);
     },
+    partial: (action: string, successCount: number): Error =>
+      returnError(
+        `Partial success of ${action}. Only ${successCount} of document succeeded.`,
+        500,
+        `PARTIAL_SUCCESS`,
+      ),
     error: (): Error =>
       returnError(
         `Failed to resolve database process`,

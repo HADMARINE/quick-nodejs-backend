@@ -1,73 +1,55 @@
 import C from '@lib/blueprint/Controller';
-import Session from '@models/Session';
+import Session, { SessionDocument } from '@models/Session';
 import Auth from '@util/Auth';
+import Assets from '@util/Assets';
+import { Schema } from 'mongoose';
+import { DataTypes } from '@util/DataVerify';
+import { WrappedRequest } from '@util/ControllerUtil';
+import AuthRepository from '@repo/AuthRepository';
+import { Controller } from '@util/RestDecorator';
 
-export default class extends C {
-  constructor() {
-    super();
-    this.router.get('/', Auth.authority.admin, this.getToken);
-    this.router.delete('/', Auth.authority.admin, this.deleteToken);
+interface TokenControllerInterface {
+  readMany(req: WrappedRequest): Promise<SessionDocument[] | null>;
+  deleteMany(req: WrappedRequest): Promise<void | null>;
+}
+
+const authRepository = new AuthRepository();
+@Controller
+export default class TokenController implements TokenControllerInterface {
+  async readMany(req: WrappedRequest): Promise<SessionDocument[] | null> {
+    const { user, jwtid, time_from, time_to, skip, limit } = req.verify.body({
+      user: DataTypes.stringNull,
+      jwtid: DataTypes.stringNull,
+      time_from: DataTypes.numberNull,
+      time_to: DataTypes.numberNull,
+      skip: DataTypes.numberNull,
+      limit: DataTypes.numberNull,
+    });
+
+    return await authRepository.findRefreshToken({
+      user,
+      jwtid,
+      time: {
+        from: time_from,
+        to: time_to,
+      },
+      skip,
+      limit,
+    });
   }
 
-  private getToken = C.Wrapper(async (req, res) => {
-    let query = {};
-    const { user, jwtid, time, skip, limit } = req.verify.query({
-      user: 'string-nullable',
-      jwtid: 'string-nullable',
-      time: 'object-nullable',
-      skip: 'number',
-      limit: 'number',
+  async deleteMany(req: WrappedRequest): Promise<void | null> {
+    const { user, jwtid, time_from, time_to } = req.verify.body({
+      user: DataTypes.stringNull,
+      jwtid: DataTypes.stringNull,
+      time_from: DataTypes.numberNull,
+      time_to: DataTypes.numberNull,
     });
 
-    if (time) {
-      query = Object.assign({}, query, {
-        expire: { $lt: time.end, $gt: time.start },
-      });
-    }
-    if (user) {
-      query = Object.assign({}, query, { user: { $in: user } });
-    }
-    if (jwtid) {
-      query = Object.assign({}, query, { jwtid });
-    }
-
-    const session = await Session.find(query).skip(skip).limit(limit).exec();
-    if (!session.length) throw C.error.db.notfound();
-    res.strict(200, session, {
-      message: 'Found sessions',
+    return await authRepository.deleteRefreshToken({
+      user,
+      jwtid,
+      time: { from: time_from, to: time_to },
     });
-  });
-
-  private deleteToken = C.Wrapper(async (req, res) => {
-    let query = {};
-    const { user, jwtid, unsafe } = req.verify.query({
-      user: 'string-nullable',
-      jwtid: 'string-nullable',
-      unsafe: 'boolean-nullable',
-    });
-    const { time } = req.query as any;
-    if (time) {
-      query = Object.assign({}, query, {
-        expire: { $lt: time.end, $gt: time.start },
-      });
-    }
-    if (user) {
-      query = Object.assign({}, query, { user: { $in: user } });
-    }
-    if (jwtid) {
-      query = Object.assign({}, query, { jwtid });
-    }
-    if (unsafe !== true && JSON.stringify(query) === '{}') {
-      throw C.error.action.unsafe();
-    }
-    const session = await Session.deleteMany(query).exec();
-    if (!session.deletedCount) throw C.error.db.notfound();
-    res.strict(
-      200,
-      { amount: session.deletedCount },
-      {
-        message: `Disabled ${session.deletedCount} token session matches.`,
-      },
-    );
-  });
+  }
 }

@@ -45,10 +45,10 @@ Mongoose 를 사용하지 않고 프로젝트를 실행하려면 별도로 코�
 
 ## 에러 핸들링 (예외처리) - (throwError.ts)
 
-이미 기본적인 오류를 <code>./src/error/index.ts</code> 에 작성해 두었습니다. <br/>
+이미 기본적인 오류를 <code>./src/error/ErrorDictionary.ts</code> 에 작성해 두었습니다. <br/>
 저는 위의 파일에 작성된 방식으로 오류를 처리하기를 권장하는데, 매번 같은 오류를 작성하다 보면, 같은 오류인데도 오류 코드가 다르거나, 메세지가 달라 **오류 정보에 대한 무결성이 깨져** 사이드 이펙트를 일으킬 수 있기 때문입니다.<br/>
 
-그러므로, 가능하면 예외 처리를 <code>./src/error/index.ts</code> 에 선언하시고 사용하세요.
+그러므로, 가능하면 예외 처리를 <code>./src/error/ErrorDictionary.ts</code> 에 선언하시고 사용하세요.
 
 ### 오류를 생성하는 방법
 
@@ -108,7 +108,8 @@ export const PageNotFound = (directory: string = '') => {
 ###### import 와 사용
 
 ```typescript
-import { PageNotFound } from './src/error/index';
+import {PageNotFound} from './ErrorDictionary';
+
 ...
 
 // 404
@@ -138,7 +139,8 @@ export default {
 ###### import 와 사용
 
 ```typescript
-import Error from './src/error/index';
+import Error from './ErrorDictionary';
+
 ...
 // 404
 app.use(req => {

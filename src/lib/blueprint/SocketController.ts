@@ -1,4 +1,4 @@
-import error from '@error';
+import error from '@error/ErrorDictionary';
 import Assets from '@util/Assets';
 import Auth from '@util/Auth';
 import models from '@models/index';
