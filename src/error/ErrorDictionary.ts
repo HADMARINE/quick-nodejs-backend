@@ -89,7 +89,7 @@ export default {
     notfound(): Error {
       return returnError(`Data not found.`, 404, `DATA_NOT_FOUND`);
     },
-    partial: (action: string, successCount: number) =>
+    partial: (action: string, successCount: number): Error =>
       returnError(
         `Partial success of ${action}. Only ${successCount} of document succeeded.`,
         500,
