@@ -26,7 +26,8 @@
         "regenerator": true
       }
     ],
-    "@babel/plugin-proposal-class-properties"
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    ["@babel/plugin-proposal-class-properties", { "loose": true}]
   ],
   "ignore": [
     "./src/__tests__"
