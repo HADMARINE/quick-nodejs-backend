@@ -99,8 +99,8 @@ function filterType<T>(param: any, type: string): T | undefined {
   return param;
 }
 
-// TODO : fix type of this!
-export function UpdateQueryBuilder<T>(
+// TODO : improve type of this!
+export function QueryBuilder<T>(
   doc: T,
   allowDepth = -1,
   currentDepth = 0,
@@ -132,7 +132,7 @@ export function UpdateQueryBuilder<T>(
         (allowDepth === -1 || currentDepth < allowDepth)
       ) {
         Object.assign(result, {
-          [key]: UpdateQueryBuilder(value, allowDepth, currentDepth + 1),
+          [key]: QueryBuilder(value, allowDepth, currentDepth + 1),
         });
       } else if (value !== undefined) {
         if (Array.isArray(value)) {
@@ -249,7 +249,7 @@ function decryptSymmetry(value: string): string {
 }
 
 export default {
-  updateQueryBuilder: UpdateQueryBuilder,
+  updateQueryBuilder: QueryBuilder,
   getObjectKeyByValue,
   getRandomNumber,
   checkJong,
