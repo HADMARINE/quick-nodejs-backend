@@ -8,7 +8,9 @@ import {
   Controller,
   GetMapping,
   PostMapping,
+  ReturnRawData,
 } from '@util/RestDecorator';
+import { DataTypes } from '@util/DataVerify';
 
 interface IndexControllerInterface {
   index(): string;
@@ -27,6 +29,7 @@ interface IndexControllerInterface {
 @Controller
 export default class IndexController implements IndexControllerInterface {
   @AllMapping()
+  @ReturnRawData()
   index(): string {
     return welcome(
       packageJson.name,
@@ -37,6 +40,7 @@ export default class IndexController implements IndexControllerInterface {
   }
 
   @GetMapping('/status')
+  @ReturnRawData()
   status(): string {
     return 'UP';
   }
@@ -52,9 +56,9 @@ export default class IndexController implements IndexControllerInterface {
   @PostMapping('/test')
   test(req: WrappedRequest): void {
     const { obj, data } = req.verify.body({
-      obj: 'array',
+      obj: DataTypes.array<any>(),
       data: {
-        obj: 'array',
+        obj: DataTypes.array<any>(),
       },
     });
 
@@ -62,6 +66,7 @@ export default class IndexController implements IndexControllerInterface {
   }
 
   @GetMapping('/info/time')
+  @ReturnRawData()
   timeInfo(): string {
     return moment().format('YYYY-MM-DD HH:mm:ss');
   }
