@@ -3,9 +3,10 @@ import { pbkdf2Sync, randomBytes } from 'crypto';
 import { Schema } from 'mongoose';
 import Session from '@models/Session';
 import User from '@models/User';
-import error from '@error';
+import error from '@error/ErrorDictionary';
 import { NextFunction, Response, Request, RequestHandler } from 'express';
 import logger from '@lib/logger';
+import Middleware from '@util/Middleware';
 
 /**
  * @description Verifies token
@@ -123,46 +124,47 @@ async function createToken(
 ): Promise<string> {
   function expireTime(): string | number {
     if (customExpireTime) return customExpireTime;
-    if (tokenType === 'access') return '10min';
-    else if (tokenType === 'refresh') return '1d';
-    else return '1h';
-  }
-  try {
-    const jwtSettings: jwt.SignOptions = {
-      expiresIn: expireTime(),
-      jwtid: `${Date.now()}_${payload._id}_${tokenType}`,
-      issuer:
-        process.env.NODE_ENV === 'development'
-          ? '*'
-          : process.env.REQUEST_URI || '*',
-    };
-    const user = await User.findById(payload._id).exec();
-    if (!user) throw error.db.notfound();
-
-    const _payload: TokenPayload = {
-      userid: payload.userid,
-      _id: payload._id,
-      type: tokenType,
-      authority: user.authority || 'normal',
-    };
-
-    const result = jwt.sign(
-      _payload,
-      process.env.TOKEN_KEY as string,
-      jwtSettings,
-    );
-
-    if (tokenType === 'refresh') {
-      await new Session().registerToken(result);
+    if (tokenType === 'access') {
+      return '10min';
+    } else if (tokenType === 'refresh') {
+      return '1d';
+    } else {
+      return '1h';
     }
-
-    return result;
-  } catch (e) {
-    throw e;
   }
+
+  const jwtSettings: jwt.SignOptions = {
+    expiresIn: expireTime(),
+    jwtid: `${Date.now()}_${payload._id}_${tokenType}`,
+    issuer:
+      process.env.NODE_ENV === 'development'
+        ? '*'
+        : process.env.REQUEST_URI || '*',
+  };
+  const user = await User.findById(payload._id).exec();
+  if (!user) throw error.db.notfound();
+
+  const _payload: TokenPayload = {
+    userid: payload.userid,
+    _id: payload._id,
+    type: tokenType,
+    authority: user.authority || 'normal',
+  };
+
+  const result = jwt.sign(
+    _payload,
+    process.env.TOKEN_KEY as string,
+    jwtSettings,
+  );
+
+  if (tokenType === 'refresh') {
+    await new Session().registerToken(result);
+  }
+
+  return result;
 }
 
-interface InitialTokenCreateResult {
+export interface InitialTokenCreateResult {
   access: string;
   refresh: string;
 }
@@ -243,75 +245,11 @@ function verifyPassword(
   return false;
 }
 
-async function adminAuthority(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<void> {
-  try {
-    const tokenPayload = req.headers['x-access-token'];
-    if (typeof tokenPayload !== 'string') {
-      throw error.auth.tokenInvalid();
-    }
-    const tokenValue = await verifyToken(tokenPayload);
-    if (tokenValue.authority !== 'admin') {
-      throw error.auth.access.lackOfAuthority();
-    }
-    req.body.userData = await verifyToken(tokenPayload);
-    next();
-  } catch (e) {
-    next(e);
-  }
-}
-
-function specifiedUserAuthority(...authority: string[]): RequestHandler {
-  return async function (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
-    try {
-      const tokenPayload = req.headers['x-access-token'];
-      if (typeof tokenPayload !== 'string') {
-        throw error.auth.tokenInvalid();
-      }
-      const tokenValue = await verifyToken(tokenPayload);
-      if (
-        authority.indexOf(tokenValue.authority) === -1 ||
-        tokenValue.authority !== 'admin'
-      ) {
-        throw error.auth.access.lackOfAuthority();
-      }
-      req.body.userData = await verifyToken(tokenPayload);
-      next();
-    } catch (e) {
-      next(e);
-    }
-  };
-}
-
-async function userAuthority(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<void> {
-  try {
-    const tokenPayload = req.headers['x-access-token'];
-    if (typeof tokenPayload !== 'string') {
-      throw error.auth.tokenInvalid();
-    }
-    req.body.userData = await verifyToken(tokenPayload);
-    next();
-  } catch (e) {
-    next(e);
-  }
-}
-
 export default {
   token: {
     verify: {
       manual: verifyToken,
-      access: verifyAccessToken,
+      connection: verifyAccessToken,
       refresh: verifyRefreshToken,
     },
     create: {
@@ -327,9 +265,9 @@ export default {
     },
   },
   authority: {
-    admin: adminAuthority,
-    user: userAuthority,
-    specify: specifiedUserAuthority,
+    admin: Middleware.authority.admin,
+    user: Middleware.authority.user,
+    specify: Middleware.authority.specify,
   },
   password: {
     create: createPassword,

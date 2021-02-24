@@ -27,8 +27,9 @@ module.exports = {
     '@typescript-eslint/prefer-for-of': 'error',
     '@typescript-eslint/prefer-function-type': 'error',
     '@typescript-eslint/unified-signatures': 'error',
+    '@typescript-eslint/camelcase': 'off',
     'no-use-before-define': ['error', { variables: false }],
-    camelcase: 'error',
+    camelcase: 'off',
     complexity: 'off',
     'constructor-super': 'error',
     'dot-notation': 'error',
@@ -96,11 +97,11 @@ module.exports = {
     'spaced-comment': 'error',
     'use-isnan': 'error',
     'valid-typeof': 'off',
-    "jest/valid-expect": [
-      "error",
+    'jest/valid-expect': [
+      'error',
       {
-        "maxArgs": 2
-      }
-    ]
+        maxArgs: 2,
+      },
+    ],
   },
 };

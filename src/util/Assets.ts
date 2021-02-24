@@ -1,5 +1,4 @@
-import error from '@error';
-import rateLimiter from 'express-rate-limit';
+import error from '@error/ErrorDictionary';
 import { RequestHandler, NextFunction, Response, Request } from 'express';
 import deasync from 'deasync';
 import logger from '@lib/logger';
@@ -29,22 +28,6 @@ function checkNull(...param: any[]): any[] {
   return param;
 }
 
-function apiRateLimiter(
-  standardTimeRate = 5,
-  limitRate = 100,
-): rateLimiter.RateLimit {
-  return rateLimiter({
-    windowMs: standardTimeRate * 60 * 1000,
-    max: limitRate,
-    handler: (req, res) =>
-      res.status(429).json({
-        result: false,
-        ...error.access.tooManyRequests(),
-        message: 'Too many requests',
-      }),
-  });
-}
-
 function sleep(ms: number): Promise<number> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -65,7 +48,7 @@ function wrapper(requestHandler: RequestHandler): RequestHandler {
   };
 }
 
-function returnArray(data: any): any[] {
+function returnArray<T>(data: any): T[] {
   if (typeof data === 'string') {
     try {
       data = JSON.parse(data);
@@ -104,11 +87,11 @@ function verifyPhone(phone: string): void {
   }
 }
 
-function filterType(param: any, type: string): any | undefined {
+function filterType<T>(param: any, type: string): T | undefined {
   if (typeof param !== type && typeof param !== 'undefined') {
     if (type === 'number') {
       try {
-        return parseInt(param, 10);
+        return (parseInt(param, 10) as unknown) as T;
       } catch {}
     }
     throw error.data.parameterInvalid();
@@ -116,13 +99,18 @@ function filterType(param: any, type: string): any | undefined {
   return param;
 }
 
-function updateQueryBuilder(
-  doc: Record<string, any> | any[],
+// TODO : improve type of this!
+export function QueryBuilder<T>(
+  doc: T,
   allowDepth = -1,
   currentDepth = 0,
-): Record<string, any> | any[] | undefined {
+):
+  | Record<NonNullable<keyof T>, NonNullable<ValueOf<T>>>
+  | NonNullable<ValueOf<T>>[]
+  | any
+  | undefined {
   if (Array.isArray(doc)) {
-    const arrVal = [];
+    const arrVal: ValueOf<T>[] = [];
     for (const v of doc) {
       if (v) {
         if (typeof v === 'object' && JSON.stringify(v) === '{}') {
@@ -132,41 +120,43 @@ function updateQueryBuilder(
       }
     }
     if (arrVal.length === 0) return undefined;
-    return arrVal;
+    return arrVal as NonNullable<ValueOf<T>>[];
   }
   const result = {};
-  Object.keys(doc).forEach((key) => {
-    const value = doc[key];
-    if (
-      typeof value === 'object' &&
-      value !== null &&
-      (allowDepth === -1 || currentDepth < allowDepth)
-    ) {
-      Object.assign(result, {
-        [key]: updateQueryBuilder(value, allowDepth, currentDepth + 1),
-      });
-    } else if (value !== undefined) {
-      if (Array.isArray(value)) {
-        if ((value as any[]).length === 0) {
-          return;
-        }
-        const val: any[] = [];
-        (value as any[]).forEach((v) => {
-          if (v) {
-            if (typeof v === 'object' && JSON.stringify(v) === '{}') {
-              return;
-            }
-            val.push(v);
-          }
+  if (doc !== null && typeof doc === 'object') {
+    Object.keys(doc).forEach((key) => {
+      const value = (doc as Record<string, any>)[key];
+      if (
+        typeof value === 'object' &&
+        value !== null &&
+        (allowDepth === -1 || currentDepth < allowDepth)
+      ) {
+        Object.assign(result, {
+          [key]: QueryBuilder(value, allowDepth, currentDepth + 1),
         });
-        if (val.length === 0) return;
-        Object.assign(result, { [key]: val });
-      } else {
-        Object.assign(result, { [key]: value });
+      } else if (value !== undefined) {
+        if (Array.isArray(value)) {
+          if ((value as any[]).length === 0) {
+            return;
+          }
+          const val: any[] = [];
+          (value as any[]).forEach((v) => {
+            if (v) {
+              if (typeof v === 'object' && JSON.stringify(v) === '{}') {
+                return;
+              }
+              val.push(v);
+            }
+          });
+          if (val.length === 0) return;
+          Object.assign(result, { [key]: val });
+        } else {
+          Object.assign(result, { [key]: value });
+        }
       }
-    }
-  });
-  return result;
+    });
+    return result as any;
+  }
 }
 
 const DEFAULT_TIMEOUTS = 10 * 1000;
@@ -258,146 +248,12 @@ function decryptSymmetry(value: string): string {
   return result;
 }
 
-type verificationTypes =
-  | 'object'
-  | 'object-nullable'
-  | 'number'
-  | 'number-nullable'
-  | 'boolean'
-  | 'boolean-nullable'
-  | 'string'
-  | 'string-nullable'
-  | 'function'
-  | 'function-nullable'
-  | 'any'
-  | 'array'
-  | 'array-nullable'
-  | 'notnull';
-
-type RequestVerificationBuilderProps = verificationTypes;
-
-function verifyData(data: any, type: verificationTypes, key: string): any {
-  if (type === 'any') {
-    return data;
-  }
-
-  const nullableFlag = type.slice(-8) === 'nullable';
-
-  if (nullableFlag) {
-    type = type.slice(0, -9) as verificationTypes;
-  }
-
-  if (!data) {
-    if (nullableFlag) {
-      return null;
-    }
-    throw error.data.parameterNull(key);
-  }
-
-  switch (type) {
-    case 'notnull':
-      return data;
-    case 'array':
-      if (Array.isArray(data)) {
-        return data;
-      }
-      const a = returnArray(data);
-
-      if (Array.isArray(a)) {
-        return a;
-      }
-      throw error.data.parameterInvalid(key);
-    case 'boolean':
-      if (typeof data === 'boolean') {
-        return data;
-      }
-
-      if (typeof data === 'string') {
-        switch (data) {
-          case 'true':
-            return true;
-          case 'false':
-            return false;
-          default:
-            throw error.data.parameterInvalid(key);
-        }
-      }
-
-      throw error.data.parameterInvalid(key);
-    case 'object':
-      if (typeof data === 'object') {
-        return data;
-      }
-      const r = returnRecord(data);
-      if (r === null || typeof r !== 'object') {
-        throw error.data.parameterInvalid(key);
-      }
-      return r;
-
-    case 'function':
-      logger.debug('Verifying function has no effect. Returning raw data.');
-      return data;
-
-    case 'string':
-      if (typeof data === 'string') {
-        return data;
-      }
-      throw error.data.parameterInvalid(key);
-
-    case 'number':
-      if (isNaN(data)) {
-        throw error.data.parameterInvalid(key);
-      }
-      return parseFloat(data);
-
-    default:
-      throw error.data.parameterInvalid(key);
-  }
-  // return type === typeof data;
-}
-
-const verificationProcessor = <T>(props: RequestVerificationBuilderProps) => {
-  return function (rawData: Record<string, any>, key: string): T {
-    const targetData = rawData[key];
-
-    return verifyData(targetData, props, key);
-  };
-};
-
-function requestVerificationBuilder<T>(
-  type: RequestVerificationBuilderProps,
-): (rawData: Record<string, any>, key: string) => T {
-  return verificationProcessor<T>(type);
-}
-
-function getRequestWithVerification(data: Record<string, any>) {
-  return function (
-    processors: Record<string, verificationTypes>,
-  ): Record<string, any> {
-    const returnValue = {};
-
-    Object.keys(processors).forEach((key) => {
-      const processor = requestVerificationBuilder(processors[key]);
-      const result = processor(data, key);
-      Object.assign(returnValue, { [key]: result });
-      // const value = (returnValue[key] = result[key]);
-    });
-
-    return returnValue;
-  };
-}
-
-export type VerifierWrapperInnerFunction = (
-  processors: Record<string, verificationTypes>,
-) => Record<string, any>;
-
 export default {
-  updateQueryBuilder,
+  updateQueryBuilder: QueryBuilder,
   getObjectKeyByValue,
   getRandomNumber,
   checkJong,
   checkNull,
-  apiRateLimiter,
   sleep,
   delayExact,
   wrapper,
@@ -410,10 +266,10 @@ export default {
       phone: verifyPhone,
     },
     filter: filterType,
-    paramVerifier: {
-      builder: requestVerificationBuilder,
-      wrapper: getRequestWithVerification,
-    },
+    // paramVerifier: {
+    //   builder: requestVerificationBuilder,
+    //   wrapper: getRequestWithVerification,
+    // },
   },
   encryption: {
     symmetry: {

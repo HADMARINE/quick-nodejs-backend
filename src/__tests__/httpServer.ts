@@ -55,8 +55,8 @@ describe('Test Auth system', () => {
 
     expect(res.body.result, res.body.message).toBe(true);
 
-    token = res.body.data.token.access;
-    refreshToken = res.body.data.token.refresh;
+    token = res.body.data.access;
+    refreshToken = res.body.data.refresh;
   });
 
   it('should get user correctly via GET /v1/user', async () => {
