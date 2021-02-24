@@ -183,7 +183,7 @@ function verifier<T>(
       return (parseFloat(data) as unknown) as T;
     case isArray as unknown:
     case isArrayNullable as unknown:
-      const arr = (ArrayParser(data, key) as unknown) as T;
+      const arr = ArrayParser(data, key);
       if (arr.length === 0) return (null as unknown) as T;
       return (arr as unknown) as T;
     default:
@@ -200,11 +200,10 @@ function verifierBuilder<T>(type: (data: any) => data is T) {
   };
 }
 
-function isObjectProcessorType(
-  data: Record<string | number | symbol, ProcessorType>,
-): data is Record<string | number | symbol, ProcessorType> {
-  // TODO : FINISH DEFINING THIS
-  return true;
+function isObjectProcessorType(data: any): data is ProcessorType {
+  // TODO : improve this type guard
+  if (typeof data === 'object') return true;
+  return false;
 }
 
 export type RecursiveVerifiedTypes<T> = {
@@ -259,11 +258,3 @@ export function verificationWrapper(data: Record<string, any>) {
     return returnData;
   };
 }
-
-// const a = verificationWrapper({
-//   hello: 'world',
-//   world: { test: { fuck: 'test' } },
-// })({
-//   hello: isString,
-//   world: { test: { fuck: isString } },
-// });
