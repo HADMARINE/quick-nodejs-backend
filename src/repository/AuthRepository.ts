@@ -1,7 +1,8 @@
 import Auth, { InitialTokenCreateResult } from '@util/Auth';
-import Assets from '@util/Assets';
+import Assets, { QueryBuilder } from '@util/Assets';
 import error from '@error/ErrorDictionary';
 import User from '@models/User';
+import Session, { SessionDocument } from '@models/Session';
 
 interface AuthRepositoryInterface {
   signInitial(data: {
@@ -9,10 +10,28 @@ interface AuthRepositoryInterface {
     password: string;
   }): Promise<InitialTokenCreateResult | null>;
   renewToken(data: { token: string }): Promise<string | null>;
-
-  // getRefreshToken(data:{
-  //   user: string[] |
-  // })
+  findRefreshToken(
+    data: PartialNullish<{
+      user: string;
+      jwtid: string;
+      time: PartialNullish<{
+        from: number;
+        to: number;
+      }>;
+      skip: number;
+      limit: number;
+    }>,
+  ): Promise<SessionDocument[] | null>;
+  deleteRefreshToken(
+    data: PartialNullish<{
+      user: string;
+      jwtid: string;
+      time: PartialNullish<{
+        from: number;
+        to: number;
+      }>;
+    }>,
+  ): Promise<void | null>;
 }
 
 export default class AuthRepository implements AuthRepositoryInterface {
@@ -47,6 +66,50 @@ export default class AuthRepository implements AuthRepositoryInterface {
         userid: tokenValue.userid,
       },
       'access',
+    );
+  }
+
+  async findRefreshToken(
+    data: PartialNullish<{
+      user: string;
+      jwtid: string;
+      time: PartialNullish<{
+        from: number;
+        to: number;
+      }>;
+      skip: number;
+      limit: number;
+    }>,
+  ): Promise<SessionDocument[] | null> {
+    const token = await Session.find(
+      QueryBuilder({
+        user: data.user,
+        jwtid: data.jwtid,
+        expire: { $gt: data.time?.from, $lt: data.time?.to },
+      }),
+    )
+      .skip(data.skip || 0)
+      .limit(data.limit || 10)
+      .exec();
+    return token.length === 0 ? null : token;
+  }
+
+  async deleteRefreshToken(
+    data: PartialNullish<{
+      user: string;
+      jwtid: string;
+      time: PartialNullish<{
+        from: number;
+        to: number;
+      }>;
+    }>,
+  ): Promise<void | null> {
+    const token = await Session.deleteMany(
+      QueryBuilder({
+        user: data.user,
+        jwtid: data.jwtid,
+        expire: { $gt: data.time?.from, $lt: data.time?.to },
+      }),
     );
   }
 }

@@ -1,10 +1,10 @@
 import Banip, { BanipDocument, BanipInterface } from '@models/Banip';
-import { UpdateQueryBuilder } from '@util/Assets';
+import { QueryBuilder } from '@util/Assets';
 
 interface BanipRepositoryInterface {
   create(data: BanipInterface): Promise<BanipDocument>;
 
-  findByDocId(data: { _id: string }): Promise<BanipDocument | null>;
+  findByDocId(_id: string): Promise<BanipDocument | null>;
 
   findByIp(data: { ip: string }): Promise<BanipDocument | null>;
 
@@ -36,8 +36,8 @@ export default class BanipRepository implements BanipRepositoryInterface {
     return await Banip.findOne(data).exec();
   }
 
-  async findByDocId(data: { _id: string }): Promise<BanipDocument | null> {
-    return await Banip.findById(data._id).exec();
+  async findByDocId(_id: string): Promise<BanipDocument | null> {
+    return await Banip.findById(_id).exec();
   }
 
   async findMany(
@@ -53,7 +53,7 @@ export default class BanipRepository implements BanipRepositoryInterface {
     }>,
   ): Promise<BanipDocument[] | null> {
     const banip = await Banip.find(
-      UpdateQueryBuilder({
+      QueryBuilder({
         ip: { $in: data?.query?.ip },
         due: { $gte: data?.query?.due_from, $lte: data?.query?.due_to },
       }),
@@ -71,7 +71,7 @@ export default class BanipRepository implements BanipRepositoryInterface {
     }>,
   ): Promise<void | number | null> {
     const banip = await Banip.deleteMany(
-      UpdateQueryBuilder({ ip: { $in: data.ip }, due: data.due }),
+      QueryBuilder({ ip: { $in: data.ip }, due: data.due }),
     );
     if (data.ip && data.ip.length > banip.n) {
       return banip.n;

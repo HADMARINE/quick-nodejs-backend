@@ -1,28 +1,35 @@
 import User, { UserDocument } from '@models/User';
 import Auth from '@util/Auth';
-import Assets, { UpdateQueryBuilder } from '@util/Assets';
-import { FilterQuery, Query } from 'mongoose';
+import Assets, { QueryBuilder } from '@util/Assets';
+import { FilterQuery } from 'mongoose';
 
 interface UserRepositoryInterface {
   create(data: { userid: string; password: string }): Promise<void>;
 
-  findByDocId(data: { _id: string }): Promise<UserDocument | null>;
+  findByDocId(_id: string): Promise<UserDocument | null>;
 
   findById(data: { userid: string }): Promise<UserDocument | null>;
 
-  findMany(data: {
-    query?: FilterQuery<UserDocument> | null;
-    skip?: number | null;
-    limit?: number | null;
-  }): Promise<UserDocument[] | null>;
+  findMany(
+    data: PartialNullish<{
+      userid: string;
+      _id: string;
+      authority: string;
+      skip: number;
+      limit: number;
+    }>,
+  ): Promise<UserDocument[] | null>;
 
-  update(data: {
-    _id: string;
-    userid?: string | null;
-    password: string | null;
-  }): Promise<UserDocument | null>;
+  updateByDocId(
+    _id: string,
+    data: PartialNullish<{
+      userid: string;
+      password: string;
+      authority: string;
+    }>,
+  ): Promise<UserDocument | null>;
 
-  deleteByDocId(data: { _id: string }): Promise<null | void>;
+  deleteByDocId(_id: string): Promise<null | void>;
 
   deleteById(data: { userid: string }): Promise<null | void>;
 
@@ -35,9 +42,7 @@ export default class UserRepository implements UserRepositoryInterface {
   async create(data: { userid: string; password: string }): Promise<void> {
     const hashResult = Auth.password.create(data.password);
 
-    User.find();
-
-    const user = await User.create([
+    await User.create([
       {
         userid: data.userid,
         ...hashResult,
@@ -45,39 +50,58 @@ export default class UserRepository implements UserRepositoryInterface {
     ]);
   }
 
-  async findByDocId(data: { _id: string }): Promise<UserDocument | null> {
-    return await User.findById(data._id, 'userid authority').exec();
+  async findByDocId(_id: string): Promise<UserDocument | null> {
+    return await User.findById(_id, 'userid authority').exec();
   }
 
   async findById(data: { userid: string }): Promise<UserDocument | null> {
-    return null;
+    return await User.findOne({ userid: data.userid }).exec();
   }
 
-  async findMany(data: {
-    query?: Record<string, any> | null;
-    skip?: number | null;
-    limit?: number | null;
-  }): Promise<UserDocument[] | null> {
-    return null;
+  async findMany(
+    data: PartialNullish<{
+      userid: string;
+      _id: string;
+      authority: string;
+      skip: number;
+      limit: number;
+    }>,
+  ): Promise<UserDocument[] | null> {
+    const skip = data.skip;
+    const limit = data.limit;
+    data.skip = null;
+    data.limit = null;
+    const user = await User.find(QueryBuilder(data))
+      .skip(skip || 0)
+      .limit(limit || 10)
+      .exec();
+    return user.length === 0 ? null : user;
   }
 
-  async update(data: {
-    _id: string;
-    userid?: string | null;
-    password?: string | null;
-  }): Promise<UserDocument | null> {
+  async updateByDocId(
+    _id: string,
+    data: PartialNullish<{
+      userid: string;
+      password: string;
+      authority: string;
+    }>,
+  ): Promise<UserDocument | null> {
     const hashResult = data.password
       ? Auth.password.create(data.password)
       : null;
-    return await User.findByIdAndUpdate(data._id, {
-      $set: UpdateQueryBuilder({ ...hashResult, userid: data.userid }),
+    return await User.findByIdAndUpdate(_id, {
+      $set: QueryBuilder({
+        ...hashResult,
+        userid: data.userid,
+        authority: data.authority,
+      }),
     })
       .select('userid authority')
       .exec();
   }
 
-  async deleteByDocId(data: { _id: string }): Promise<void | null> {
-    const user = await User.findByIdAndDelete(data._id, {}).exec();
+  async deleteByDocId(_id: string): Promise<void | null> {
+    const user = await User.findByIdAndDelete(_id, {}).exec();
     return user === null ? null : undefined;
   }
 
@@ -92,11 +116,7 @@ export default class UserRepository implements UserRepositoryInterface {
   async deleteByQuery(data: {
     query: FilterQuery<UserDocument>;
   }): Promise<void | null> {
-    const user: Query<any, UserDocument> = await User.deleteMany(
-      Assets.updateQueryBuilder(data.query),
-    ).exec();
-
-    // user
-    return null;
+    const user = await User.deleteMany(Assets.updateQueryBuilder(data.query));
+    return user.n === 0 ? null : undefined;
   }
 }
