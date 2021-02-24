@@ -73,30 +73,7 @@ const optionsDefault = {
 };
 
 export function RequestFactory(req: Request): WrappedRequest {
-  const request = {
-    ...req,
-    setTimeout: req.setTimeout,
-    destroy: req.destroy,
-    _read: req._read,
-    read: req.read,
-    setEncoding: req.setEncoding,
-    pause: req.pause,
-    resume: req.resume,
-    isPaused: req.isPaused,
-    unpipe: req.unpipe,
-    unshift: req.unshift,
-    wrap: req.wrap,
-    push: req.push,
-    _destroy: req._destroy,
-    addListener: req.addListener,
-    emit: req.emit,
-    on: req.on,
-    once: req.once,
-    prependListener: req.prependListener,
-    prependOnceListener: req.prependOnceListener,
-    removeListener: req.removeListener,
-    pipe: req.pipe,
-    [Symbol.asyncIterator]: req[Symbol.asyncIterator],
+  const request = Object.assign(req, {
     verify: {
       body: verificationWrapper(req.body),
       headers: verificationWrapper(req.headers),
@@ -105,7 +82,7 @@ export function RequestFactory(req: Request): WrappedRequest {
       query: verificationWrapper(req.query),
       params: verificationWrapper(req.params),
     },
-  };
+  });
 
   return request;
 }
@@ -138,41 +115,7 @@ export function ResponseFactory(res: Response): WrappedResponse {
       .end();
   }
 
-  const response = {
-    ...res,
-    assignSocket: res.assignSocket,
-    detachSocket: res.detachSocket,
-    writeContinue: res.writeContinue,
-    writeHead: res.writeHead,
-    writeProcessing: res.writeProcessing,
-    setTimeout: res.setTimeout,
-    setHeader: res.setHeader,
-    getHeader: res.getHeader,
-    getHeaders: res.getHeaders,
-    getHeaderNames: res.getHeaderNames,
-    hasHeader: res.hasHeader,
-    removeHeader: res.removeHeader,
-    addTrailers: res.addTrailers,
-    flushHeaders: res.flushHeaders,
-    _write: res._write,
-    _destroy: res._destroy,
-    _final: res._final,
-    write: res.write,
-    setDefaultEncoding: res.setDefaultEncoding,
-    end: res.end,
-    cork: res.cork,
-    uncork: res.uncork,
-    destroy: res.destroy,
-    addListener: res.addListener,
-    emit: res.emit,
-    on: res.on,
-    once: res.once,
-    prependListener: res.prependListener,
-    prependOnceListener: res.prependOnceListener,
-    removeListener: res.removeListener,
-    pipe: res.pipe,
-    strict,
-  };
+  const response = Object.assign(res, { strict });
 
   return response;
 }
