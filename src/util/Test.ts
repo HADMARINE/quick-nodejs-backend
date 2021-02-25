@@ -1,7 +1,12 @@
-import app from '../index';
+import { Root } from '../index';
+import http from 'http';
+import ServerBuilder from 'express-quick-builder';
 
-async function createServer(): Promise<typeof app> {
-  return (await app).listen(63000);
+let rootInstance: ReturnType<typeof ServerBuilder> | undefined;
+
+function createServer(): http.Server {
+  rootInstance = Root(63000);
+  return rootInstance.server;
 }
 
 async function closeServer(
@@ -9,7 +14,9 @@ async function closeServer(
     return;
   },
 ): Promise<void> {
-  (await app).close();
+  if (!rootInstance) throw new Error('Root instance is not initialized!');
+  rootInstance.server.close();
+  rootInstance = undefined;
   done();
 }
 
@@ -17,6 +24,6 @@ export default {
   server: {
     create: createServer,
     close: closeServer,
-    instance: app,
+    instance: rootInstance,
   },
 };

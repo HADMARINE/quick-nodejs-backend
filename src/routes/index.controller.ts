@@ -1,16 +1,16 @@
-import logger from '@lib/logger';
+import logger from 'clear-logger';
 import welcome from '@src/pages/Welcome';
 import moment from 'moment';
 import packageJson from '../../package.json';
-import { WrappedRequest } from '@util/ControllerUtil';
 import {
   AllMapping,
   Controller,
   GetMapping,
   PostMapping,
   ReturnRawData,
-} from '@util/RestDecorator';
-import { DataTypes } from '@util/DataVerify';
+  WrappedRequest,
+  DataTypes,
+} from 'express-quick-builder';
 
 interface IndexControllerInterface {
   index(): string;

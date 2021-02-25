@@ -4,8 +4,7 @@ import { Schema } from 'mongoose';
 import Session from '@models/Session';
 import User from '@models/User';
 import error from '@error/ErrorDictionary';
-import { NextFunction, Response, Request, RequestHandler } from 'express';
-import logger from '@lib/logger';
+import logger from 'clear-logger';
 import Middleware from '@util/Middleware';
 
 /**

@@ -1,8 +1,6 @@
 import ErrorDictionary from '@error/ErrorDictionary';
-import Banip, { BanipDocument } from '@models/Banip';
+import { BanipDocument } from '@models/Banip';
 import BanipRepository from '@repo/BanipRepository';
-import { WrappedRequest } from '@util/ControllerUtil';
-import { DataTypes } from '@util/DataVerify';
 import { AdminAuthority } from '@util/Middleware';
 import {
   Controller,
@@ -11,7 +9,9 @@ import {
   PostMapping,
   SetMiddleware,
   SetSuccessMessage,
-} from '@util/RestDecorator';
+  WrappedRequest,
+  DataTypes,
+} from 'express-quick-builder';
 
 interface AdminBanControllerInterface {
   create(req: WrappedRequest): Promise<BanipDocument | null>;

@@ -4,12 +4,12 @@ import Assets from '@util/Assets';
 
 let agent: SuperAgentTest;
 
-beforeAll(async () => {
-  agent = supertest.agent(await Test.server.create());
+beforeAll(() => {
+  agent = supertest.agent(Test.server.create());
 });
 
-afterAll(async () => {
-  await Test.server.close();
+afterAll(() => {
+  Test.server.close();
 });
 
 describe('Server status tester', () => {
