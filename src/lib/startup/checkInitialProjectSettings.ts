@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import fs from 'fs';
-import logger from '@lib/logger';
+import logger from 'clear-logger';
 
 require('dotenv').config();
 
@@ -42,7 +42,9 @@ export default function checkInitializeProjectSettings(): void {
     !process.env.DB_USER ||
     !process.env.DB_PASS
   ) {
-    logger.warn('MONGO_DB Data is not provided properly at .env - mongoose initialization will not proceeded.');
+    logger.warn(
+      'MONGO_DB Data is not provided properly at .env - mongoose initialization will not proceeded.',
+    );
     logger.plain(instructions);
     // throw new Error('DATABASE INFO NOT PROVIDED');
   }

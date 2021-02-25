@@ -1,81 +1,50 @@
-import logger from '@lib/logger';
+import logger from 'clear-logger';
 logger.clear();
 logger.info('Starting server...');
-import http from 'http';
-import app from '@src/app';
-import chalk from 'chalk';
+import checkInitializeProjectSettings from '@lib/startup/checkInitialProjectSettings';
 import io from '@src/io';
 import connectDB from '@lib/startup/connectDB';
+import ServerBuilder from 'express-quick-builder';
+import cron from '@lib/middlewares/cron';
+import morgan from '@lib/middlewares/morgan';
+import cors from 'cors';
+import helmet from 'helmet';
+import { RateLimiter } from '@util/Middleware';
+import Assets from '@util/Assets';
+import ipfilter from '@lib/middlewares/ipfilter';
+import fileUploader from 'express-fileupload';
+import express from 'express';
 
 const PORT: number = parseInt(process.env.PORT || '4000', 10);
-const server = http.createServer(app);
-io(server); // Enable when using socket.io
 
-function listen(port = PORT): number {
-  if (port <= 0 || port >= 65536) {
-    logger.error(`PORT Range is Invalid. Recieved port : ${port}`);
-
-    if (process.env.PORT_STRICT === 'true') {
-      logger.error(
-        ' Set PORT_STRICT to false on your .env if you want to execute anyway.',
-      );
-      throw new Error('PORT STRICT ERROR');
-    }
-    port = 20000;
-    logger.info(`Retrying with Port ${port}`);
-  }
-  server.listen(port);
-
-  let isError = false;
-  server.once('error', (err: any) => {
-    if (process.env.PORT_STRICT === 'true') {
-      logger.error(` Port ${port} is already in use.`);
-      logger.info(
-        'Set PORT_STRICT to false on your .env if you want to execute anyway.',
-      );
-      throw new Error('PORT STRICT');
-    }
-    if (err.code === 'EADDRINUSE') {
-      logger.info(
-        `Port ${port} is currently in use. Retrying with port ${port + 1}`,
-      );
-      const newPort = port > 65535 ? 20000 : port + 1;
-      listen(newPort);
-      isError = true;
-    }
-  });
-  server.once('listening', () => {
-    if (!isError) {
-      logger.success(
-        chalk.black.bgGreen(` App started on port `) +
-          chalk.green.bold(` ${port}`),
-      );
-    }
-  });
-  return port;
-}
-
-async function Root(): Promise<Record<string, any> | http.Server> {
-  if (process.env.NODE_ENV === 'test') {
-    await connectDB();
-    return server;
-  }
-
-  let port;
-  connectDB()
-    .then(() => {
-      if (process.env.NODE_ENV === 'test') return;
-      port = listen();
-    })
-    .catch((e) => {
-      logger.error('MongoDB Server connection failed.');
-      logger.debug(e);
-      process.exit(1);
-    });
-  return {
-    server,
+export function Root(port = PORT): ReturnType<typeof ServerBuilder> {
+  const server = ServerBuilder({
     port,
-  };
+    requestHandlers: [
+      morgan(),
+      cors({
+        origin:
+          process.env.NODE_ENV === 'development'
+            ? '*'
+            : process.env.REQUEST_URI || '*',
+      }),
+      helmet(),
+      RateLimiter(),
+      Assets.wrapper(ipfilter),
+      fileUploader({
+        limits: { fileSize: 50 * 1024 * 1024 },
+        useTempFiles: true,
+        tempFileDir: '/tmp/file/',
+        debug: process.env.NODE_ENV === 'development',
+      }),
+      express.static('public'),
+      express.json({ limit: '25mb' }),
+      express.urlencoded({ extended: true, limit: '25mb' }),
+    ],
+    executes: [checkInitializeProjectSettings, cron, connectDB],
+  });
+  io(server.server);
+  return server;
 }
 
 export default Root();

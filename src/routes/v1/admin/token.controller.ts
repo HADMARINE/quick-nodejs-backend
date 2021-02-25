@@ -1,12 +1,6 @@
-import C from '@lib/blueprint/Controller';
-import Session, { SessionDocument } from '@models/Session';
-import Auth from '@util/Auth';
-import Assets from '@util/Assets';
-import { Schema } from 'mongoose';
-import { DataTypes } from '@util/DataVerify';
-import { WrappedRequest } from '@util/ControllerUtil';
+import { SessionDocument } from '@models/Session';
 import AuthRepository from '@repo/AuthRepository';
-import { Controller } from '@util/RestDecorator';
+import { Controller, WrappedRequest, DataTypes } from 'express-quick-builder';
 
 interface TokenControllerInterface {
   readMany(req: WrappedRequest): Promise<SessionDocument[] | null>;

@@ -8,11 +8,11 @@ import {
   PatchMapping,
   PostMapping,
   SetSuccessMessage,
-} from '@util/RestDecorator';
-import { WrappedRequest } from '@util/ControllerUtil';
+  DataTypes,
+  WrappedRequest,
+} from 'express-quick-builder';
 import UserRepository from '@repo/UserRepository';
 import { AdminAuthority, RateLimiter, UserAuthority } from '@util/Middleware';
-import { DataTypes } from '@util/DataVerify';
 
 interface UserControllerInterface {
   create(req: WrappedRequest): Promise<void>;

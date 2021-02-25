@@ -1,7 +1,7 @@
 import socketio from 'socket.io';
 import http from 'http';
 import getEvents from '@lib/startup/getSocketEvents';
-import logger from '@lib/logger';
+import logger from 'clear-logger';
 
 export default function (server: http.Server): void {
   const events = getEvents();

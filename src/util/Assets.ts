@@ -1,7 +1,7 @@
 import error from '@error/ErrorDictionary';
 import { RequestHandler, NextFunction, Response, Request } from 'express';
 import deasync from 'deasync';
-import logger from '@lib/logger';
+import logger from 'clear-logger';
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';

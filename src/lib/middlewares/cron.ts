@@ -1,6 +1,6 @@
 import cron from 'node-cron';
 import Auth from '@util/Auth';
-import logger from '@lib/logger';
+import logger from 'clear-logger';
 
 export default function (): void {
   if (process.env.NODE_ENV === 'test') return;

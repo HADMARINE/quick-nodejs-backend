@@ -1,5 +1,5 @@
 import SC from '@lib/blueprint/SocketController';
-import logger from '@lib/logger';
+import logger from 'clear-logger';
 
 export default class extends SC {
   main() {

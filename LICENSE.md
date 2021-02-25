@@ -1,4 +1,2 @@
-Copyright (C) 2020 HADMARINE
-
-HADMARINE : https://github.com/HADMARINE
+Copyright (C) 2020 [HADMARINE](https://github.com/HADMARINE)
 
