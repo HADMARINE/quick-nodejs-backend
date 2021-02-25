@@ -2460,6 +2460,14 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
+clear-logger@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/clear-logger/-/clear-logger-1.0.0.tgz#933091e13a084b4f932110b4782972ec72796a71"
+  integrity sha512-0SRmpEP8TUb1uAHHQ0Dj3V2gnytl7LXtwJwf8OVYx8yscwDydkK2u9ua9X6besLHE9U79k0avdn/abGaFviWYQ==
+  dependencies:
+    chalk "^4.1.0"
+    moment "^2.29.1"
+
 cli-boxes@^2.2.0:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/cli-boxes/-/cli-boxes-2.2.1.tgz#ddd5035d25094fce220e9cab40a45840a440318f"
@@ -3386,6 +3394,14 @@ express-ipfilter@^1.1.2:
     lodash "^4.17.11"
     proxy-addr "^2.0.4"
     range_check "^1.2.0"
+
+express-quick-builder@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/express-quick-builder/-/express-quick-builder-1.0.3.tgz#627584c87226378cba12fa4e3dd2580ae552c219"
+  integrity sha512-2JOp6Ypdny/xYuhmYfdA3fXbVhfSHAJhNT/CjKUmJMIyLRM8R3xTTRKOlM9mcSsXOMtWuZLnyQUl/wdUBMdDnw==
+  dependencies:
+    clear-logger "^1.0.0"
+    express "^4.17.1"
 
 express-rate-limit@^5.2.6:
   version "5.2.6"
@@ -5319,7 +5335,7 @@ moment-timezone@^0.5.x:
   dependencies:
     moment ">= 2.9.0"
 
-"moment@>= 2.9.0", moment@^2.24.0:
+"moment@>= 2.9.0", moment@^2.24.0, moment@^2.29.1:
   version "2.29.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
   integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==

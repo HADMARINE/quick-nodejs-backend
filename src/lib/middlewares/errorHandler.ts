@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { defaultMessage, defaultCode } from '@lib/httpCode';
 import { IpDeniedError } from 'express-ipfilter';
-import logger from '@lib/logger';
+import logger from 'clear-logger';
 
 interface MiddlewareError {
   status?: number;

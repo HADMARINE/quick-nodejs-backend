@@ -1,4 +1,3 @@
-import { WrappedRequest } from '@util/ControllerUtil';
 import { InitialTokenCreateResult } from '@util/Auth';
 import AuthRepository from '@src/repository/AuthRepository';
 import {
@@ -6,9 +5,10 @@ import {
   PostMapping,
   SetMiddleware,
   SetSuccessMessage,
-} from '@util/RestDecorator';
+  DataTypes,
+  WrappedRequest,
+} from 'express-quick-builder';
 import { RateLimiter } from '@util/Middleware';
-import { DataTypes } from '@util/DataVerify';
 
 interface AuthControllerInterface {
   signIn(req: WrappedRequest): Promise<InitialTokenCreateResult | null>;

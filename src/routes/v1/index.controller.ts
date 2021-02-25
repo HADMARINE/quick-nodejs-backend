@@ -1,5 +1,9 @@
 import packageSettings from '@src/../package.json';
-import { AllMapping, Controller, SetSuccessMessage } from '@util/RestDecorator';
+import {
+  AllMapping,
+  Controller,
+  SetSuccessMessage,
+} from 'express-quick-builder';
 
 interface IndexControllerInterface {
   index(): Record<string, any>;

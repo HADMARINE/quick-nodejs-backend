@@ -5,11 +5,11 @@ import {
   GetMapping,
   PatchMapping,
   SetMiddleware,
-} from '@util/RestDecorator';
-import { WrappedRequest } from '@util/ControllerUtil';
+  WrappedRequest,
+  DataTypes,
+} from 'express-quick-builder';
 import { AdminAuthority } from '@util/Middleware';
 import UserRepository from '@repo/UserRepository';
-import { DataTypes } from '@util/DataVerify';
 
 interface AdminUserControllerInterface {
   readMany(req: WrappedRequest): Promise<UserDocument[] | null>;
