@@ -21,7 +21,7 @@
     "classic": "yarn set version classic"
   },
   "dependencies": {
-    "aws-sdk": "^2.851.0",
+    "aws-sdk": "^2.852.0",
     "chalk": "^4.1.0",
     "clear-logger": "^1.0.0",
     "compression": "^1.7.4",
