@@ -42,7 +42,7 @@
     "morgan": "^1.10.0",
     "node-cron": "^2.0.3",
     "nodemon": "^2.0.6",
-    "pm2": "^4.4.0",
+    "pm2": "^4.5.5",
     "require-strip-json-comments": "^2.0.0",
     "socket.io": "^3.1.1",
     "strip-json-comments": "^3.1.0"
