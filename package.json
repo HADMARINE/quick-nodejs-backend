@@ -44,7 +44,7 @@
     "nodemon": "^2.0.6",
     "pm2": "^4.5.5",
     "require-strip-json-comments": "^2.0.0",
-    "socket.io": "^3.1.1",
+    "socket.io": "^3.1.2",
     "strip-json-comments": "^3.1.0"
   },
   "devDependencies": {
