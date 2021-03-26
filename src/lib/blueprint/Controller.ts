@@ -4,20 +4,11 @@ import assets from '@util/Assets';
 import auth from '@util/Auth';
 import aws from '@util/Aws';
 import models from '@models/index';
-import {
-  Delayer,
-  RawWrapper,
-  RequestFactory,
-  ResponseFactory,
-  Wrapper,
-} from '@util/ControllerUtil';
+import { RawWrapper, Wrapper } from 'express-quick-builder';
 
 export default class Controller {
   static Wrapper = Wrapper;
   static RawWrapper = RawWrapper;
-  static Delayer = Delayer;
-  static Request = RequestFactory;
-  static Response = ResponseFactory;
 
   protected readonly router = Router();
 
