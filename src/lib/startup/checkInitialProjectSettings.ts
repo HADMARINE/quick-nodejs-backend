@@ -1,8 +1,16 @@
+/**
+ * THIS FUNCTION HAVE TO BE EXECUTED BEFORE OF ANY FUNCTION OR DECLARATION.
+ * IF YOU DONT, ENVIRONMENT MIGHT BE CORRUPTED.
+ */
+
+import logger from 'clear-logger';
+logger.clear();
+logger.info('Starting server...');
+
 import chalk from 'chalk';
 import fs from 'fs';
-import logger from 'clear-logger';
-
-require('dotenv').config();
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 const instructions =
   chalk.bgCyan.black('See instructions:') +

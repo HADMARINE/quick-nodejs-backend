@@ -73,9 +73,9 @@ export default class BanipRepository implements BanipRepositoryInterface {
     const banip = await Banip.deleteMany(
       QueryBuilder({ ip: { $in: data.ip }, due: data.due }),
     );
-    if (data.ip && data.ip.length > banip.n) {
+    if (data.ip && data.ip.length > (banip.deletedCount || 0)) {
       return banip.n;
     }
-    return banip;
+    return banip.deletedCount;
   }
 }
