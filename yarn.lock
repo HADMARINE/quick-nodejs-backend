@@ -3477,10 +3477,10 @@ express-fileupload@^1.2.1:
   dependencies:
     busboy "^0.3.1"
 
-express-ipfilter@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/express-ipfilter/-/express-ipfilter-1.1.2.tgz#536e1b8922f00df45d6da8796b02a75b1033a20f"
-  integrity sha512-dm1G3sVxlSbcOWSxfUTCo20ySyNQXJ4hJD5fuQJFoZlhkQvpbuDGBlh8AbFm1GwX85EWvfyhekOkvcydaXkBkg==
+express-ipfilter@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/express-ipfilter/-/express-ipfilter-1.2.0.tgz#fbc1ad0be45dbd8ae929ceb5ed8e1c91b33a71a1"
+  integrity sha512-nPXKMuhqVjX7+Vny4XsrpdqlX4YAGcanE0gh5xzpfmNTsINGAgPnpk67kb0No3p1m4vGQQLU6hdaXRxsuGNlTA==
   dependencies:
     ip "~1.1.0"
     lodash "^4.17.11"
