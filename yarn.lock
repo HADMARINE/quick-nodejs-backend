@@ -2458,7 +2458,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-clear-logger@^1.0.0, clear-logger@^1.0.2:
+clear-logger@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/clear-logger/-/clear-logger-1.0.2.tgz#b200f06d94c2d5271f34831f7fdc3e0aaafecf3a"
   integrity sha512-wLHil8bCf1DzHaJxRKPuC3QX/d/+KhdMgUNTJYJUXfmcVFwKEPQm8EPRL59DSmhxtkfK8Y+Mzr5k4LARrorBWw==
@@ -3370,12 +3370,12 @@ express-ipfilter@^1.1.2:
     proxy-addr "^2.0.4"
     range_check "^1.2.0"
 
-express-quick-builder@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/express-quick-builder/-/express-quick-builder-1.0.4.tgz#8533bcbd0a561338bff8f26b6daf9838a90e76dc"
-  integrity sha512-I9EGqtDwl34uaBsfESy6QXMKrrqLdDt3iTUcoqGg9ONMB//Nvxn8/v0lqDO16WH8ZbsWiN7z+GE3Vh1ICvHRFw==
+express-quick-builder@^1.1.8:
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/express-quick-builder/-/express-quick-builder-1.1.8.tgz#01e7cc145fffc5b2add373b2a70d2e00669591af"
+  integrity sha512-mxdTJdQxEexWYnUpfMSMUbxL1c9m52NgHOYlNlYxDDSTcQ0vTDslF0VtIdgsu2b41h4l/FWDsC75A87Flozf8A==
   dependencies:
-    clear-logger "^1.0.0"
+    clear-logger "^1.0.2"
     express "^4.17.1"
 
 express-rate-limit@^5.2.6:
