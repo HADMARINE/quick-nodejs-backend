@@ -47,6 +47,7 @@ export function Root(port = PORT): ReturnType<typeof ServerBuilder> {
         : `${process.cwd()}/src/routes`,
     requestHandlers: REQUEST_HANDLERS,
     executes: STARTUP_EXECUTES,
+    portStrict: process.env.PORT_STRICT === 'true' ? true : false,
   });
   io(server.server);
   return server;
