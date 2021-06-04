@@ -1,6 +1,6 @@
 {
   "name": "typescript-node-express-mongodb-backend",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "main": "index.ts",
   "author": "HADMARINE",
   "license": "MIT",
@@ -23,7 +23,7 @@
   "dependencies": {
     "aws-sdk": "^2.872.0",
     "chalk": "^4.1.0",
-    "clear-logger": "^1.0.0",
+    "clear-logger": "^1.0.2",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
