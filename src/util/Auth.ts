@@ -84,13 +84,11 @@ async function detachAllToken(): Promise<void> {
 
 async function removeExpiredToken(): Promise<number> {
   try {
-    const result = await Session.find({
+    const result = await Session.deleteMany({
       expire: { $lt: Math.floor(Date.now() / 1000) },
     }).exec();
 
-    await Session.deleteMany({ _id: { $in: result } }).exec();
-
-    return result.length || 0;
+    return result.deletedCount || 0;
   } catch {
     logger.debug('Token auto removal failed');
   }
@@ -189,12 +187,12 @@ interface PasswordCreateResult {
 /**
  * @description Creates Password
  * @param {string} password Plain password
- * @param {string} customKey Custom salt key
+ * @param {string | null} customKey Custom salt key
  * @returns {PasswordCreateResult} Returns password, enckey
  */
 function createPassword(
   password: string,
-  customKey = '',
+  customKey: string | null = null,
 ): PasswordCreateResult {
   const buf: string = customKey
     ? customKey
