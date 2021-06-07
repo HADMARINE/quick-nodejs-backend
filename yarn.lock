@@ -2458,10 +2458,10 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-clear-logger@^1.0.0, clear-logger@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/clear-logger/-/clear-logger-1.0.2.tgz#b200f06d94c2d5271f34831f7fdc3e0aaafecf3a"
-  integrity sha512-wLHil8bCf1DzHaJxRKPuC3QX/d/+KhdMgUNTJYJUXfmcVFwKEPQm8EPRL59DSmhxtkfK8Y+Mzr5k4LARrorBWw==
+clear-logger@^1.0.0, clear-logger@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/clear-logger/-/clear-logger-1.0.3.tgz#e74566e9eafef1106d4c662c515f5cf7a0b56b8e"
+  integrity sha512-hFd3lDCv0RTpDkpBw/WamcXcHo+A94vVqhWqUtrtg0wqHvZQ9F9g3owGL4dqDHz/Pca1h7tGDhiBsZMoy2L6lQ==
   dependencies:
     chalk "^4.1.0"
     moment "^2.29.1"
