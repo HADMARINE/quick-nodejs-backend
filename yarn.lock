@@ -2458,10 +2458,10 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-clear-logger@^1.0.0, clear-logger@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/clear-logger/-/clear-logger-1.0.2.tgz#b200f06d94c2d5271f34831f7fdc3e0aaafecf3a"
-  integrity sha512-wLHil8bCf1DzHaJxRKPuC3QX/d/+KhdMgUNTJYJUXfmcVFwKEPQm8EPRL59DSmhxtkfK8Y+Mzr5k4LARrorBWw==
+clear-logger@^1.0.2, clear-logger@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/clear-logger/-/clear-logger-1.0.5.tgz#49480456fe477368b87017d3ab98cea1257a9db5"
+  integrity sha512-Vb7FRX7/E0K+CxcQQFUL7GGxyU3arIvceUoGoR8E0MFXy9/7pL+l+tTvvCvRU7uRlAIEOjQE7KcucTAxk2Sgdw==
   dependencies:
     chalk "^4.1.0"
     moment "^2.29.1"
@@ -3370,13 +3370,14 @@ express-ipfilter@^1.1.2:
     proxy-addr "^2.0.4"
     range_check "^1.2.0"
 
-express-quick-builder@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/express-quick-builder/-/express-quick-builder-1.0.4.tgz#8533bcbd0a561338bff8f26b6daf9838a90e76dc"
-  integrity sha512-I9EGqtDwl34uaBsfESy6QXMKrrqLdDt3iTUcoqGg9ONMB//Nvxn8/v0lqDO16WH8ZbsWiN7z+GE3Vh1ICvHRFw==
+express-quick-builder@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/express-quick-builder/-/express-quick-builder-2.0.1.tgz#560cc984a74d7923fe390e079a4c4d5c9e4afcc8"
+  integrity sha512-RPMWAtLS9Z9H6iweIbZp983kg1hIOJGXV1NM9xKdNY1+KdW9bB8Fp11VrxdGc4iOCR1nPNNUB21AopODduAoCA==
   dependencies:
-    clear-logger "^1.0.0"
+    clear-logger "^1.0.5"
     express "^4.17.1"
+    http-shutdown "^1.2.2"
 
 express-rate-limit@^5.2.6:
   version "5.2.6"
@@ -3962,6 +3963,11 @@ http-proxy-agent@^4.0.0, http-proxy-agent@^4.0.1:
     "@tootallnate/once" "1"
     agent-base "6"
     debug "4"
+
+http-shutdown@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/http-shutdown/-/http-shutdown-1.2.2.tgz#41bc78fc767637c4c95179bc492f312c0ae64c5f"
+  integrity sha512-S9wWkJ/VSY9/k4qcjG318bqJNruzE4HySUhFYknwmu6LBP97KLLfwNf+n4V1BHurvFNkSKLFnK/RsuUnRTf9Vw==
 
 https-proxy-agent@5, https-proxy-agent@^5.0.0:
   version "5.0.0"
