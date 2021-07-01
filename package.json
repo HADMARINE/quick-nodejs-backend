@@ -27,7 +27,7 @@
     "express-fileupload": "^1.2.1",
     "express-ipfilter": "^1.2.0",
     "express-quick-builder": "2.0.1-rc.1",
-    "express-rate-limit": "^5.2.6",
+    "express-rate-limit": "^5.3.0",
     "helmet": "^4.6.0",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.1",
