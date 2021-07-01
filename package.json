@@ -58,7 +58,7 @@
     "@types/helmet": "^4.0.0",
     "@types/jest": "^26.0.23",
     "@types/jest-expect-message": "^1.0.3",
-    "@types/jsonwebtoken": "^8.5.2",
+    "@types/jsonwebtoken": "^8.5.3",
     "@types/morgan": "^1.9.2",
     "@types/node": "^15.12.5",
     "@types/node-cron": "^2.0.3",
