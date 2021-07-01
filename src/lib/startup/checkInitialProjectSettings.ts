@@ -8,8 +8,8 @@ logger.clear();
 logger.info('Starting server...');
 
 import chalk from 'chalk';
-import fs from 'fs';
 import * as dotenv from 'dotenv';
+import qcert from 'quickcert.js';
 dotenv.config();
 
 const instructions =
@@ -20,21 +20,14 @@ const instructions =
 
 export default function checkInitializeProjectSettings(): void {
   try {
-    fs.accessSync('.env', fs.constants.F_OK);
+    qcert.verifyCertificates();
   } catch (e) {
-    logger.error('Environment var file (.env) not detected.');
-    logger.plain(instructions);
-    throw new Error(e);
+    logger.error('QuickCert.js not initialized properly.');
+    process.exit(1);
   }
 
   if (!process.env.NODE_ENV) {
     process.env.NODE_ENV = 'development';
-  }
-
-  if (process.env.NODE_ENV === 'development') {
-    logger.info(
-      'Please install openssl (or libressl) to encrypt, decrypt .env files!',
-    );
   }
 
   if (!process.env.REQUEST_URI) {
@@ -42,19 +35,6 @@ export default function checkInitializeProjectSettings(): void {
       'process.env.REQUEST_URI IS NOT DEFINED. ANY ORIGIN REQUEST WOULD BE ALLOWED IF NOT DEFINED.',
     );
     logger.plain(instructions);
-  }
-
-  if (
-    !process.env.DB_HOST ||
-    !process.env.DB_NAME ||
-    !process.env.DB_USER ||
-    !process.env.DB_PASS
-  ) {
-    logger.warn(
-      'MONGO_DB Data is not provided properly at .env - mongoose initialization will not proceeded.',
-    );
-    logger.plain(instructions);
-    // throw new Error('DATABASE INFO NOT PROVIDED');
   }
 
   if (!process.env.TOKEN_KEY) {

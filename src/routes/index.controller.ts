@@ -12,22 +12,8 @@ import {
   DataTypes,
 } from 'express-quick-builder';
 
-interface IndexControllerInterface {
-  index(): string;
-
-  status(): string;
-
-  info(): Record<string, any>;
-
-  versionInfo(): string;
-
-  timeInfo(): string;
-
-  test(req: WrappedRequest): void;
-}
-
 @Controller
-export default class IndexController implements IndexControllerInterface {
+export default class IndexController {
   @AllMapping()
   @ReturnRawData()
   index(): string {

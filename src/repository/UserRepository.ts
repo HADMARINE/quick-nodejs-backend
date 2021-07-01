@@ -3,42 +3,7 @@ import Auth from '@util/Auth';
 import Assets, { QueryBuilder } from '@util/Assets';
 import { FilterQuery } from 'mongoose';
 
-interface UserRepositoryInterface {
-  create(data: { userid: string; password: string }): Promise<void>;
-
-  findByDocId(_id: string): Promise<UserDocument | null>;
-
-  findById(data: { userid: string }): Promise<UserDocument | null>;
-
-  findMany(
-    data: PartialNullish<{
-      userid: string;
-      _id: string;
-      authority: string;
-      skip: number;
-      limit: number;
-    }>,
-  ): Promise<UserDocument[] | null>;
-
-  updateByDocId(
-    _id: string,
-    data: PartialNullish<{
-      userid: string;
-      password: string;
-      authority: string;
-    }>,
-  ): Promise<UserDocument | null>;
-
-  deleteByDocId(_id: string): Promise<null | void>;
-
-  deleteById(data: { userid: string }): Promise<null | void>;
-
-  deleteByQuery(data: {
-    query: FilterQuery<UserDocument>;
-  }): Promise<null | void>;
-}
-
-export default class UserRepository implements UserRepositoryInterface {
+export default class UserRepository {
   async create(data: { userid: string; password: string }): Promise<void> {
     const hashResult = Auth.password.create(data.password);
 

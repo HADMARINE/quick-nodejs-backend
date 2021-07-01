@@ -9,7 +9,8 @@ export async function AdminAuthority(
   next: NextFunction,
 ): Promise<void> {
   try {
-    const tokenPayload = req.headers['x-access-token'];
+    const tokenPayload =
+      req.headers['x-access-token'] || req.query['x-access-token'];
     if (typeof tokenPayload !== 'string') {
       return next(error.auth.tokenInvalid());
     }
@@ -31,7 +32,8 @@ export function SpecifiedAuthority(...authority: string[]): RequestHandler {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const tokenPayload = req.headers['x-access-token'];
+      const tokenPayload =
+        req.headers['x-access-token'] || req.query['x-access-token'];
       if (typeof tokenPayload !== 'string') {
         return next(error.auth.tokenInvalid());
       }
@@ -56,7 +58,8 @@ export async function UserAuthority(
   next: NextFunction,
 ): Promise<void> {
   try {
-    const tokenPayload = req.headers['x-access-token'];
+    const tokenPayload =
+      req.headers['x-access-token'] || req.query['x-access-token'];
     if (typeof tokenPayload !== 'string') {
       return next(error.auth.tokenInvalid());
     }

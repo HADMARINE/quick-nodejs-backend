@@ -1,12 +1,14 @@
 import error from '@error/ErrorDictionary';
 import { RequestHandler, NextFunction, Response, Request } from 'express';
-import deasync from 'deasync';
 import logger from 'clear-logger';
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 
-function getObjectKeyByValue(object: any, value: string): string | undefined {
+function getObjectKeyByValue(
+  object: Record<string, any>,
+  value: string,
+): string | undefined {
   return Object.keys(object).find((key) => object[key] === value);
 }
 
@@ -70,28 +72,29 @@ function returnRecord(data: any): Record<any, any> | null {
   return data;
 }
 
-function verifyEmail(email: string): void {
+function verifyEmail(email: string): boolean {
   const emailRegex = new RegExp(
     /^(?:[a-zA-Z0-9])([-_0-9a-zA-Z]+(\.[-_0-9a-zA-Z]+)*|^\"([\001-\010\013\014\016-\037!#-\[\]-\177]|\\[\001-011\013\014\016-\177])*\")@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}\.?$/,
   ); // if true. valid
   if (!emailRegex.test(email)) {
-    throw error.data.parameterInvalid('email');
+    return false;
   }
-  return;
+  return true;
 }
 
-function verifyPhone(phone: string): void {
+function verifyPhone(phone: string): boolean {
   const phoneRegex = new RegExp(/((?![0-9-]).)/g); // if true, invalid.
   if (phoneRegex.test(phone)) {
-    throw error.data.parameterInvalid('phone');
+    return false;
   }
+  return true;
 }
 
 function filterType<T>(param: any, type: string): T | undefined {
   if (typeof param !== type && typeof param !== 'undefined') {
     if (type === 'number') {
       try {
-        return (parseInt(param, 10) as unknown) as T;
+        return parseInt(param, 10) as unknown as T;
       } catch {}
     }
     throw error.data.parameterInvalid();
@@ -150,6 +153,8 @@ export function QueryBuilder<T>(
           });
           if (val.length === 0) return;
           Object.assign(result, { [key]: val });
+        } else if (value === null) {
+          return;
         } else {
           Object.assign(result, { [key]: value });
         }
@@ -157,56 +162,6 @@ export function QueryBuilder<T>(
     });
     return result as any;
   }
-}
-
-const DEFAULT_TIMEOUTS = 10 * 1000;
-
-const STATE = {
-  INITIAL: 'INITIAL',
-  RESOLVED: 'RESOLVED',
-  REJECTED: 'REJECTED',
-};
-
-const DEFAULT_TICK = 100;
-
-function syncifyFunction<T>(
-  func: Function,
-  options: { timeout?: number; tick?: number } = {},
-): any {
-  logger.error('syncifyFunction is currently not working properly!');
-  return (...args: any[]) => {
-    let promiseError;
-    let promiseValue;
-    let promiseStatus = STATE.INITIAL;
-    const timeouts = options.timeout || DEFAULT_TIMEOUTS;
-    const tick = options.tick || DEFAULT_TICK;
-
-    func(...args)
-      .then((value: T) => {
-        console.log(value);
-        promiseValue = value;
-        promiseStatus = STATE.RESOLVED;
-      })
-      .catch((e: any) => {
-        console.log(e);
-        promiseError = e;
-        promiseStatus = STATE.REJECTED;
-      });
-
-    const waitUntil = new Date(new Date().getTime() + timeouts);
-    while (waitUntil > new Date() && promiseStatus === STATE.INITIAL) {
-      console.log(promiseStatus, waitUntil, promiseValue, promiseError);
-      deasync.sleep(tick);
-    }
-
-    if (promiseStatus === STATE.RESOLVED) {
-      return promiseValue;
-    } else if (promiseStatus === STATE.REJECTED) {
-      throw promiseError;
-    } else {
-      throw new Error(`${func.name} called timeout`);
-    }
-  };
 }
 
 function dirCollector(dirname: string): Record<string, any> {
@@ -259,7 +214,6 @@ export default {
   wrapper,
   returnArray,
   returnRecord,
-  syncifyFunction,
   data: {
     verify: {
       email: verifyEmail,

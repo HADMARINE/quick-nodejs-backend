@@ -10,16 +10,10 @@ import {
 } from 'express-quick-builder';
 import { RateLimiter } from '@util/Middleware';
 
-interface AuthControllerInterface {
-  signIn(req: WrappedRequest): Promise<InitialTokenCreateResult | null>;
-
-  resign(req: WrappedRequest): Promise<string | null>;
-}
-
 const authRepository = new AuthRepository();
 
 @Controller
-export default class AuthController implements AuthControllerInterface {
+export default class AuthController {
   @PostMapping()
   @SetMiddleware(RateLimiter(1, 5))
   @SetSuccessMessage('Login success')

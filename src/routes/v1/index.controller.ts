@@ -5,12 +5,8 @@ import {
   SetSuccessMessage,
 } from 'express-quick-builder';
 
-interface IndexControllerInterface {
-  index(): Record<string, any>;
-}
-
 @Controller
-export default class IndexController implements IndexControllerInterface {
+export default class IndexController {
   @AllMapping()
   @SetSuccessMessage('Welcome to V1 API')
   index(): Record<string, any> {

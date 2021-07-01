@@ -22,7 +22,7 @@ AnySchema.pre('save', function (next: HookNextFunction): void {
       $or: [],
     },
     function (err: Error, site: AnyDocument) {
-      if (site) next(error.db.exists() as any);
+      if (site) next(error.db.exists());
       if (err) next(err);
       next();
     },

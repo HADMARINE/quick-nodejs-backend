@@ -8,16 +8,16 @@ export interface UserInterface {
   authority?: string;
 }
 
+export interface UserDocument extends Document, UserInterface {
+  checkUserExists(userid: string): Promise<boolean>;
+}
+
 const UserSchema = new Schema<UserDocument>({
   userid: { type: String, required: true, lowercase: true },
   password: { type: String, required: true },
   enckey: { type: String, required: true },
   authority: { type: String, default: 'normal' },
 });
-
-export interface UserDocument extends Document, UserInterface {
-  checkUserExists(userid: string): Promise<boolean>;
-}
 
 UserSchema.methods.checkUserExists = async function (userid): Promise<boolean> {
   if (await models.User.findOne({ userid }).exec()) return true;
