@@ -1,21 +1,23 @@
-import { Root } from '../index';
+import { testRoot } from '../App';
 import http from 'http';
 import ServerBuilder from 'express-quick-builder';
+import mongoose from 'mongoose';
 
-let rootInstance: ReturnType<typeof ServerBuilder> | undefined;
+let rootInstance: ReturnType<typeof ServerBuilder['serverStarter']> | undefined;
 
-function createServer(): http.Server {
-  rootInstance = Root(63000);
+async function createServer(): Promise<http.Server> {
+  rootInstance = await testRoot(63000);
   return rootInstance.server;
 }
 
-async function closeServer(
+function closeServer(
   done: any = function (): void {
     return;
   },
-): Promise<void> {
+): void {
   if (!rootInstance) throw new Error('Root instance is not initialized!');
   rootInstance.server.close();
+  mongoose.connection.close();
   rootInstance = undefined;
   done();
 }

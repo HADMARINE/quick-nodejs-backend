@@ -14,24 +14,10 @@ import {
 import UserRepository from '@repo/UserRepository';
 import { AdminAuthority, RateLimiter, UserAuthority } from '@util/Middleware';
 
-interface UserControllerInterface {
-  create(req: WrappedRequest): Promise<void>;
-
-  read(req: WrappedRequest): Promise<UserDocument | null>;
-
-  update(req: WrappedRequest): Promise<UserDocument | null>;
-
-  delete(req: WrappedRequest): Promise<null | void>;
-
-  verifyAdmin(): void;
-
-  verifyUser(): void;
-}
-
 const userRepository = new UserRepository();
 
 @Controller
-export default class UserController implements UserControllerInterface {
+export default class UserController {
   @PostMapping()
   @SetMiddleware(RateLimiter(5, 5))
   @SetSuccessMessage('User created successfully')

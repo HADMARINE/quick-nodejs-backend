@@ -1,15 +1,14 @@
 import supertest, { SuperAgentTest } from 'supertest';
 import Test from '@util/Test';
 import Assets from '@util/Assets';
+import http from 'http';
 
 let agent: SuperAgentTest;
+let server: http.Server;
 
-beforeAll(() => {
-  agent = supertest.agent(Test.server.create());
-});
-
-afterAll(() => {
-  Test.server.close();
+beforeAll(async () => {
+  server = await Test.server.create();
+  agent = supertest.agent(server);
 });
 
 describe('Server status tester', () => {
@@ -91,4 +90,8 @@ describe('Test Auth system', () => {
     const res = await agent.delete('/v1/user').set('x-access-token', token);
     expect(res.body.result, res.body.message).toBe(true);
   });
+});
+
+afterAll(() => {
+  Test.server.close();
 });

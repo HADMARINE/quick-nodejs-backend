@@ -15,3 +15,5 @@ dist
 .pnp.js
 
 .yarn
+
+qcert.key

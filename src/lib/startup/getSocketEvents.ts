@@ -34,6 +34,7 @@ export default function getEvents(): Record<string, any> {
       }
       const event = f.replace(/\.(socket|rawsocket)\.(js|ts)$/, '');
 
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
       Object.assign(eventList[fileType], { [event]: require(file).default });
     }
     Object.assign(events, { [dirs]: eventList });

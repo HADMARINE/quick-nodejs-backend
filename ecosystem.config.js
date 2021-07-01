@@ -9,10 +9,7 @@ module.exports = {
       script: './dist/index.js',
       watch: false,
       env: {
-        ENV: 'development',
-      },
-      env_production: {
-        ENV: 'production',
+        NODE_ENV: 'production',
       },
     },
   ],

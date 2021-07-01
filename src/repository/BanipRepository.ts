@@ -1,32 +1,7 @@
 import Banip, { BanipDocument, BanipInterface } from '@models/Banip';
 import { QueryBuilder } from '@util/Assets';
 
-interface BanipRepositoryInterface {
-  create(data: BanipInterface): Promise<BanipDocument>;
-
-  findByDocId(_id: string): Promise<BanipDocument | null>;
-
-  findByIp(data: { ip: string }): Promise<BanipDocument | null>;
-
-  findMany(
-    data: Nullish<{
-      query: Nullish<{
-        ip: string[];
-        due_from: number;
-        due_to: number;
-        reason: string;
-      }>;
-      skip: number | null;
-      limit: number | null;
-    }>,
-  ): Promise<BanipDocument[] | null>;
-
-  deleteMany(
-    data: Nullish<{ ip: string[]; due: number }>,
-  ): Promise<void | number | null>;
-}
-
-export default class BanipRepository implements BanipRepositoryInterface {
+export default class BanipRepository {
   async create(data: BanipInterface): Promise<BanipDocument> {
     const banIp = await Banip.create(data);
     return banIp;

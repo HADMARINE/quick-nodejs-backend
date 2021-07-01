@@ -1,7 +1,18 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import AWS from 'aws-sdk';
 import error from '@error/ErrorDictionary';
 import { ManagedUpload } from 'aws-sdk/lib/s3/managed_upload';
 import deasync from 'deasync';
+import _logger from 'clear-logger';
+const logger = _logger.customName('AWS');
+
+const MULTIPART_SIZE = 5 * 1024 * 1024;
+
+enum status {
+  'INITIAL',
+  'RESOLVED',
+  'ERROR',
+}
 
 type SESParam = {
   address: {
@@ -84,6 +95,30 @@ async function S3UPLOAD(
     });
 }
 
+async function S3UPLOAD_ACCELERATE(
+  param: AWS.S3.PutObjectRequest,
+): Promise<ManagedUpload.SendData> {
+  const s3 = new AWS.S3({
+    accessKeyId: process.env.S3_PUB_KEY,
+    secretAccessKey: process.env.S3_PRIV_KEY,
+    region: process.env.S3_REGION,
+    useAccelerateEndpoint: true,
+  });
+
+  return await new Promise(function (resolve, reject) {
+    s3.upload(param, (err, data) => {
+      if (err) reject(err);
+      resolve(data);
+    });
+  })
+    .then((data) => {
+      return data as ManagedUpload.SendData;
+    })
+    .catch(() => {
+      throw error.aws.S3();
+    });
+}
+
 function S3_GET_SIGNED_URL(param: {
   Bucket: string;
   Key: string;
@@ -123,12 +158,6 @@ function S3_GET_SIGNED_URL_SYNC(
     region: process.env.S3_REGION,
   });
 
-  enum status {
-    'INITIAL',
-    'RESOLVED',
-    'ERROR',
-  }
-
   let STATUS = status.INITIAL;
   let ERROR;
   let RESULT = '';
@@ -165,6 +194,8 @@ export default {
   SES,
   S3: {
     upload: S3UPLOAD,
+    uploadAccelerate: S3UPLOAD_ACCELERATE,
+    // uploadMultipartAccelerate: S3UPLOAD_MULTIPART_ACCELRATE,
     getSignedUrl: S3_GET_SIGNED_URL,
     getSignedUrlSync: S3_GET_SIGNED_URL_SYNC,
   },
