@@ -14,7 +14,7 @@
     "test-auto": "NODE_ENV=test npx jest --config ./jest.config.js --forceExit --detectOpenHandles"
   },
   "dependencies": {
-    "aws-sdk": "^2.937.0",
+    "aws-sdk": "^2.938.0",
     "chalk": "^4.1.1",
     "clear-logger": "^1.0.5",
     "compression": "^1.7.4",
