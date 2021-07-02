@@ -5522,7 +5522,7 @@ lodash.truncate@^4.4.2:
   resolved "https://registry.yarnpkg.com/lodash.truncate/-/lodash.truncate-4.4.2.tgz#5a350da0b1113b837ecfffd5812cbe58d6eae193"
   integrity sha1-WjUNoLERO4N+z//VgSy+WNbq4ZM=
 
-lodash@4.x, lodash@^4.17.11, lodash@^4.17.14, lodash@^4.7.0:
+lodash@4.x, lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.21, lodash@^4.7.0:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -6497,10 +6497,10 @@ queue-microtask@^1.2.2:
   resolved "https://registry.yarnpkg.com/queue-microtask/-/queue-microtask-1.2.3.tgz#4929228bbc724dfac43e0efb058caf7b6cfb6243"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
 
-quickcert.js@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/quickcert.js/-/quickcert.js-0.3.1.tgz#2cd5266bfed37addfd0a011e81a78af6e6ea5d34"
-  integrity sha512-BETsBPY/NCl525fs3iidsgRYM/CpD9wszHa3tg0yu2MqsMtRtJhVDKPO8Zi7Ihj5xjOB8UWGQaeoi2K682Gcfg==
+quickcert.js@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/quickcert.js/-/quickcert.js-0.3.2.tgz#ca94efab12cb44fad72d061e62bceaec438ebfe6"
+  integrity sha512-WGQEUFAEoSMdFDf3479wTej7/7HFmjWVtqdfsIJy9Pnz0WtMiqsSKZVs8elpQba1v38/soOjqpzh88UNDLOb9g==
   dependencies:
     "@types/prompts" "^2.0.13"
     boxen "^5.0.1"

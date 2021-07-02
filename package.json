@@ -36,7 +36,7 @@
     "node-cron": "^3.0.0",
     "nodemon": "^2.0.9",
     "pm2": "^5.1.0",
-    "quickcert.js": "^0.3.1",
+    "quickcert.js": "^0.3.2",
     "require-strip-json-comments": "^2.0.0",
     "socket.io": "^4.1.2",
     "strip-json-comments": "^3.1.1"
