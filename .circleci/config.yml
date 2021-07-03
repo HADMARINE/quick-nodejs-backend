@@ -9,8 +9,8 @@ jobs:
     steps:
       - checkout
       - run:
-        name: Setting yarn version to berry
-        command: yarn set version berry
+          name: Setting yarn version to berry
+          command: yarn set version berry
       - restore_cache:
           keys:
             - root-fb2-dependencies-{{ checksum "package.json" }}
