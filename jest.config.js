@@ -9,7 +9,7 @@ module.exports = {
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: '<rootDir>/src/',
   }),
-  coveragePathIgnorePatterns: ['/node_modules/', '/dist/'],
+  coveragePathIgnorePatterns: ['/dist/'],
   globals: {
     'ts-jest': {
       tsconfig: 'tsconfig.json',
@@ -23,14 +23,14 @@ module.exports = {
   reporters: [
     'default',
     [
-      './node_modules/jest-html-reporter',
+      'jest-html-reporter',
       {
         pageTitle: 'Test Report',
         outputPath: './reports/test/index.html',
       },
     ],
     [
-      './node_modules/jest-junit',
+      'jest-junit',
       { outputDirectory: './reports/junit', outputName: 'results.xml' },
     ],
   ],
