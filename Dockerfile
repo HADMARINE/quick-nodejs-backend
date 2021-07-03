@@ -16,7 +16,7 @@ RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt -y install nodejs
 RUN npm i -g yarn
 RUN yarn global add pm2
-RUN yarn set version from sources
+RUN yarn set version berry
 
 COPY package.json .
 COPY .yarnrc.yml .
