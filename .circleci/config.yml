@@ -1,16 +1,13 @@
 version: 2.1
 orbs:
-  node: circleci/node@4.1.0
+  node: circleci/node@4.5.1
 jobs:
   test:
     docker:
-      - image: cimg/base:stable-18.04
+      - image: hadmarine/docker-environments:ubuntu20-node16-1.0.2
     working_directory: ~/repo
     steps:
       - checkout
-      - node/install:
-          install-yarn: true
-          yarn-version: 1.22.10
       - restore_cache:
           keys:
             - root-fb2-dependencies-{{ checksum "package.json" }}
