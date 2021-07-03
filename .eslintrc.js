@@ -74,12 +74,8 @@ module.exports = {
     'no-invalid-this': 'off',
     'no-multiple-empty-lines': 'off',
     'no-new-wrappers': 'error',
-    'no-shadow': [
-      'error',
-      {
-        hoist: 'all',
-      },
-    ],
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': ['error'],
     'id-blacklist': 'off',
     '@typescript-eslint/type-annotation-spacing': 'warn',
     'no-throw-literal': 'error',
