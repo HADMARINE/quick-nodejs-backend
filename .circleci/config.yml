@@ -8,6 +8,7 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
+      - yarn set version berry
       - restore_cache:
           keys:
             - root-fb2-dependencies-{{ checksum "package.json" }}
@@ -20,7 +21,7 @@ jobs:
           key: root-fb2-dependencies-{{ checksum "package.json" }}
       - run:
           name: .env decryption
-          command: yarn dec:env
+          command: yarn quickcert.js decrypt -k $QCERT_ENV
       - run:
           name: Testing
           command: yarn test-auto
