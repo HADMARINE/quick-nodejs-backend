@@ -31,6 +31,7 @@
     ["@babel/plugin-proposal-private-methods", { "loose": true }]
   ],
   "ignore": [
-    "./src/__tests__"
+    "**/__tests__",
+    "**/*.test.*"
   ]
 }

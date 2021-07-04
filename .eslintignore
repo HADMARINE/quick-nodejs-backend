@@ -1,2 +1,5 @@
 ecosystem.config.js
 jest.config.js
+gulpfile.js
+dist
+.pnp.js
