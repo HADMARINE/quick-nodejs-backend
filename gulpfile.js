@@ -6,11 +6,14 @@ const ts = require('gulp-typescript');
 
 const tsProject = ts.createProject('tsconfig.json');
 
-gulp.task('build_main', () => {
+gulp.task('build_pre', (done) => {
   if (fs.existsSync(tsProject.options.outDir)) {
     fs.rmdirSync(tsProject.options.outDir, { recursive: true });
   }
+  done();
+});
 
+gulp.task('build_main', () => {
   const tsResult = tsProject
     .src()
     .pipe(babel())
@@ -36,7 +39,12 @@ gulp.task('build_post', (done) => {
   newIndexFile += splitResult[1];
 
   fs.writeFileSync(indexFileRoot, newIndexFile);
+
+  fs.rmdir(path.join(tsProject.options.outDir, '/__tests__'), {
+    recursive: true,
+  });
+
   done();
 });
 
-gulp.task('build', gulp.series(['build_main', 'build_post']));
+gulp.task('build', gulp.series(['build_pre', 'build_main', 'build_post']));
