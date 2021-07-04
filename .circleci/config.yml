@@ -27,6 +27,8 @@ jobs:
       - run:
           name: Build
           command: yarn build
+      - store_test_results:
+          path: ./reports/junit
 workflows:
   test-build-deployment:
     jobs:
