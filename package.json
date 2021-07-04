@@ -7,7 +7,7 @@
   "scripts": {
     "start": "npm run build && pm2 start -i 0",
     "dev": "nodemon",
-    "build": "babel src --out-dir dist --extensions '.ts'",
+    "build": "gulp build",
     "tsc": "tsc",
     "lint": "eslint -c .eslintrc.js --ext .ts ./src",
     "test": "NODE_ENV=test npx jest --config ./jest.config.js --watch --forceExit --testTimeout=10000",
@@ -15,6 +15,7 @@
     "d-build": "docker build . -t "
   },
   "dependencies": {
+    "@babel/runtime": "^7.14.6",
     "aws-sdk": "^2.939.0",
     "chalk": "^4.1.1",
     "clear-logger": "^1.0.5",
@@ -73,6 +74,9 @@
     "babel-plugin-module-resolver": "^4.1.0",
     "eslint-plugin-babel": "^5.3.1",
     "eslint-plugin-jest": "^24.3.6",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-typescript": "^6.0.0-alpha.1",
     "jest": "^27.0.6",
     "jest-expect-message": "^1.0.2",
     "jest-html-reporter": "^3.4.1",
