@@ -1,6 +1,6 @@
 /** @type {import('@jest/types').Config.InitialOptions} */
-const { pathsToModuleNameMapper } = require('ts-jest/utils');
 const requireJSON = require('require-strip-json-comments');
+const { pathsToModuleNameMapper } = require('ts-jest/utils');
 const { compilerOptions } = requireJSON('./tsconfig.json');
 
 module.exports = {

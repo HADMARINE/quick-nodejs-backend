@@ -23,7 +23,7 @@ export default class AuthController {
       password: DataTypes.string,
     });
 
-    return authRepository.signInitial({ userid, password });
+    return await authRepository.signInitial({ userid, password });
   }
 
   @PostMapping('/resign')
@@ -34,6 +34,6 @@ export default class AuthController {
       token: DataTypes.string,
     });
 
-    return authRepository.renewToken({ token });
+    return await authRepository.renewToken({ token });
   }
 }
