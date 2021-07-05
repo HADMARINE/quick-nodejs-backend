@@ -55,7 +55,6 @@ if (process.env.NODE_ENV === 'development') {
   REQUEST_HANDLERS.push(['/info/test', express.static('reports/test')]);
 }
 
-const STARTUP_EXECUTES = [cron];
 
 const SERVER_STARTER_PROPERTIES = {
   routePath:
@@ -63,13 +62,12 @@ const SERVER_STARTER_PROPERTIES = {
       ? `${process.cwd()}/src/routes`
       : `${process.cwd()}/dist/routes`,
   requestHandlers: REQUEST_HANDLERS,
-  executes: STARTUP_EXECUTES,
   portStrict:
     process.env.NODE_ENV === 'production'
       ? true
       : process.env.PORT_STRICT === 'true'
-      ? true
-      : false,
+        ? true
+        : false,
   appName: packageJson.name,
 };
 
@@ -78,6 +76,7 @@ export function Root(port = PORT): ReturnType<typeof ServerStarter> {
 
   const server = ServerStarter({ ...SERVER_STARTER_PROPERTIES, port });
 
+  cron();
   io(server.server);
   return server;
 }
