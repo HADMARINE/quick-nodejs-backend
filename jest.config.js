@@ -16,6 +16,7 @@ module.exports = {
       diagnostics: true,
     },
   },
+  forceExit: true,
   verbose: true,
   setupFilesAfterEnv: ['jest-expect-message'],
   collectCoverage: true,
