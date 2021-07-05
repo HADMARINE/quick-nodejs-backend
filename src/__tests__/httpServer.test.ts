@@ -92,6 +92,6 @@ describe('Test Auth system', () => {
   });
 });
 
-afterAll(() => {
-  Test.server.close();
+afterAll(async () => {
+  await Test.server.close();
 });

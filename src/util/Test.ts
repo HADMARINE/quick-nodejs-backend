@@ -10,14 +10,14 @@ async function createServer(): Promise<http.Server> {
   return rootInstance.server;
 }
 
-function closeServer(
+async function closeServer(
   done: any = function (): void {
     return;
   },
-): void {
+): Promise<void> {
   if (!rootInstance) throw new Error('Root instance is not initialized!');
   rootInstance.server.close();
-  mongoose.connection.close();
+  await mongoose.connection.close(true);
   rootInstance = undefined;
   done();
 }
