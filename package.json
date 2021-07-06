@@ -39,7 +39,7 @@
     "nodemon": "^2.0.9",
     "pm2": "^5.1.0",
     "portfinder": "^1.0.28",
-    "quickcert": "^1.0.1",
+    "quickcert": "^1.1.1",
     "require-strip-json-comments": "^2.0.0",
     "socket.io": "^4.1.2",
     "strip-json-comments": "^3.1.1",
