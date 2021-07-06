@@ -20,7 +20,7 @@ jobs:
           key: root-fb2-dependencies-{{ checksum "package.json" }}
       - run:
           name: .env decryption
-          command: yarn quickcert.js decrypt -k $QCERT_ENV
+          command: yarn quickcert decrypt -k $QCERT_ENV
       - run:
           name: Testing
           command: yarn test-auto
