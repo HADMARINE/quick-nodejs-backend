@@ -55,7 +55,7 @@
     "@babel/preset-env": "^7.14.7",
     "@babel/preset-typescript": "^7.14.5",
     "@types/compression": "^1.7.0",
-    "@types/cors": "^2.8.10",
+    "@types/cors": "^2.8.12",
     "@types/deasync": "^0.1.1",
     "@types/express": "^4.17.12",
     "@types/express-fileupload": "^1.1.6",
