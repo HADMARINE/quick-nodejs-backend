@@ -15,7 +15,7 @@
     "d-build": "docker build . -t "
   },
   "dependencies": {
-    "@babel/runtime": "^7.14.6",
+    "@babel/runtime": "^7.14.8",
     "aws-sdk": "^2.939.0",
     "chalk": "^4.1.1",
     "clear-logger": "^1.0.5",
