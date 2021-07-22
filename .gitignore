@@ -9,7 +9,6 @@ node_modules
 !.yarn/versions
 .pnp.*
 
-.vscode
 
 .env
 yarn-error.log
