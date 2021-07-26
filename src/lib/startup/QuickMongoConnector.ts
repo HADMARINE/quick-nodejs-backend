@@ -17,7 +17,6 @@ export let dbConnectionStatus:
   | 'CONN_PLAIN_DEV'
   | 'CONN_PLAIN' = 'NOT_CONNECTED';
 
-
 const auth = {
   user: process.env.DB_USER,
   pass: process.env.DB_PASS,
@@ -26,8 +25,6 @@ const auth = {
 const mongoURL = process.env.DB_HOST;
 let dbName = process.env.DB_NAME;
 
-
-
 if (env !== 'production') dbName += `_${env}`;
 if (env === 'development') {
   mongoose.set('debug', true);
@@ -35,21 +32,18 @@ if (env === 'development') {
 
 export default async function connectDB(): Promise<void> {
   try {
-    if (process.env.TEST_DB_HOST && process.env.NODE_ENV !== "production" || process.env.DB_ENV !== "production") {
+    if (
+      (process.env.TEST_DB_HOST && process.env.NODE_ENV !== 'production') ||
+      process.env.DB_ENV === 'development'
+    ) {
       await connectDBTest();
       dbConnectionStatus = 'CONN_PLAIN_DEV';
       return;
     }
 
-    if (
-      !auth.user ||
-      !auth.pass ||
-      !dbName ||
-      !mongoURL
-    ) {
+    if (!auth.user || !auth.pass || !dbName || !mongoURL) {
       throw new Error('MONGO ENV NOT SET');
     }
-
 
     if (!process.env.DB_SSL_KEY) {
       await mongoose.connect(mongoURL, {
@@ -62,7 +56,7 @@ export default async function connectDB(): Promise<void> {
       dbConnectionStatus = 'CONN_PLAIN';
     }
 
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.NODE_ENV !== 'production') {
       if (
         !process.env.SSH_USERNAME ||
         !process.env.SSH_HOST ||
@@ -113,7 +107,6 @@ export default async function connectDB(): Promise<void> {
       return;
     }
 
-
     await mongoose.connect(mongoURL, {
       ...auth,
       dbName,
@@ -121,12 +114,9 @@ export default async function connectDB(): Promise<void> {
       useUnifiedTopology: true,
       useFindAndModify: true,
       ssl: true,
-      sslCA: [
-        fs.readFileSync(`${process.cwd()}/${process.env.DB_SSL_KEY}`),
-      ],
+      sslCA: [fs.readFileSync(`${process.cwd()}/${process.env.DB_SSL_KEY}`)],
     });
     dbConnectionStatus = 'CONN_SSL';
-
   } catch (e) {
     logger.debug(e);
     logger.debug('Failed to initialize MongoDB server connection', false);
@@ -167,7 +157,7 @@ export const connectDBTest = (): Promise<typeof mongoose | undefined> => {
     !process.env.TEST_DB_USER ||
     !process.env.TEST_DB_PASS
   ) {
-    throw new Error("Test DB Not defined");
+    throw new Error('Test DB Not defined');
   }
   try {
     return mongoose.connect(process.env.TEST_DB_HOST, {

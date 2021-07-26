@@ -9,7 +9,7 @@ logger.info('Starting server...');
 
 import chalk from 'chalk';
 import * as dotenv from 'dotenv';
-import qcert from 'quickcert.js';
+import qcert from 'quickcert';
 dotenv.config();
 
 const instructions =

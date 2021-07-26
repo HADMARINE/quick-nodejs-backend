@@ -19,8 +19,8 @@ export default class AuthController {
   @SetSuccessMessage('Login success')
   async signIn(req: WrappedRequest): Promise<InitialTokenCreateResult | null> {
     const { userid, password } = req.verify.body({
-      userid: DataTypes.string,
-      password: DataTypes.string,
+      userid: DataTypes.string(),
+      password: DataTypes.string(),
     });
 
     return await authRepository.signInitial({ userid, password });
@@ -31,7 +31,7 @@ export default class AuthController {
   @SetSuccessMessage('Successfully renewed access token')
   async resign(req: WrappedRequest): Promise<string | null> {
     const { token } = req.verify.body({
-      token: DataTypes.string,
+      token: DataTypes.string(),
     });
 
     return await authRepository.renewToken({ token });
