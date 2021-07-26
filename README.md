@@ -156,6 +156,16 @@ Create .env file on your project's root directory.
 
 ## ETC
 
-### All code belongs to HADMARINE. You can use this code as MIT License.
+### Known Issues
+
+- Nodemon will not run properly at version 2.0.3 and above at WIN32 (windows). Downgraded currently to 2.0.2 until fixed.
+- Currently have plan to improve SocketEventHandlers and migrate to express-quick-builder or create new open source package.
+- Test code coverage is currently low, Need to improve above 90 percent.
+
+### License
+
+All code belongs to HADMARINE. You can use this code as Apache 2.0 License.
+
+[See details of License](https://github.com/HADMARINE/Typescript-Node-Express-Mongodb-backend/blob/master/LICENSE)
 
 Copyright 2020 HADMARINE, All rights reserved.
