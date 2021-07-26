@@ -23,8 +23,8 @@ export default class UserController {
   @SetSuccessMessage('User created successfully')
   async create(req: WrappedRequest): Promise<void> {
     const { userid, password } = req.verify.body({
-      userid: DataTypes.string,
-      password: DataTypes.string,
+      userid: DataTypes.string(),
+      password: DataTypes.string(),
     });
 
     return await userRepository.create({ userid, password });
@@ -35,7 +35,7 @@ export default class UserController {
   @SetMiddleware(UserAuthority)
   @SetSuccessMessage('User data found')
   async read(req: WrappedRequest): Promise<UserDocument | null> {
-    const { userData } = req.verify.body({ userData: DataTypes.object });
+    const { userData } = req.verify.body({ userData: DataTypes.object() });
 
     return userRepository.findByDocId(userData._id);
   }
@@ -46,8 +46,8 @@ export default class UserController {
   @SetSuccessMessage('User data updated')
   async update(req: WrappedRequest): Promise<UserDocument | null> {
     const { password, userData } = req.verify.body({
-      password: DataTypes.stringNull,
-      userData: DataTypes.object,
+      password: DataTypes.stringNull(),
+      userData: DataTypes.object(),
     });
 
     return userRepository.updateByDocId(userData._id, { password });
@@ -59,7 +59,7 @@ export default class UserController {
   @SetSuccessMessage('User deleted successfully')
   async delete(req: WrappedRequest): Promise<null | void> {
     const { userData } = req.verify.body({
-      userData: DataTypes.object,
+      userData: DataTypes.object(),
     });
 
     return userRepository.deleteByDocId(userData._id);

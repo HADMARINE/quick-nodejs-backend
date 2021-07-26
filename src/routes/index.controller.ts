@@ -11,6 +11,7 @@ import {
   WrappedRequest,
   DataTypes,
 } from 'express-quick-builder';
+import { AnyVerifier } from 'express-quick-builder/dist/util/DataVerify';
 
 @Controller
 export default class IndexController {
@@ -41,14 +42,16 @@ export default class IndexController {
 
   @PostMapping('/test')
   test(req: WrappedRequest): void {
-    const { obj, data } = req.verify.body({
-      obj: DataTypes.array<any>(),
-      data: {
-        obj: DataTypes.array<any>(),
+    logger.debug(req.body.obj, false);
+    const { obj } = req.verify.body({
+      // data: DataTypes.array({ valueVerifier: DataTypes.string() }),
+      obj: {
+        data: DataTypes.string(),
       },
     });
 
-    logger.debug(data.obj, false);
+    // logger.debug(data, false);
+    logger.debug(obj.data, false);
   }
 
   @GetMapping('/info/time')

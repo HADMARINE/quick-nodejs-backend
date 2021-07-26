@@ -29,10 +29,10 @@ export default class AdminBanController implements AdminBanControllerInterface {
   @SetSuccessMessage('Banned ip successfully.')
   async create(req: WrappedRequest): Promise<BanipDocument | null> {
     const { reason, due, ip, userData } = req.verify.body({
-      reason: DataTypes.stringNull,
-      due: DataTypes.numberNull,
-      ip: DataTypes.string,
-      userData: DataTypes.object,
+      reason: DataTypes.stringNull(),
+      due: DataTypes.numberNull(),
+      ip: DataTypes.string(),
+      userData: DataTypes.object(),
     });
 
     return await banipRepository.create({
@@ -48,8 +48,8 @@ export default class AdminBanController implements AdminBanControllerInterface {
   @SetMiddleware(AdminAuthority)
   @SetSuccessMessage('Found banned ip')
   async readOne(req: WrappedRequest): Promise<BanipDocument | null> {
-    const data = req.verify.params({ ip: DataTypes.string });
-    return await banipRepository.findByIp(data);
+    const { ip } = req.verify.params({ ip: DataTypes.string() });
+    return await banipRepository.findByIp({ ip });
   }
 
   @GetMapping('/ip')
@@ -57,12 +57,12 @@ export default class AdminBanController implements AdminBanControllerInterface {
   @SetSuccessMessage('Found banned ips')
   async readMany(req: WrappedRequest): Promise<BanipDocument[] | null> {
     const { skip, limit, ip, due_from, due_to, reason } = req.verify.query({
-      skip: DataTypes.numberNull,
-      limit: DataTypes.numberNull,
-      ip: DataTypes.arrayNull<string>(),
-      due_from: DataTypes.numberNull,
-      due_to: DataTypes.numberNull,
-      reason: DataTypes.stringNull,
+      skip: DataTypes.numberNull(),
+      limit: DataTypes.numberNull(),
+      ip: DataTypes.arrayNull({ valueVerifier: DataTypes.string() }),
+      due_from: DataTypes.numberNull(),
+      due_to: DataTypes.numberNull(),
+      reason: DataTypes.stringNull(),
     });
 
     return await banipRepository.findMany({
@@ -82,12 +82,12 @@ export default class AdminBanController implements AdminBanControllerInterface {
   @SetSuccessMessage('Unbanned ips successfully')
   async delete(req: WrappedRequest): Promise<void | null> {
     const { ip, due } = req.verify.body({
-      ip: DataTypes.array<string>(),
-      due: DataTypes.numberNull,
+      ip: DataTypes.array({ valueVerifier: DataTypes.string() }),
+      due: DataTypes.numberNull(),
     });
 
     const result = await banipRepository.deleteMany({ ip, due });
-    if (DataTypes.number(result)) {
+    if (DataTypes.number({ preciseTypeguard: true }).typeguard(result)) {
       throw ErrorDictionary.db.partial('delete', result);
     }
     return result;
