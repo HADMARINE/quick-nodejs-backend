@@ -1,5 +1,8 @@
 {
-  "watch": ["src", ".env"],
+  "watch": [
+    "src",
+    ".env"
+  ],
   "ext": "ts,env",
-  "exec": "NODE_ENV=development ts-node -r tsconfig-paths/register --files ./src/index.ts"
+  "exec": "yarn cross-env NODE_ENV=development ts-node -r tsconfig-paths/register --files ./src/index.ts"
 }
