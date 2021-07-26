@@ -20,4 +20,5 @@ declare global {
   type Arrayify<T> = {
     [P in keyof T]: T[P][];
   };
+  type Some = string | number | boolean | symbol | bigint | object;
 }
