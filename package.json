@@ -83,7 +83,7 @@
     "node-gyp": "^8.1.0",
     "nodemon": "2.0.2",
     "prettier": "^2.3.2",
-    "supertest": "^6.1.4",
+    "supertest": "^6.1.5",
     "ts-jest": "^27.0.4",
     "ts-lint": "^4.5.1",
     "ts-node": "^10.1.0",
