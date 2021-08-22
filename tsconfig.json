@@ -5,10 +5,7 @@
     // "incremental": true,                   /* Enable incremental compilation */
     "target": "ESNEXT" /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019' or 'ESNEXT'. */,
     "module": "commonjs" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */,
-    "lib": [
-      "dom",
-      "es2017"
-    ],
+    "lib": ["dom", "es2017"],
     /* Specify library files to be included in the compilation. */
     // "allowJs": true,                       /* Allow javascript files to be compiled. */
     // "checkJs": true,                       /* Report errors in .js files. */
@@ -29,7 +26,7 @@
     /* Strict Type-Checking Options */
     "strict": true /* Enable all strict type-checking options. */,
     "noImplicitAny": true /* Raise error on expressions and declarations with an implied 'any' type. */,
-    "strictNullChecks": true, /* Enable strict null checks. */
+    "strictNullChecks": true /* Enable strict null checks. */,
     // "strictFunctionTypes": true,           /* Enable strict checking of function types. */
     // "strictBindCallApply": true,           /* Enable strict 'bind', 'call', and 'apply' methods on functions. */
     // "strictPropertyInitialization": true,  /* Enable strict checking of property initialization in classes. */
@@ -41,41 +38,28 @@
     // "noImplicitReturns": true,             /* Report error when not all code paths in function return a value. */
     // "noFallthroughCasesInSwitch": true,    /* Report errors for fallthrough cases in switch statement. */
     /* Module Resolution Options */
-    "moduleResolution": "node", /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
-    "baseUrl": "src", /* Base directory to resolve non-absolute module names. */
+    "moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
+    "baseUrl": "src" /* Base directory to resolve non-absolute module names. */,
     "paths": {
-      "@models/*": [
-        "models/*"
-      ],
-      "@lib/*": [
-        "lib/*"
-      ],
-      "@error": [
-        "error"
-      ],
-      "@error/*": [
-        "error/*"
-      ],
-      "@util/*": [
-        "util/*"
-      ],
-      "@repo/*": [
-        "repository/*"
-      ],
-      "@src/*": [
-        "./*"
-      ]
-    }, /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
+      "@models/*": ["models/*"],
+      "@lib/*": ["lib/*"],
+      "@error": ["error"],
+      "@error/*": ["error/*"],
+      "@util/*": ["util/*"],
+      "@repo/*": ["repository/*"],
+      "@src/*": ["./*"],
+      "@settings/*": ["settings/*"]
+    } /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */,
     // "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
     "typeRoots": [
       "./src/types"
-    ], /* List of folders to include type definitions from. */
+    ] /* List of folders to include type definitions from. */,
     "types": [
       "@types/jest",
       "@types/jest-expect-message"
-    ], /* Type declaration files to be included in compilation. */
-    "allowSyntheticDefaultImports": true,  /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */
-    "esModuleInterop": true, /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
+    ] /* Type declaration files to be included in compilation. */,
+    "allowSyntheticDefaultImports": true /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */,
+    "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
     // "preserveSymlinks": true,              /* Do not resolve the real path of symlinks. */
     // "allowUmdGlobalAccess": true,          /* Allow accessing UMD globals from modules. */
     /* Source Map Options */
@@ -89,12 +73,6 @@
     /* Advanced Options */
     "resolveJsonModule": true /* Include modules imported with '.json' extension */
   },
-  "include": [
-    "src/**/*",
-    "types/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    ".vscode"
-  ]
+  "include": ["src/**/*", "types/**/*"],
+  "exclude": ["node_modules", ".vscode"]
 }
