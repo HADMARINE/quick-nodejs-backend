@@ -28,7 +28,7 @@
     "express": "^4.17.1",
     "express-fileupload": "^1.2.1",
     "express-ipfilter": "^1.2.0",
-    "express-quick-builder": "3.0.0-rc.12",
+    "express-quick-builder": "^3.0.7",
     "express-rate-limit": "^5.3.0",
     "helmet": "^4.6.0",
     "jsonwebtoken": "^8.5.1",
@@ -39,9 +39,7 @@
     "pm2": "^5.1.0",
     "portfinder": "^1.0.28",
     "quickcert": "^1.1.2",
-    "require-strip-json-comments": "^2.0.0",
     "socket.io": "^4.1.3",
-    "strip-json-comments": "^3.1.1",
     "tunnel-ssh": "^4.1.4"
   },
   "devDependencies": {
@@ -83,6 +81,8 @@
     "node-gyp": "^8.1.0",
     "nodemon": "2.0.2",
     "prettier": "^2.3.2",
+    "require-strip-json-comments": "^2.0.0",
+    "strip-json-comments": "^3.1.1",
     "supertest": "^6.1.4",
     "ts-jest": "^27.0.4",
     "ts-lint": "^4.5.1",

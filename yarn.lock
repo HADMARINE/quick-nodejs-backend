@@ -5486,15 +5486,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express-quick-builder@npm:3.0.0-rc.12":
-  version: 3.0.0-rc.12
-  resolution: "express-quick-builder@npm:3.0.0-rc.12"
+"express-quick-builder@npm:^3.0.7":
+  version: 3.0.7
+  resolution: "express-quick-builder@npm:3.0.7"
   dependencies:
     chalk: ^4.1.1
     clear-logger: ^1.0.5
     express: ^4.17.1
     http-shutdown: ^1.2.2
-  checksum: a090f28f08eb82c800b2884b6ec942e14728784080cce26c415b9cf1da6a8fdfced1fbad7974d7f6cd12d90ff981e4f61efaa28387dcd44d079630a79cec7b01
+  checksum: 779096bc43a99677ae9722decacad3f21fe4b2b4b0d93644669c793a57b757a2ddfb9e035eb8c4dc77474d4302f4444fad6314b30787f9767ffa1f9007aa1a94
   languageName: node
   linkType: hard
 
@@ -12058,7 +12058,7 @@ fsevents@^1.2.7:
     express: ^4.17.1
     express-fileupload: ^1.2.1
     express-ipfilter: ^1.2.0
-    express-quick-builder: 3.0.0-rc.12
+    express-quick-builder: ^3.0.7
     express-rate-limit: ^5.3.0
     gulp: ^4.0.2
     gulp-babel: ^8.0.0
