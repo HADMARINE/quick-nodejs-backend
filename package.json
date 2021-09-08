@@ -10,8 +10,8 @@
     "build": "gulp build",
     "tsc": "tsc",
     "lint": "eslint -c .eslintrc.js --ext .ts ./src",
-    "test": "yarn cross-env NODE_ENV=test npx jest --config ./jest.config.js --watch --testTimeout=10000",
-    "test-auto": "yarn cross-env NODE_ENV=test npx jest --config ./jest.config.js",
+    "test": "yarn cross-env NODE_ENV=test jest --config ./jest.config.js --watch --testTimeout=10000",
+    "test-auto": "yarn cross-env NODE_ENV=test jest --config ./jest.config.js",
     "d-build": "docker build . -t "
   },
   "dependencies": {

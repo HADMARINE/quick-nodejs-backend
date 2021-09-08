@@ -45,13 +45,11 @@ export default class IndexController {
     logger.debug(req.body.obj, false);
     const { obj } = req.verify.body({
       // data: DataTypes.array({ valueVerifier: DataTypes.string() }),
-      obj: {
-        data: DataTypes.string(),
-      },
+      obj: DataTypes.array({ valueVerifier: DataTypes.number() }),
     });
 
     // logger.debug(data, false);
-    logger.debug(obj.data, false);
+    logger.debug(obj, false);
   }
 
   @GetMapping('/info/time')
