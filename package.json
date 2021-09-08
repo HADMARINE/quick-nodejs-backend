@@ -36,7 +36,7 @@
     "mongoose": "^5.13.3",
     "morgan": "^1.10.0",
     "node-cron": "^3.0.0",
-    "pm2": "^5.1.0",
+    "pm2": "^5.1.1",
     "portfinder": "^1.0.28",
     "quickcert": "^1.1.2",
     "socket.io": "^4.1.3",
