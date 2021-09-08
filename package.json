@@ -83,7 +83,7 @@
     "prettier": "^2.3.2",
     "require-strip-json-comments": "^2.0.0",
     "strip-json-comments": "^3.1.1",
-    "supertest": "^6.1.4",
+    "supertest": "^6.1.6",
     "ts-jest": "^27.0.4",
     "ts-lint": "^4.5.1",
     "ts-node": "^10.1.0",
