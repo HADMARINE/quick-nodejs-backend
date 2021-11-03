@@ -23,7 +23,7 @@ async function verifyToken(
   try {
     tokenValue = jwt.verify(token, process.env.TOKEN_KEY || 'token_key');
   } catch (err) {
-    if (err.message === 'jwt expired') throw error.auth.tokenExpired();
+    if ((err as any).message === 'jwt expired') throw error.auth.tokenExpired();
     throw error.auth.tokenInvalid();
   }
 
