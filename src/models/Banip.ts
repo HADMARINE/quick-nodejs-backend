@@ -1,4 +1,4 @@
-import { model, Schema, Document, HookNextFunction, models } from 'mongoose';
+import { model, Schema, Document, models } from 'mongoose';
 import error from '@error/ErrorDictionary';
 import { UserDocument } from './User';
 
@@ -20,7 +20,7 @@ export interface BanipDocument extends Document, BanipInterface {
 
 // BanipSchema.methods.~~
 
-BanipSchema.pre('save', function (next: HookNextFunction) {
+BanipSchema.pre('save', function (next) {
   const doc = this as BanipDocument;
   models.Banip.findOne({ ip: doc.ip }, (err: any, user: UserDocument) => {
     if (user) next(error.db.exists() as any);

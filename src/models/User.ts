@@ -1,4 +1,4 @@
-import { model, Schema, Document, HookNextFunction, models } from 'mongoose';
+import { model, Schema, Document, models } from 'mongoose';
 import error from '@error/ErrorDictionary';
 
 export interface UserInterface {
@@ -24,7 +24,7 @@ UserSchema.methods.checkUserExists = async function (userid): Promise<boolean> {
   return false;
 };
 
-UserSchema.pre('save', function (next: HookNextFunction) {
+UserSchema.pre('save', function (next) {
   const doc = this as UserDocument;
   models.User.findOne(
     { userid: doc.userid },
