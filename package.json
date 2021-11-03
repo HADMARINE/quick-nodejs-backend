@@ -78,7 +78,7 @@
     "jest-expect-message": "^1.0.2",
     "jest-html-reporter": "^3.4.1",
     "jest-junit": "^12.2.0",
-    "node-gyp": "^8.1.0",
+    "node-gyp": "^8.3.0",
     "nodemon": "2.0.2",
     "prettier": "^2.3.2",
     "require-strip-json-comments": "^2.0.0",
