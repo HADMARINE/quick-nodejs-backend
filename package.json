@@ -84,7 +84,7 @@
     "require-strip-json-comments": "^2.0.0",
     "strip-json-comments": "^4.0.0",
     "supertest": "^6.1.4",
-    "ts-jest": "^27.0.4",
+    "ts-jest": "^27.0.7",
     "ts-lint": "^4.5.1",
     "ts-node": "^10.1.0",
     "tsconfig-paths": "^3.10.1",
