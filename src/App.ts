@@ -89,6 +89,6 @@ export async function testRoot(
     io(server.server);
     return server;
   } catch (e) {
-    throw new Error(e);
+    throw e;
   }
 }

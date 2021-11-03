@@ -49,9 +49,6 @@ export default async function connectDB(): Promise<void> {
       await mongoose.connect(mongoURL, {
         ...auth,
         dbName,
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useFindAndModify: false,
       });
       dbConnectionStatus = 'CONN_PLAIN';
     }
@@ -93,13 +90,10 @@ export default async function connectDB(): Promise<void> {
             ...auth,
             tlsAllowInvalidHostnames: true,
             dbName,
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useFindAndModify: true,
             ssl: true,
-            sslCA: [
-              fs.readFileSync(`${process.cwd()}/${process.env.DB_SSL_KEY}`),
-            ],
+            sslCA: 
+              fs.readFileSync(`${process.cwd()}/${process.env.DB_SSL_KEY}`).toString(),
+            
           });
           dbConnectionStatus = 'CONN_SSL_TUNNEL';
         },
@@ -107,14 +101,11 @@ export default async function connectDB(): Promise<void> {
       return;
     }
 
-    await mongoose.connect(mongoURL, {
+    await  mongoose.connect(mongoURL, {
       ...auth,
       dbName,
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: true,
       ssl: true,
-      sslCA: [fs.readFileSync(`${process.cwd()}/${process.env.DB_SSL_KEY}`)],
+      sslCA: fs.readFileSync(`${process.cwd()}/${process.env.DB_SSL_KEY}`).toString(),
     });
     dbConnectionStatus = 'CONN_SSL';
   } catch (e) {
@@ -161,14 +152,11 @@ export const connectDBTest = (): Promise<typeof mongoose | undefined> => {
   }
   try {
     return mongoose.connect(process.env.TEST_DB_HOST, {
-      auth: {
+      ...{
         user: process.env.TEST_DB_USER,
-        password: process.env.TEST_DB_PASS,
+        pass: process.env.TEST_DB_PASS, 
       },
       dbName: process.env.TEST_DB_NAME,
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false,
     });
   } catch (e) {
     throw e;

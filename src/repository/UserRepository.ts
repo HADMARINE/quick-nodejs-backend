@@ -82,6 +82,6 @@ export default class UserRepository {
     query: FilterQuery<UserDocument>;
   }): Promise<void | null> {
     const user = await User.deleteMany(Assets.updateQueryBuilder(data.query));
-    return user.n === 0 ? null : undefined;
+    return user.deletedCount === 0 ? null : undefined;
   }
 }

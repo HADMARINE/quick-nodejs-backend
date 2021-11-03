@@ -49,7 +49,7 @@ export default class BanipRepository {
       QueryBuilder({ ip: { $in: data.ip }, due: data.due }),
     );
     if (data.ip && data.ip.length > (banip.deletedCount || 0)) {
-      return banip.n;
+      return banip.deletedCount;
     }
     return banip.deletedCount;
   }
