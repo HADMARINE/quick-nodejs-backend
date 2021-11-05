@@ -15,7 +15,7 @@ export interface AnyDocument extends Document, AnyInterface {
 
 // AnySchema.methods.~~
 
-AnySchema.pre('save', function (next: HookNextFunction): void {
+AnySchema.pre('save', function (next): void {
   const doc = this as AnyDocument;
   models.Any.findOne(
     {
