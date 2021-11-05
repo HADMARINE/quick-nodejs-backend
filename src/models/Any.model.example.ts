@@ -1,4 +1,4 @@
-import { model, Schema, Document, HookNextFunction, models } from 'mongoose';
+import { model, Schema, Document, models } from 'mongoose';
 import error from '@error/ErrorDictionary';
 
 export interface AnyInterface {
@@ -15,7 +15,7 @@ export interface AnyDocument extends Document, AnyInterface {
 
 // AnySchema.methods.~~
 
-AnySchema.pre('save', function (next: HookNextFunction): void {
+AnySchema.pre('save', function (next): void {
   const doc = this as AnyDocument;
   models.Any.findOne(
     {
