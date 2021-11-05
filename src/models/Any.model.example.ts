@@ -1,4 +1,4 @@
-import { model, Schema, Document, HookNextFunction, models } from 'mongoose';
+import { model, Schema, Document, models } from 'mongoose';
 import error from '@error/ErrorDictionary';
 
 export interface AnyInterface {
