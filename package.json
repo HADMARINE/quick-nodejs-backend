@@ -60,7 +60,7 @@
     "@types/helmet": "^4.0.0",
     "@types/jest": "^27.0.2",
     "@types/jest-expect-message": "^1.0.3",
-    "@types/jsonwebtoken": "^8.5.5",
+    "@types/jsonwebtoken": "^8.5.7",
     "@types/morgan": "^1.9.3",
     "@types/node": "^16.11.6",
     "@types/node-cron": "^3.0.0",
