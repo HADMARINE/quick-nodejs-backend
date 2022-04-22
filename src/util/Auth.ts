@@ -11,7 +11,7 @@ import Middleware from '@util/Middleware';
  * @description Verifies token
  * @param {string} token JWT token
  * @param {string} type Token type
- * @param initial
+ * @param {boolean} initial set true if it is initial execution
  * @returns {Promise<Record<string, any>>} Return token payload value
  */
 async function verifyToken(
