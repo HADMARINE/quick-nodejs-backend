@@ -39,7 +39,7 @@
     "pm2": "^5.1.2",
     "portfinder": "^1.0.28",
     "quickcert": "^1.1.2",
-    "socket.io": "^4.3.1",
+    "socket.io": "^4.5.1",
     "tunnel-ssh": "^4.1.6"
   },
   "devDependencies": {
