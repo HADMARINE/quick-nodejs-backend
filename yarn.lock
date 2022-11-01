@@ -1296,7 +1296,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.16.0, @babel/runtime@npm:^7.8.4":
+"@babel/runtime@npm:^7.20.1":
+  version: 7.20.1
+  resolution: "@babel/runtime@npm:7.20.1"
+  dependencies:
+    regenerator-runtime: ^0.13.10
+  checksum: 00567a333d3357925742a6f5e39394dcc0af6e6029103fe188158bf7ae8b0b3ee3c6c0f68fccc217f0a6cfa455f6be252298baf56b3f5ff37b34313b170cd9f6
+  languageName: node
+  linkType: hard
+
+"@babel/runtime@npm:^7.8.4":
   version: 7.16.0
   resolution: "@babel/runtime@npm:7.16.0"
   dependencies:
@@ -9882,6 +9891,13 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"regenerator-runtime@npm:^0.13.10":
+  version: 0.13.10
+  resolution: "regenerator-runtime@npm:0.13.10"
+  checksum: 09893f5a9e82932642d9a999716b6c626dc53ef2a01307c952ebbf8e011802360163a37c304c18a6c358548be5a72b448e37209954a18696f21e438c81cbb4b9
+  languageName: node
+  linkType: hard
+
 "regenerator-runtime@npm:^0.13.4":
   version: 0.13.9
   resolution: "regenerator-runtime@npm:0.13.9"
@@ -11581,7 +11597,7 @@ fsevents@^1.2.7:
     "@babel/plugin-transform-runtime": ^7.16.0
     "@babel/preset-env": ^7.16.0
     "@babel/preset-typescript": ^7.16.0
-    "@babel/runtime": ^7.16.0
+    "@babel/runtime": ^7.20.1
     "@types/compression": ^1.7.2
     "@types/cors": ^2.8.12
     "@types/deasync": ^0.1.2
