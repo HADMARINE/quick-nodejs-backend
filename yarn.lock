@@ -11646,27 +11646,27 @@ fsevents@^1.2.7:
     tslint: ^6.1.3
     tslint-config-standard: ^9.0.0
     tunnel-ssh: ^4.1.6
-    typescript: ^4.4.4
+    typescript: ^4.9.4
   languageName: unknown
   linkType: soft
 
-"typescript@npm:^4.4.4":
-  version: 4.4.4
-  resolution: "typescript@npm:4.4.4"
+"typescript@npm:^4.9.4":
+  version: 4.9.4
+  resolution: "typescript@npm:4.9.4"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 89ecb8436bb48ef5594d49289f5f89103071716b6e4844278f4fb3362856e31203e187a9c76d205c3f0b674d221a058fd28310dbcbcf5d95e9a57229bb5203f1
+  checksum: e782fb9e0031cb258a80000f6c13530288c6d63f1177ed43f770533fdc15740d271554cdae86701c1dd2c83b082cea808b07e97fd68b38a172a83dbf9e0d0ef9
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.4.4#~builtin<compat/typescript>":
-  version: 4.4.4
-  resolution: "typescript@patch:typescript@npm%3A4.4.4#~builtin<compat/typescript>::version=4.4.4&hash=ddd1e8"
+"typescript@patch:typescript@^4.9.4#~builtin<compat/typescript>":
+  version: 4.9.4
+  resolution: "typescript@patch:typescript@npm%3A4.9.4#~builtin<compat/typescript>::version=4.9.4&hash=ddd1e8"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: bd629ad0da4a15d79aaad56baf3ee7d96f6a181760d430ae77f8c5325df7bffd9edee57544a3970e3651e8b796fe03a5838a7eb39c6d46cc3866c0b23d36a0dd
+  checksum: 37f6e2c3c5e2aa5934b85b0fddbf32eeac8b1bacf3a5b51d01946936d03f5377fe86255d4e5a4ae628fd0cd553386355ad362c57f13b4635064400f3e8e05b9d
   languageName: node
   linkType: hard
 
