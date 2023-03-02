@@ -79,7 +79,7 @@
     "jest-html-reporter": "^3.4.1",
     "jest-junit": "^13.0.0",
     "node-gyp": "^8.3.0",
-    "nodemon": "2.0.14",
+    "nodemon": "2.0.21",
     "prettier": "^2.4.1",
     "require-strip-json-comments": "^2.0.0",
     "strip-json-comments": "^4.0.0",
